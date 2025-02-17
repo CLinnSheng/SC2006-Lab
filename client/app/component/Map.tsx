@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import MapView from "react-native-maps";
-import { Dimensions, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import * as Location from "expo-location";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 
 const MapComponent: React.FC = () => {
-  const [location, setLocation] = useState<Location.LocationObjectCoords | null>(null);
+  const [location, setLocation] =
+    useState<Location.LocationObjectCoords | null>(null);
 
   useEffect(() => {
     const requestLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
         return;
       }
 
@@ -26,6 +33,9 @@ const MapComponent: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {Platform.OS === "android" && (
+        <StatusBar translucent backgroundColor="transparent" />
+      )}
       {location && (
         <MapView
           style={styles.map}
@@ -33,8 +43,8 @@ const MapComponent: React.FC = () => {
           initialRegion={{
             latitude: location.latitude,
             longitude: location.longitude,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
           }}
         />
       )}
