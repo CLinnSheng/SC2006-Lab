@@ -1,12 +1,12 @@
 // index.tsx
 import React from "react";
-import MapComponent from "./component/Map"; // Adjust the path as necessary
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Dimensions, View } from "react-native";
+import GoogleMapView from "./component/GoogleMapView";
 
 const App: React.FC = () => {
   return (
-      <MapComponent />
+      <GoogleMapView />
   );
 };
 
