@@ -9,16 +9,24 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "icon" : {
+      "icon": {
         "dark": "./assets/icons/ios-dark.png",
         "light": "./assets/icons/ios-light.png",
         "tinted": "./assets/icons/ios-tinted.png"
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyCcHMugv8qXNg10Fi9H5fCCnZkqQWH_DiM"
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#000000"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCcHMugv8qXNg10Fi9H5fCCnZkqQWH_DiM"
+        }
       }
     },
     "web": {

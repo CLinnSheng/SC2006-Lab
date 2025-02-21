@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import MapView from "react-native-maps";
+import React, { useEffect, useRef, useState } from "react";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import {
-  Alert,
   Dimensions,
-  Linking,
   Platform,
   StatusBar,
   StyleSheet,
   View,
+  ActivityIndicator,
 } from "react-native";
 import * as Location from "expo-location";
+import SearchBar from "./SearchBar";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -27,58 +27,100 @@ const DEFAULT_LOCATION: Location.LocationObjectCoords = {
 const GoogleMapView: React.FC = () => {
   const [location, setLocation] =
     useState<Location.LocationObjectCoords | null>(null);
+  const [loading, setLoading] = useState(true);
+  const mapRef = useRef<MapView | null>(null);
 
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status === "granted") {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        setLocation(location.coords);
+      } else {
+        setLocation(DEFAULT_LOCATION);
+      }
+    } catch (error) {
+      console.error("Error getting location:", error);
+      setLocation(DEFAULT_LOCATION);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Set up a location subscription when the component mounts
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      // First check current permission status
-      const { status: existingStatus } = await Location.getForegroundPermissionsAsync();
-      
-      // If already denied, show custom alert
-      if (existingStatus === 'denied') {
-        Alert.alert(
-          "Location Permission Required",
-          "Please enable location permissions in your device settings to use this feature.",
-          [
-            { text: "Cancel", style: "cancel" },
-            { text: "Open Settings", onPress: () => Linking.openSettings() }
-          ]
-        );
-        setLocation(DEFAULT_LOCATION);
-        return;
-      }
-      
-      // Otherwise request permission normally
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.error("Permission to access location was denied");
-        setLocation(DEFAULT_LOCATION);
-        return;
-      }
-      
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location.coords);
+    getCurrentLocation();
+
+    // Set up location updates
+    let locationSubscription: Location.LocationSubscription;
+
+    const setupLocationUpdates = async () => {
+      // Watch position changes
+      locationSubscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 10000, // Update every 10 seconds
+          distanceInterval: 10, // Update every 10 meters
+        },
+        (newLocation) => {
+          setLocation(newLocation.coords);
+        }
+      );
     };
-    
-    requestLocationPermission();
+
+    setupLocationUpdates();
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+      }
+    };
   }, []);
+
+  // const handlePlaceSelected = (data: any, details: any | null) => {
+  //   if (details) {
+  //     const { geometry } = details;
+  //     if (geometry && geometry.location) {
+  //       const region = {
+  //         latitude: geometry.location.lat,
+  //         longitude: geometry.location.lng,
+  //         latitudeDelta: 0.005,
+  //         longitudeDelta: 0.005,
+  //       };
+
+  //       // Animate map to selected location
+  //       mapRef.current?.animateToRegion(region, 1000);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
       {Platform.OS === "android" && (
         <StatusBar translucent backgroundColor="transparent" />
       )}
-      {location && (
+      {loading ? (
+        <View style={[styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
         <MapView
           style={styles.map}
-          showsUserLocation={true}
+          showsUserLocation
           initialRegion={{
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
+            longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
+          provider={PROVIDER_GOOGLE}
         />
       )}
+      <SearchBar />
     </View>
   );
 };
@@ -88,9 +130,16 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     height: deviceHeight,
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: deviceHeight,
   },
 });
 
