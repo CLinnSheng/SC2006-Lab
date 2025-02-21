@@ -1,9 +1,11 @@
 import React from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values'
+import Config from 'react-native-config';
 
 // In SearchBar.tsx (renamed from GooglePlacesInput.tsx)
-const SearchBar = () => {  // Rename the component
+const SearchBar = () => {  
+    console.log(Config.GOOGLE_API_KEY);
     return (
       <GooglePlacesAutocomplete
         placeholder='Search'
@@ -22,7 +24,7 @@ const SearchBar = () => {  // Rename the component
           },
         }}
         query={{
-          key: 'AIzaSyCcHMugv8qXNg10Fi9H5fCCnZkqQWH_DiM',
+          key: '',
           language: 'en',
         }}
       />
