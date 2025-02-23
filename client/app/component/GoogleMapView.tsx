@@ -101,26 +101,30 @@ const GoogleMapView: React.FC = () => {
   return (
     <View style={styles.container}>
       {Platform.OS === "android" && (
-        <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar translucent backgroundColor="transparent" />
       )}
       {loading ? (
-        <View style={[styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="black" />
-        </View>
+      <View style={[styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
       ) : (
+      <>
         <MapView
-          style={styles.map}
-          showsUserLocation
-          initialRegion={{
-            latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
-            longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}
-          provider={PROVIDER_GOOGLE}
-        />
+        ref={mapRef}
+        style={styles.map}
+        showsUserLocation
+        showsMyLocationButton={false}
+        initialRegion={{
+          latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
+          longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }}
+        provider={PROVIDER_GOOGLE}
+        />  
+        <SearchBar />
+      </>
       )}
-      <SearchBar />
     </View>
   );
 };
@@ -128,7 +132,6 @@ const GoogleMapView: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    height: deviceHeight,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
