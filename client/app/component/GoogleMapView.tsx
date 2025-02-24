@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import * as Location from "expo-location";
+import BottomSheetContainer from "./BottomSheetContainer";
 import SearchBar from "./SearchBar";
 
 const deviceHeight = Dimensions.get("window").height;
@@ -125,6 +126,8 @@ const GoogleMapView: React.FC = () => {
         <SearchBar />
       </>
       )}
+      <BottomSheetContainer/>
+
     </View>
   );
 };
