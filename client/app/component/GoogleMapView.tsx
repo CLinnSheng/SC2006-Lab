@@ -6,11 +6,14 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
 import * as Location from "expo-location";
 import BottomSheetContainer from "./BottomSheetContainer";
 import SearchBar from "./SearchBar";
+import { Ionicons } from "@expo/vector-icons";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -82,53 +85,54 @@ const GoogleMapView: React.FC = () => {
     };
   }, []);
 
-  // const handlePlaceSelected = (data: any, details: any | null) => {
-  //   if (details) {
-  //     const { geometry } = details;
-  //     if (geometry && geometry.location) {
-  //       const region = {
-  //         latitude: geometry.location.lat,
-  //         longitude: geometry.location.lng,
-  //         latitudeDelta: 0.005,
-  //         longitudeDelta: 0.005,
-  //       };
-
-  //       // Animate map to selected location
-  //       mapRef.current?.animateToRegion(region, 1000);
-  //     }
-  //   }
-  // };
-
+  const handleRecenterMap = () => {
+    if (location) {
+      mapRef.current?.animateToRegion({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      });
+    }
+  };
+  
   return (
+    <GestureHandlerRootView style={styles.container}>
     <View style={styles.container}>
       {Platform.OS === "android" && (
-      <StatusBar translucent backgroundColor="transparent" />
+        <StatusBar translucent backgroundColor="transparent" />
       )}
       {loading ? (
-      <View style={[styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="black" />
-      </View>
+        <View style={[styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
       ) : (
-      <>
-        <MapView
-        ref={mapRef}
-        style={styles.map}
-        showsUserLocation
-        showsMyLocationButton={false}
-        initialRegion={{
-          latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
-          longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}
-        provider={PROVIDER_GOOGLE}
-        />  
-        <SearchBar />
-      </>
+        <>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            showsUserLocation
+            showsMyLocationButton={false}
+            initialRegion={{
+              latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
+              longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+            // provider={PROVIDER_GOOGLE}
+          />
+          {/* <SearchBar /> */}
+          <TouchableOpacity 
+              style={styles.myLocationButton}
+              onPress={handleRecenterMap}
+            >
+              <Ionicons name="locate" size={24} color="#007AFF" />
+            </TouchableOpacity>
+        </>
       )}
-      <BottomSheetContainer/>
-
+      <BottomSheetContainer mapRef={mapRef}/>
     </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -146,6 +150,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: deviceHeight,
+  },
+  myLocationButton: {
+    position: "absolute",
+    bottom: 160, // Positioned above the bottom sheet
+    right: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 30,
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 
