@@ -21,7 +21,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 const deviceHeight = Dimensions.get("window").height;
-const deviceWidth = Dimensions.get("window").width;
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   latitude: 1.347064,
@@ -91,7 +90,7 @@ const GoogleMapView: React.FC = () => {
     // Fade out when above 40%
     const opacity = interpolate(
       bottomSheetPosition.value,
-      [maxBottomSheetHeight, maxBottomSheetHeight - 200], // Adjust range to smooth transition
+      [maxBottomSheetHeight, maxBottomSheetHeight - 100], // Adjust range to smooth transition
       [1, 0], 
       Extrapolate.CLAMP
     );
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     right: 15,
-    bottom: 380,
+    bottom: 395,
   },
 });
 
