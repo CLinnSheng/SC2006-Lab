@@ -1,18 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Button,
-} from "react-native";
-import BottomSheet, {
-  BottomSheetView,
-  BottomSheetScrollView,
-  BottomSheetTextInput,
-} from "@gorhom/bottom-sheet";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { StyleSheet, Dimensions } from "react-native";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { SharedValue, useSharedValue } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
 
@@ -57,7 +45,6 @@ const BottomSheetContainer = ({
       animatedPosition={bottomSheetPosition}
     >
       <BottomSheetView>
-
         <GoogleSearchBar
           onFocusExpand={expandBottomSheet}
           onCancelPress={collapseBottomSheet}

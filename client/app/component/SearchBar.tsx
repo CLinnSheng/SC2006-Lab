@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-// In SearchBar.tsx (renamed from GooglePlacesInput.tsx)
 const GoogleSearchBar = ({
   onFocusExpand,
   onCancelPress,
@@ -19,11 +18,17 @@ const GoogleSearchBar = ({
   onCancelPress: () => void;
 }) => {
   const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const autoCompleteRef = useRef<any>(null);
 
   const handleFocus = () => {
     console.log("Search bar focused");
     onFocusExpand(); // Trigger bottom sheet expansion to 93%
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
   };
 
   const handleCancelPress = () => {
@@ -34,6 +39,15 @@ const GoogleSearchBar = ({
     console.log("Cancel pressed");
     onCancelPress(); // Trigger bottom sheet collapse to 40%
     Keyboard.dismiss();
+    setIsFocused(false);
+  };
+
+  const handleClearPress = () => {
+    setInputValue("");
+    if (autoCompleteRef.current) {
+      autoCompleteRef.current.setAddressText("");
+    }
+    console.log("X pressed");
   };
 
   return (
@@ -50,8 +64,10 @@ const GoogleSearchBar = ({
         onPress={(data) => console.log(data)}
         textInputProps={{
           onFocus: handleFocus,
+          onBlur: handleBlur,
           placeholderTextColor: "grey",
           onChangeText: setInputValue,
+          clearButtonMode: "never",
         }}
         query={{
           key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
@@ -62,12 +78,20 @@ const GoogleSearchBar = ({
           textInput: styles.searchInput,
         }}
       />
-      {inputValue.length > 0 && (
+      {/*Clear button*/}
+      {isFocused && (
         <TouchableOpacity
           onPress={handleCancelPress}
           style={styles.cancelButton}
         >
           <Text style={styles.cancelText}>Cancel</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* 'X' Button */}
+      {inputValue.length > 0 && (
+        <TouchableOpacity onPress={handleClearPress} style={styles.clearButton}>
+          <Ionicons name="close-circle" size={20} color="#A0A0A0" />
         </TouchableOpacity>
       )}
     </View>
@@ -114,6 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#007AFF",
     fontWeight: "500",
+  },
+  clearButton: {
+    position: "absolute",
+    right: 20, // Adjust to place 'X' inside the input
+    top: 30,
+    zIndex: 1,
   },
 });
 export default GoogleSearchBar;
