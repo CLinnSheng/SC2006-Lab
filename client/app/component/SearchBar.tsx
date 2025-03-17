@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import "react-native-get-random-values";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // In SearchBar.tsx (renamed from GooglePlacesInput.tsx)
 const GoogleSearchBar = () => {
   return (
+
     <View style={styles.searchBarContainer}>
-      {/* <View style={styles.inputWrapper}> */}
       <Ionicons
         name="search"
         size={20}
@@ -16,10 +16,11 @@ const GoogleSearchBar = () => {
         style={styles.searchIcon}
       />
       <GooglePlacesAutocomplete
-        // ref={googlePlacesRef}
         placeholder="Search Maps"
-        onPress={(data) => {
-          console.log(data);
+        onPress={(data) => console.log(data)}
+        textInputProps={{
+          onFocus: () => console.log("Search bar focused"),
+          placeholderTextColor: "grey"
         }}
         query={{
           key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
@@ -31,7 +32,6 @@ const GoogleSearchBar = () => {
           textInputContainer: styles.inputContainer,
         }}
       />
-      {/* </View> */}
     </View>
   );
 };
@@ -40,11 +40,8 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     position: "absolute",
     width: "90%",
-    backgroundColor: "#F5F5F7", // Apple-like background
-    shadowColor: "#000", // Subtle shadow for depth
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.05,
     paddingHorizontal: 10, // Inner padding
     top: -20, // Place below status bar
   },
@@ -54,6 +51,7 @@ const styles = StyleSheet.create({
     top: 41,
     transform: [{ translateY: -10 }], // Center vertically
     zIndex: 1, // Place icon on top
+    pointerEvents: "none" // Allow touches to pass through
   },
   inputContainer: {
     flex: 1,
