@@ -22,20 +22,27 @@ const BottomSheetContainer = ({
   mapRef,
   bottomSheetPosition,
 }: {
-  mapRef: React.RefObject<any>,
+  mapRef: React.RefObject<any>;
   bottomSheetPosition: SharedValue<number>;
 }) => {
-  const bottomSheetRef = useRef(null);
-  const googlePlacesRef = useRef(null);
-
-  // State
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
+
+  const expandBottomSheet = () => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.snapToIndex(3);
+    }
+  };
+
+  const collapseBottomSheet = () => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.snapToIndex(2);
+    }
+  };
 
   return (
     <BottomSheet
@@ -50,16 +57,11 @@ const BottomSheetContainer = ({
       animatedPosition={bottomSheetPosition}
     >
       <BottomSheetView>
-        {/* <GooglePlacesAutocomplete
-          ref={googlePlacesRef}
-          placeholder="Search Maps"
-          // onPress={handlePlaceSelected}
-          query={{
-            key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
-            language: "en",
-          }}
-        /> */}
-        <GoogleSearchBar />
+
+        <GoogleSearchBar
+          onFocusExpand={expandBottomSheet}
+          onCancelPress={collapseBottomSheet}
+        />
       </BottomSheetView>
     </BottomSheet>
   );
@@ -67,7 +69,7 @@ const BottomSheetContainer = ({
 
 const styles = StyleSheet.create({
   container: {
-    // position: "absolute",
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
