@@ -14,6 +14,8 @@ import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   AnimatedRef,
+  Extrapolate,
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
@@ -86,8 +88,17 @@ const GoogleMapView: React.FC = () => {
         ? 0 // Keep static at 40% and above
         : (bottomSheetPosition.value - maxBottomSheetHeight) * 1; // Move downward dynamically
 
+    // Fade out when above 40%
+    const opacity = interpolate(
+      bottomSheetPosition.value,
+      [maxBottomSheetHeight, maxBottomSheetHeight - 200], // Adjust range to smooth transition
+      [1, 0], 
+      Extrapolate.CLAMP
+    );
+    
     return {
       transform: [{ translateY }],
+      opacity,
     };
   });
 
