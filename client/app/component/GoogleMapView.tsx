@@ -12,6 +12,11 @@ import {
 import * as Location from "expo-location";
 import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, {
+  AnimatedRef,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -36,7 +41,6 @@ const GoogleMapView: React.FC = () => {
 
   // Set up a location subscription when the component mounts
   useEffect(() => {
-
     (async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -71,40 +75,58 @@ const GoogleMapView: React.FC = () => {
     }
   };
 
+  const bottomSheetPosition = useSharedValue<number>(0); // Shared value for BottomSheet position
+  const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
+
+  // Animate the button to stay above the BottomSheet
+  const animatedButtonStyle = useAnimatedStyle(() => {
+    // Restrict movement within 10% to 40% range
+    const translateY =
+      bottomSheetPosition.value <= maxBottomSheetHeight
+        ? 0 // Keep static at 40% and above
+        : (bottomSheetPosition.value - maxBottomSheetHeight) * 1; // Move downward dynamically
+
+    return {
+      transform: [{ translateY }],
+    };
+  });
+
   return (
-      <View style={styles.container}>
-        {Platform.OS === "android" && (
-          <StatusBar translucent backgroundColor="transparent" />
-        )}
-        {loading ? (
-          <View style={[styles.loadingContainer]}>
-            <ActivityIndicator size="large" color="black" />
-          </View>
-        ) : (
-          <>
-            <MapView
-              ref={mapRef}
-              style={styles.map}
-              showsUserLocation
-              showsMyLocationButton={false}
-              initialRegion={{
-                latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
-                longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005,
-              }}
-              // provider={PROVIDER_GOOGLE}
-            />
-            <TouchableOpacity
-              style={styles.myLocationButton}
-              onPress={handleRecenterMap}
-            >
+    <View style={styles.container}>
+      {Platform.OS === "android" && (
+        <StatusBar translucent backgroundColor="transparent" />
+      )}
+      {loading ? (
+        <View style={[styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
+        <>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            showsUserLocation
+            showsMyLocationButton={false}
+            initialRegion={{
+              latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
+              longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+            // provider={PROVIDER_GOOGLE}
+          />
+          <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
+            <TouchableOpacity onPress={handleRecenterMap}>
               <Ionicons name="locate" size={24} color="#007AFF" />
             </TouchableOpacity>
-            <BottomSheetContainer mapRef={mapRef} />
-          </>
-        )}
-      </View>
+          </Animated.View>
+          <BottomSheetContainer
+            mapRef={mapRef}
+            bottomSheetPosition={bottomSheetPosition}
+          />
+        </>
+      )}
+    </View>
   );
 };
 
@@ -114,7 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // position: "relative",
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -126,8 +147,6 @@ const styles = StyleSheet.create({
   },
   myLocationButton: {
     position: "absolute",
-    bottom: 100, // Positioned above the bottom sheet
-    right: 16,
     backgroundColor: "#FFFFFF",
     borderRadius: 30,
     width: 48,
@@ -139,6 +158,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+    right: 15,
+    bottom: 380,
   },
 });
 

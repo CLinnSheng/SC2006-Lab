@@ -15,22 +15,27 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { SharedValue, useSharedValue } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
-const BottomSheetContainer = ({ mapRef }: { mapRef: React.RefObject<any> }) => {
+const BottomSheetContainer = ({
+  mapRef,
+  bottomSheetPosition,
+}: {
+  mapRef: React.RefObject<any>,
+  bottomSheetPosition: SharedValue<number>;
+}) => {
   const bottomSheetRef = useRef(null);
   const googlePlacesRef = useRef(null);
 
   // State
-  const [expanded, setExpanded] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
-    setExpanded(index > 0);
   }, []);
 
   return (
@@ -43,19 +48,9 @@ const BottomSheetContainer = ({ mapRef }: { mapRef: React.RefObject<any> }) => {
       backgroundStyle={{ backgroundColor: "#F5F5F7" }}
       enablePanDownToClose={false}
       enableOverDrag={false}
+      animatedPosition={bottomSheetPosition}
     >
       <BottomSheetView>
-        {/* <BottomSheetTextInput
-          placeholder="Search"
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setIsSearchFocused(false)}
-          style={{
-            backgroundColor: "#fff",
-            margin: 16,
-            padding: 8,
-            borderRadius: 10,
-          }}
-        /> */}
         <GooglePlacesAutocomplete
           ref={googlePlacesRef}
           placeholder="Search Maps"
