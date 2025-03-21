@@ -1,14 +1,18 @@
 // index.tsx
-import React from "react";
+import React, { useState } from "react";
 import GoogleMapView from "./component/GoogleMapView";
-import BottomSheetContainer from "./component/BottomSheetContainer";
-import { Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
+import { DEFAULT_LOCATION, UserLocationContext } from "./context/userLocation";
+import * as Location from "expo-location";
 
 const App: React.FC = () => {
+  const [location, setLocation] = useState<Location.LocationObjectCoords>(DEFAULT_LOCATION);
   return (
     <GestureHandlerRootView style={styles.container}>
-      <GoogleMapView />
+      <UserLocationContext.Provider value={{ location, setLocation }}>
+        <GoogleMapView />
+      </UserLocationContext.Provider>
     </GestureHandlerRootView>
   );
 };

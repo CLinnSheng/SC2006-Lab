@@ -8,9 +8,23 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
+type Server struct {
+	App *fiber.App
+}
+
+func NewServer() *Server {
+	return &Server{
+		App: fiber.New(fiber.Config{
+			AppName:       "SweetSpot v1.0",
+			ServerHeader:  "Fiber",
+			CaseSensitive: true,
+		}),
+	}
+}
+
 func Settings(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
-		AllowHeaders:     "Authorization, Content-Type, Origin, Accept", // List of request header that can be use when making a request
+		AllowHeaders: "Authorization, Content-Type, Origin, Accept", // List of request header that can be use when making a request
 		AllowOrigins: "*",
 	}),
 		limiter.New(limiter.Config{

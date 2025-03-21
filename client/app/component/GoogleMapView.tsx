@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import {
   Dimensions,
@@ -13,13 +13,13 @@ import * as Location from "expo-location";
 import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
-  AnimatedRef,
   Extrapolate,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-
+import { UserLocationContext } from "../context/userLocation";
+import NewNearByCarPark from "../utils/carParkAvaiApi";
 const deviceHeight = Dimensions.get("window").height;
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
@@ -33,14 +33,33 @@ const DEFAULT_LOCATION: Location.LocationObjectCoords = {
 };
 
 const GoogleMapView: React.FC = () => {
-  const [location, setLocation] =
-    useState<Location.LocationObjectCoords | null>(null);
+  const { location, setLocation } = useContext(UserLocationContext); // Use context instead of local state
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const mapRef = useRef<MapView | null>(null);
 
-  // Set up a location subscription when the component mounts
+  const getNearByCarPark = () => {
+    const data = {
+      includedTypes: ["parking", "electric_vehicle_charging_station"],
+      locationRestriction: {
+        circle: {
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          radius: 5000.0,
+        },
+      },
+    };
+    NewNearByCarPark(data)
+    .then((res: any) => {
+      console.log(res);
+      console.log("Nearby Car Park");
+    })
+    .catch((err) => console.error("Error fetching car parks:", err));
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -56,9 +75,9 @@ const GoogleMapView: React.FC = () => {
         });
         setLocation(location.coords);
         console.log(location);
+        setTimeout(() => getNearByCarPark(), 0);
       } catch (error) {
         setErrorMsg("Failed to get current position/location");
-        setLocation(DEFAULT_LOCATION);
       } finally {
         setLoading(false);
       }
@@ -76,12 +95,11 @@ const GoogleMapView: React.FC = () => {
     }
   };
 
-  const bottomSheetPosition = useSharedValue<number>(0); // Shared value for BottomSheet position
+  const bottomSheetPosition = useSharedValue<number>(0);
   const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
 
   // Animate the button to stay above the BottomSheet
   const animatedButtonStyle = useAnimatedStyle(() => {
-    // Restrict movement within 10% to 40% range
     const translateY =
       bottomSheetPosition.value <= maxBottomSheetHeight
         ? 0 // Keep static at 40% and above
@@ -91,10 +109,10 @@ const GoogleMapView: React.FC = () => {
     const opacity = interpolate(
       bottomSheetPosition.value,
       [maxBottomSheetHeight, maxBottomSheetHeight - 100], // Adjust range to smooth transition
-      [1, 0], 
+      [1, 0],
       Extrapolate.CLAMP
     );
-    
+
     return {
       transform: [{ translateY }],
       opacity,
@@ -130,10 +148,7 @@ const GoogleMapView: React.FC = () => {
               <Ionicons name="locate" size={24} color="#007AFF" />
             </TouchableOpacity>
           </Animated.View>
-          <BottomSheetContainer
-            mapRef={mapRef}
-            bottomSheetPosition={bottomSheetPosition}
-          />
+          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} />
         </>
       )}
     </View>
