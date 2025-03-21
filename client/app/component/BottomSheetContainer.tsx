@@ -1,21 +1,23 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Keyboard } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { SharedValue } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
 
 const BottomSheetContainer = ({
-  mapRef,
   bottomSheetPosition,
 }: {
-  mapRef: React.RefObject<any>;
   bottomSheetPosition: SharedValue<number>;
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
+  const searchBarRef = useRef<{ clearInput: () => void }>(null);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
+    if (index <= 2) {
+      Keyboard.dismiss();
+    }
   }, []);
 
   const expandBottomSheet = () => {
@@ -35,9 +37,11 @@ const BottomSheetContainer = ({
 
     // Prevent dragging below 10%
     if (toIndex === 0) {
-      // If the user tries to drag below 10%, stop the drag and keep the sheet at the current position
       bottomSheetRef.current?.snapToIndex(1); // Snap back to 40% (or any other desired index)
       console.log("SNAPBACK");
+    }
+    if (toIndex <= 2) {
+      searchBarRef.current?.clearInput();
     }
   }, []);
 
@@ -56,6 +60,7 @@ const BottomSheetContainer = ({
     >
       <BottomSheetView>
         <GoogleSearchBar
+          ref={searchBarRef}
           onFocusExpand={expandBottomSheet}
           onCancelPress={collapseBottomSheet}
         />
