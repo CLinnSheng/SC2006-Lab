@@ -1,10 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { SharedValue, useSharedValue } from "react-native-reanimated";
+import { SharedValue } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
-
-const { width } = Dimensions.get("window");
 
 const BottomSheetContainer = ({
   mapRef,
@@ -32,6 +30,17 @@ const BottomSheetContainer = ({
     }
   };
 
+  const handleAnimate = useCallback((fromIndex: number, toIndex: number) => {
+    console.log("handleAnimate", fromIndex, toIndex);
+
+    // Prevent dragging below 10%
+    if (toIndex === 0) {
+      // If the user tries to drag below 10%, stop the drag and keep the sheet at the current position
+      bottomSheetRef.current?.snapToIndex(1); // Snap back to 40% (or any other desired index)
+      console.log("SNAPBACK");
+    }
+  }, []);
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -43,6 +52,7 @@ const BottomSheetContainer = ({
       enablePanDownToClose={false}
       enableOverDrag={false}
       animatedPosition={bottomSheetPosition}
+      onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
     >
       <BottomSheetView>
         <GoogleSearchBar

@@ -19,12 +19,14 @@ func main() {
 		ServerHeader:  "Fiber",
 		CaseSensitive: true,
 	})
+
 	// Setting up the Fibre middleware
 	middleware.Settings(app)
 
-	// app.Get("/", func(c fiber.Ctx) error {
-	// 	return c.SendString("TESTING")
-	// })
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("TESTING")
+	})
+
 	external_services.GetDataGovDataWeather()
 	// testing, err := external_services.GetDataGovDataWeather()
 	// if err != nil {
