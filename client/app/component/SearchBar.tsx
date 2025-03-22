@@ -1,14 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import "react-native-get-random-values";
-import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableOpacity, View, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import TimePicker from './Time'; // Import the TimePicker component
+import Filter from './Filter'; // Import the Filter component
 
 const GoogleSearchBar = ({
   onFocusExpand,
@@ -19,6 +14,9 @@ const GoogleSearchBar = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [startTime, setStartTime] = useState("08:00 AM"); // Default start time
+  const [endTime, setEndTime] = useState("09:00 AM"); // Default end time
+  const [showFilter, setShowFilter] = useState(false); // State to control visibility of Filter
   const autoCompleteRef = useRef<any>(null);
 
   const handleFocus = () => {
@@ -50,6 +48,11 @@ const GoogleSearchBar = ({
     console.log("X pressed");
   };
 
+  const toggleFilter = (value: boolean) => {
+    console.log("Filter toggled:", value); // Debugging
+    setShowFilter(value); // State change to toggle Filter visibility
+  };
+
   return (
     <View style={styles.searchBarContainer}>
       <Ionicons
@@ -78,7 +81,7 @@ const GoogleSearchBar = ({
           textInput: styles.searchInput,
         }}
       />
-      {/*Clear button*/}
+      {/* Clear button */}
       {isFocused && (
         <TouchableOpacity
           onPress={handleCancelPress}
@@ -94,6 +97,29 @@ const GoogleSearchBar = ({
           <Ionicons name="close-circle" size={20} color="#A0A0A0" />
         </TouchableOpacity>
       )}
+
+      {/* Time Picker Component */}
+      <TimePicker
+        startTime={startTime}
+        endTime={endTime}
+        onStartTimeChange={setStartTime}
+        onEndTimeChange={setEndTime}
+      />
+
+      {/* Toggle Switch to show/hide Filter */}
+      <View style={styles.filterToggleContainer}>
+        <Text>Show Filter</Text>
+        <Switch
+          value={showFilter}
+          onValueChange={(value) => {
+            console.log("Switch value changed to:", value);
+            toggleFilter(value);
+          }}
+        />
+      </View>
+
+      {/* Conditionally render Filter based on showFilter */}
+      {showFilter && <Filter />}
     </View>
   );
 };
@@ -110,8 +136,8 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: "relative",
-    left: 8, // Align inside input
-    top: 41,
+    left: 5, // Align inside input
+    top: 30,
     transform: [{ translateY: -10 }], // Center vertically
     zIndex: 1, // Place icon on top
     pointerEvents: "none", // Allow touches to pass through
@@ -145,5 +171,12 @@ const styles = StyleSheet.create({
     top: 30,
     zIndex: 1,
   },
+  filterToggleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 100,
+    justifyContent: "space-evenly",
+  },
 });
+
 export default GoogleSearchBar;

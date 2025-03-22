@@ -1,14 +1,20 @@
 // index.tsx
-import React from "react";
+import React, { useState } from "react";
 import GoogleMapView from "./component/GoogleMapView";
+import LaunchScreen from "./component/LaunchScreen";
 import BottomSheetContainer from "./component/BottomSheetContainer";
 import { Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
+import 'react-native-get-random-values';
+
+
 
 const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <GestureHandlerRootView style={styles.container}>
-      <GoogleMapView />
+      {isLoading ? <LaunchScreen onFinish={() => setIsLoading(false)} /> : <GoogleMapView />}
     </GestureHandlerRootView>
   );
 };
