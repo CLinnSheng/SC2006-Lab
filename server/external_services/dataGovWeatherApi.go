@@ -2,7 +2,7 @@ package external_services
 
 import (
 	"encoding/json"
-	"fmt"
+	_ "fmt"
 	"io"
 	"log"
 	"net/http"
@@ -12,12 +12,12 @@ import (
 
 func GetDataGovDataWeather() {
 	log.Println("Fetching Weather Information from DataGov")
-	resp, err := http.Get("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast") // Make an HTTP GET request to the specified URL
-	if err != nil {                                                                        // Check if there was an error making the request
+	resp, err := http.Get("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast") 
+	if err != nil {                                                                        
 		log.Fatalf("Fail to fetch URL: %v", err)
 	}
 
-	body, err := io.ReadAll(resp.Body) // Read the response body as a slice of bytes ([]byte)
+	body, err := io.ReadAll(resp.Body) 
 	if err != nil {
 		log.Fatalf("Fail to read response body: %v", err)
 	}
@@ -54,13 +54,13 @@ func GetDataGovDataWeather() {
 	}
 	log.Println("Processed Weather Information")
 
-	for name, info := range areaData {
-		fmt.Printf("Area: %s\n", name)
-		fmt.Printf("  Latitude: %f\n", info.Latitude)
-		fmt.Printf("  Longitude: %f\n", info.Longitude)
-		fmt.Printf("  Weather: %s\n\n", info.Weather)
-	}
-	log.Println("Weather Information Printed")
+	// for name, info := range areaData {
+	// 	fmt.Printf("Area: %s\n", name)
+	// 	fmt.Printf("  Latitude: %f\n", info.Latitude)
+	// 	fmt.Printf("  Longitude: %f\n", info.Longitude)
+	// 	fmt.Printf("  Weather: %s\n\n", info.Weather)
+	// }
+	// log.Println("Weather Information Printed")
 
 	defer func() {
 		log.Println("Closing response body for Weather Information")

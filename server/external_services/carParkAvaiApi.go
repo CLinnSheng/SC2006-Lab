@@ -62,6 +62,7 @@ func InitCarParkInformation() {
 	if err != nil {
 		log.Fatalf("Fail to unmarshal JSON: %v", err)
 	}
+	// log.Println(DataGovCarParkAvaiResp_Unmarshal)
 	log.Println("Fetched Car Park Information from DataGov (Car Park Availability)")
 
 	// DataGov Second Api Call, Car Park Info
@@ -71,18 +72,24 @@ func InitCarParkInformation() {
 		log.Fatalf("Fail to fetch URL: %v", err)
 	}
 
+	DataGovCarParkInfoResp_Body, err := io.ReadAll(DataGovCarParkInfoResp.Body)
+	if err != nil {
+		log.Fatalf("Fail to read response body: %v", err)
+	}
+
 	var DataGovCarParkInfoResp_Unmarshal model.DataGov_Api_CarParkInfo_Resp
-	err = json.Unmarshal(DataGovCarParkAvaiResp_Body, &DataGovCarParkInfoResp_Unmarshal)
+	err = json.Unmarshal(DataGovCarParkInfoResp_Body, &DataGovCarParkInfoResp_Unmarshal)
 	if err != nil {
 		log.Fatalf("Fail to unmarshal JSON: %v", err)
 	}
 	log.Println("Fetched Car Park Information from DataGov (Car Park Info)")
 
-	carPark := make(map[string]model.CarPark)
+	carPark := make(map[string]*model.CarPark)
+
 	// process LTA api
 	log.Println("Processing LTA Car Park Information")
 	for _, info := range LTARes_Unmarshal.Value {
-		if (info.Location == "") {
+		if info.Location == "" {
 			continue
 		}
 
@@ -90,13 +97,13 @@ func InitCarParkInformation() {
 		latitude, _ := strconv.ParseFloat(latLon[0], 64)
 		longitude, _ := strconv.ParseFloat(latLon[1], 64)
 
-		carPark[info.CarparkID] = model.CarPark{
+		carPark[info.CarparkID] = &model.CarPark{
 			CarParkID:     info.CarparkID,
 			Address:       info.Development,
 			Longitude:     longitude,
 			Latitude:      latitude,
 			LotType:       info.LotType,
-			AvailableLots: info.AvailableLots,
+			AvailableLots: strconv.Itoa(info.AvailableLots),
 		}
 
 		temp_carpark := carPark[info.CarparkID]
@@ -112,17 +119,14 @@ func InitCarParkInformation() {
 	// process DataGov api for carpark availability
 	log.Println("Processing DataGov Car Park Information (Car Park Availability)")
 	for _, carpark_data := range DataGovCarParkAvaiResp_Unmarshal.Items[0].CarparkData {
-		totalLots, _ := strconv.Atoi(carpark_data.CarparkInfo[0].TotalLots)
-		lotsAvailable, _ := strconv.Atoi(carpark_data.CarparkInfo[0].LotsAvailable)
-
 		if existsMap, ok := carPark[carpark_data.CarparkNumber]; ok {
-			existsMap.TotalLots = totalLots
+			existsMap.TotalLots = carpark_data.CarparkInfo[0].TotalLots
 		} else {
-			carPark[carpark_data.CarparkNumber] = model.CarPark{
+			carPark[carpark_data.CarparkNumber] = &model.CarPark{
 				CarParkID:     carpark_data.CarparkNumber,
-				TotalLots:     totalLots,
+				TotalLots:     carpark_data.CarparkInfo[0].TotalLots,
 				LotType:       carpark_data.CarparkInfo[0].LotType,
-				AvailableLots: lotsAvailable,
+				AvailableLots: carpark_data.CarparkInfo[0].LotsAvailable,
 			}
 		}
 	}
@@ -130,9 +134,26 @@ func InitCarParkInformation() {
 
 	// process DataGiv api for carpark info
 	log.Println("Processing DataGov Car Park Information (Car Park Info)")
+	svy21_Converter := utils.NewSVY21()
+
 	for _, carpark_info := range DataGovCarParkInfoResp_Unmarshal.Result.Records {
-		if carPark[carpark_info.CarparkNumber].Longitude == 0 && carPark[carpark_info.CarparkNumber].Latitude == 0 {
-			svy21_Converter := utils.NewSVY21()
+		// log.Println("TESTING")
+		if (carPark[carpark_info.CarparkNumber] == nil) {
+			carPark[carpark_info.CarparkNumber] = &model.CarPark{
+				CarParkID: carpark_info.CarparkNumber,
+				Address: carpark_info.Address,
+				CarParkType: carpark_info.CarParkType,
+			}
+
+			xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
+			yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)
+			lat, lon := svy21_Converter.ToLatLon(yCoord, xCoord)
+
+			temp_carpark := carPark[carpark_info.CarparkNumber]
+			temp_carpark.Latitude = lat
+			temp_carpark.Longitude = lon
+			
+		} else if carPark[carpark_info.CarparkNumber].Longitude == 0 && carPark[carpark_info.CarparkNumber].Latitude == 0 {
 			xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
 			yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)
 			lat, lon := svy21_Converter.ToLatLon(yCoord, xCoord)
@@ -144,17 +165,17 @@ func InitCarParkInformation() {
 			temp_carpark.CarParkType = carpark_info.CarParkType
 		}
 	}
+	
 	log.Println("Processed DataGov Car Park Information (Car Park Info)")
-
 	for carParkId, carParkInfo := range carPark {
 		fmt.Printf("CarParkID: %s\n", carParkId)
 		fmt.Printf("Address: %s\n", carParkInfo.Address)
 		fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
 		fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
 		fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
-		fmt.Printf("AvailableLots: %d\n", carParkInfo.AvailableLots)
+		fmt.Printf("AvailableLots: %s\n", carParkInfo.AvailableLots)
 		fmt.Printf("LotType: %s\n", carParkInfo.LotType)
-		fmt.Printf("TotalLots: %d\n", carParkInfo.TotalLots)
+		fmt.Printf("TotalLots: %s\n", carParkInfo.TotalLots)
 		fmt.Printf("-----------------------------------\n")
 	}
 	log.Println("Car Park Information Processed")

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,12 @@ func NewServer() *Server {
 }
 
 func Settings(app *fiber.App) {
+	app.Use(func(c *fiber.Ctx) error {
+		protocol := c.Protocol()
+		log.Printf("Incoming request: %s %s", protocol, c.OriginalURL())
+		return c.Next()
+	})
+	
 	app.Use(cors.New(cors.Config{
 		AllowHeaders: "Authorization, Content-Type, Origin, Accept", // List of request header that can be use when making a request
 		AllowOrigins: "*",

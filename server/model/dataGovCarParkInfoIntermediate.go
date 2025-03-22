@@ -11,7 +11,7 @@ type DataGov_Api_CarParkInfo_Resp struct {
 		} `json:"fields"`
 		Records []struct {
 			Id int `json:"_id"`
-			CarparkNumber string `json:"carpark_number"`
+			CarparkNumber string `json:"car_park_no"`
 			Address string `json:"address"`
 			XCoord string `json:"x_coord"`
 			YCoord string `json:"y_coord"`
