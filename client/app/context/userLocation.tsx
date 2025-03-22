@@ -11,6 +11,9 @@ interface UserLocationContextValue {
 export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   latitude: 1.347064,
   longitude: 103.6782468,
+  // ev default location
+  //   latitude: 1.3192389,
+  //   longitude: 103.6864955,
   altitude: 0,
   accuracy: 0,
   altitudeAccuracy: 0,
@@ -19,7 +22,6 @@ export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
 };
 
 export const UserLocationContext = createContext<UserLocationContextValue>({
-    location: DEFAULT_LOCATION,
-    setLocation: () => {},
-  });
-
+  location: DEFAULT_LOCATION,
+  setLocation: () => {},
+});

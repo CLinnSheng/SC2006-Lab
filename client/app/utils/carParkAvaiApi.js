@@ -8,7 +8,7 @@ const config = {
     "Content-Type": "application/json",
     "X-Goog-Api-Key": API_KEY,
     "X-Goog-FieldMask":
-      "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.parkingOptions",
+      "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.parkingOptions,places.shortFormattedAddress",
   },
 };
 
