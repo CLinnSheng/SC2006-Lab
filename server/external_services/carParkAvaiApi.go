@@ -2,7 +2,8 @@ package external_services
 
 import (
 	"encoding/json"
-	_"fmt"
+	"fmt"
+	_ "fmt"
 	"io"
 	"log"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 	"github.com/SC2006-Lab/MobileAppProject/utils"
 )
 
-func InitCarParkInformation() map[string]*model.CarPark {
+func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 	envConfig := utils.GetEnvConfig()
 	client := &http.Client{}
 
@@ -83,8 +84,6 @@ func InitCarParkInformation() map[string]*model.CarPark {
 		log.Fatalf("Fail to unmarshal JSON: %v", err)
 	}
 	log.Println("Fetched Car Park Information from DataGov (Car Park Info)")
-
-	carPark := make(map[string]*model.CarPark)
 
 	// process LTA api
 	log.Println("Processing LTA Car Park Information")
@@ -190,21 +189,19 @@ func InitCarParkInformation() map[string]*model.CarPark {
 
 	CleanCarParkInfo(carPark)
 
-	// for carParkId, carParkInfo := range carPark {
-	// 	fmt.Printf("CarParkID: %s\n", carParkId)
-	// 	fmt.Printf("Address: %s\n", carParkInfo.Address)
-	// 	fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
-	// 	fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
-	// 	fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
-	// 	for lottype, lotinfo := range carParkInfo.LotDetails {
-	// 		fmt.Println("LotType: ", lottype)
-	// 		fmt.Printf("\tTotalLots: %s\n", lotinfo.TotalLots)
-	// 		fmt.Printf("\tAvailableLots: %s\n", lotinfo.AvailableLots)
-	// 	}
-	// 	fmt.Printf("-----------------------------------\n")
-	// }
-
-	return carPark
+	for carParkId, carParkInfo := range carPark {
+		fmt.Printf("CarParkID: %s\n", carParkId)
+		fmt.Printf("Address: %s\n", carParkInfo.Address)
+		fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
+		fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
+		fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
+		for lottype, lotinfo := range carParkInfo.LotDetails {
+			fmt.Println("LotType: ", lottype)
+			fmt.Printf("\tTotalLots: %s\n", lotinfo.TotalLots)
+			fmt.Printf("\tAvailableLots: %s\n", lotinfo.AvailableLots)
+		}
+		fmt.Printf("-----------------------------------\n")
+	}
 }
 
 func CleanCarParkInfo (carPark map[string]*model.CarPark) {

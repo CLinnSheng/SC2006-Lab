@@ -13,3 +13,8 @@ type Lot struct {
 	TotalLots     string `json:"totalLots"`
 	AvailableLots string `json:"availableLots"`
 }
+
+
+func NewCarPark() map[string]*CarPark {
+	return make(map[string]*CarPark)
+}

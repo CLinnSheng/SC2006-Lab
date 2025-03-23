@@ -10,14 +10,14 @@ import (
 	"github.com/SC2006-Lab/MobileAppProject/model"
 )
 
-func GetDataGovDataWeather() map[string]model.WeatherAreaInfo{
+func InitWeatherInformation(areaData map[string]*model.WeatherAreaInfo) {
 	log.Println("Fetching Weather Information from DataGov")
-	resp, err := http.Get("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast") 
-	if err != nil {                                                                        
+	resp, err := http.Get("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast")
+	if err != nil {
 		log.Fatalf("Fail to fetch URL: %v", err)
 	}
 
-	body, err := io.ReadAll(resp.Body) 
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("Fail to read response body: %v", err)
 	}
@@ -36,14 +36,12 @@ func GetDataGovDataWeather() map[string]model.WeatherAreaInfo{
 		locationData[area.Name] = area.LabelLocation
 	}
 
-
 	// map to store the data for easy accessing the data of the area
 	// area -> weather information & area information
-	areaData := make(map[string]model.WeatherAreaInfo)
 	for _, forecast := range response.Data.Items[0].Forecasts {
 		location, exists := locationData[forecast.Area]
 		if exists {
-			areaData[forecast.Area] = model.WeatherAreaInfo{
+			areaData[forecast.Area] = &model.WeatherAreaInfo{
 				Name:      forecast.Area,
 				Latitude:  location.Latitude,
 				Longitude: location.Longitude,
@@ -66,5 +64,4 @@ func GetDataGovDataWeather() map[string]model.WeatherAreaInfo{
 		resp.Body.Close()
 	}()
 
-	return areaData
 }

@@ -6,3 +6,7 @@ type WeatherAreaInfo struct {
 	Longitude float64
 	Weather   string
 }
+
+func NewWeatherAreaInfo() map[string]*WeatherAreaInfo {
+	return make(map[string]*WeatherAreaInfo)
+}

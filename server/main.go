@@ -1,13 +1,14 @@
 package main
 
 import (
-
-	"github.com/SC2006-Lab/MobileAppProject/external_services"
+	"github.com/SC2006-Lab/MobileAppProject/data"
 	"github.com/SC2006-Lab/MobileAppProject/middleware"
 )
 
 func main() {
 
+	apiData := data.NewApiData()
+	apiData.Init()
 	go func() {
 		middleware.ServerInit()
 	}()
@@ -16,8 +17,8 @@ func main() {
 	// 	return c.SendString("TESTING")
 	// })
 
-	external_services.GetDataGovDataWeather()
-	external_services.InitCarParkInformation()
+	// external_services.GetDataGovDataWeather()
+	// external_services.InitCarParkInformation()
 
 	select{}
 }
