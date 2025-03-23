@@ -8,10 +8,10 @@ const config = {
     "Content-Type": "application/json",
     "X-Goog-Api-Key": API_KEY,
     "X-Goog-FieldMask":
-      "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.parkingOptions,places.shortFormattedAddress",
+      "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.shortFormattedAddress",
   },
 };
 
-const NewNearByCarPark = (data) => axios.post(BASE_URL, data, config);
+const NearByEVCarPark = (data) => axios.post(BASE_URL, data, config);
 
-export default NewNearByCarPark;
+export default NearByEVCarPark;

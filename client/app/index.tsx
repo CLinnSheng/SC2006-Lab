@@ -3,16 +3,18 @@ import React, { useState } from "react";
 import GoogleMapView from "./component/GoogleMapView";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
-import { DEFAULT_LOCATION, UserLocationContext } from "./context/userLocation";
+import { DEFAULT_LOCATION, UserLocationContext, UserLocationProvider } from "./context/userLocation";
 import * as Location from "expo-location";
 
 const App: React.FC = () => {
-  const [location, setLocation] = useState<Location.LocationObjectCoords>(DEFAULT_LOCATION);
+  // const [location, setLocation] = useState<Location.LocationObjectCoords>(DEFAULT_LOCATION);
   return (
     <GestureHandlerRootView style={styles.container}>
-      <UserLocationContext.Provider value={{ location, setLocation }}>
+      {/* <UserLocationContext.Provider value={{ location, setLocation }}> */}
+      <UserLocationProvider>
         <GoogleMapView />
-      </UserLocationContext.Provider>
+      {/* </UserLocationContext.Provider> */}
+      </UserLocationProvider>
     </GestureHandlerRootView>
   );
 };

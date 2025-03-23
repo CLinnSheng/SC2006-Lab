@@ -19,7 +19,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
-import NewNearByCarPark from "../utils/carParkAvaiApi";
+import NearByEVCarPark from "../utils/evChargingStationAPI";
 const deviceHeight = Dimensions.get("window").height;
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
@@ -33,59 +33,62 @@ const DEFAULT_LOCATION: Location.LocationObjectCoords = {
 };
 
 const GoogleMapView: React.FC = () => {
-  const { location, setLocation } = useContext(UserLocationContext); // Use context instead of local state
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // const { location, setLocation } = useContext(UserLocationContext); // Use context instead of local state
+  // const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const mapRef = useRef<MapView | null>(null);
+  const { location, errorMsg, loading, recenterRefreshLocation } =
+    useContext(UserLocationContext);
 
-  const getNearByCarPark = () => {
-    const data = {
-      includedTypes: ["parking", "electric_vehicle_charging_station"],
-      locationRestriction: {
-        circle: {
-          center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
-          radius: 5000.0,
-        },
-      },
-    };
-    NewNearByCarPark(data)
-    .then((res: any) => {
-      console.log(res);
-      console.log("Nearby Car Park");
-    })
-    .catch((err) => console.error("Error fetching car parks:", err));
-  };
+  // const getNearByCarPark = () => {
+  //   const data = {
+  //     includedTypes: ["electric_vehicle_charging_station"],
+  //     locationRestriction: {
+  //       circle: {
+  //         center: {
+  //           latitude: location.latitude,
+  //           longitude: location.longitude,
+  //         },
+  //         radius: 2000.0,
+  //       },
+  //     },
+  //   };
+  //   NearByEVCarPark(data)
+  //   .then((res: any) => {
+  //     console.log(res);
+  //     console.log("Nearby Car Park");
+  //   })
+  //   .catch((err) => console.error("Error fetching car parks:", err));
+  // };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       let { status } = await Location.requestForegroundPermissionsAsync();
 
-        if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
-          return;
-        }
+  //       if (status !== "granted") {
+  //         setErrorMsg("Permission to access location was denied");
+  //         return;
+  //       }
 
-        let location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-        setLocation(location.coords);
-        console.log(location);
-        setTimeout(() => getNearByCarPark(), 0);
-      } catch (error) {
-        setErrorMsg("Failed to get current position/location");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  //       let location = await Location.getCurrentPositionAsync({
+  //         accuracy: Location.Accuracy.High,
+  //       });
+  //       setLocation(location.coords);
+  //       console.log(location);
+  //       setTimeout(() => getNearByCarPark(), 0);
+  //     } catch (error) {
+  //       setErrorMsg("Failed to get current position/location");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+  // }, []);
 
   const handleRecenterMap = () => {
     if (location) {
+      recenterRefreshLocation();
       mapRef.current?.animateToRegion({
         latitude: location.latitude,
         longitude: location.longitude,
@@ -141,6 +144,7 @@ const GoogleMapView: React.FC = () => {
               latitudeDelta: 0.005,
               longitudeDelta: 0.005,
             }}
+            // customMapStyle={mapViewStyle}
             // provider={PROVIDER_GOOGLE}
           />
           <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
