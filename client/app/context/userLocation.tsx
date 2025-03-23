@@ -14,9 +14,6 @@ import { Alert, Linking } from "react-native";
 export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   latitude: 1.347064,
   longitude: 103.6782468,
-  // ev default location
-  //   latitude: 1.3192389,
-  //   longitude: 103.6864955,
   altitude: 0,
   accuracy: 0,
   altitudeAccuracy: 0,
@@ -34,28 +31,29 @@ interface UserLocationContextValue {
   setLocation: React.Dispatch<
     React.SetStateAction<Location.LocationObjectCoords | null>
   >;
-  errorMsg: string | null;
+  // errorMsg: string | null;
   loading: boolean;
   getNearbyCarParks: () => Promise<void>;
-  refreshLocation: () => Promise<void>;
+  getUserLocation: () => Promise<void>;
   recenterRefreshLocation: () => Promise<void>;
+  evCarParksList: any[];
 }
 
 export const UserLocationContext = createContext<UserLocationContextValue>({
   location: null,
   setLocation: () => {},
-  errorMsg: null,
   loading: true,
   getNearbyCarParks: async () => {},
-  refreshLocation: async () => {},
+  getUserLocation: async () => {},
   recenterRefreshLocation: async () => {},
+  evCarParksList: [],
 });
 
 export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
   const [location, setLocation] =
     useState<Location.LocationObjectCoords | null>(DEFAULT_LOCATION);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [evCarParksList, setEvCarParksList] = useState<any[]>([]);
 
   const showLocationPermissionAlert = () => {
     Alert.alert(
@@ -72,22 +70,22 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const refreshLocation = async () => {
+  const getUserLocation = async () => {
     setLoading(true);
     try {
       let locationData = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      setLocation(locationData.coords);
 
-      console.log("Location refreshed");
+      if (locationData?.coords) {
+        console.log("User Location:", locationData.coords);
+        setLocation(locationData.coords);
+      }
+
+      console.log("User Location Fetched");
       console.log(location);
-      setErrorMsg(null);
     } catch (error) {
-      setErrorMsg("Failed to refresh location");
-      setLocation(DEFAULT_LOCATION);
-
-      console.log("Failed to refresh location");
+      console.warn("Failed to fetch user location");
     } finally {
       setLoading(false);
     }
@@ -118,10 +116,10 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     };
 
     try {
-      const res = await NearByEVCarPark(data);
-      console.log("Nearby Car Park");
-      console.log(res);
-      console.log("Fetched nearby car parks");
+      NearByEVCarPark(data).then((resp: any) => {
+        console.log(JSON.stringify(resp));
+        setEvCarParksList(resp.data?.places);
+      });
     } catch (err) {
       console.error("Error fetching car parks:", err);
     }
@@ -133,19 +131,18 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
         let { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
           setLoading(false);
-          showLocationPermissionAlert();
+          // showLocationPermissionAlert();
           return;
         }
 
-        console.log("Getting current position");
-        await refreshLocation();
+        console.log("Fetching user location");
+        await getUserLocation();
 
         console.log("Getting nearby car parks");
         await getNearbyCarParks();
       } catch (error) {
-        setErrorMsg("Failed to get current position/location");
+        // setErrorMsg("Failed to get current position/location");
       } finally {
         setLoading(false);
       }
@@ -157,11 +154,11 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
       value={{
         location,
         setLocation,
-        errorMsg,
         loading,
         getNearbyCarParks,
-        refreshLocation,
+        getUserLocation,
         recenterRefreshLocation,
+        evCarParksList,
       }}
     >
       {children}

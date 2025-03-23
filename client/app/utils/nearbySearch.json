@@ -1,0 +1,622 @@
+{
+  "data": {
+    "places": [
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "38 Cleantech Loop, Singapore 636741",
+        "location": {
+          "latitude": 1.3530720999999999,
+          "longitude": 103.6914374
+        },
+        "displayName": {
+          "text": "SP Mobility Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "38 Cleantech Loop, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 7,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 5
+            },
+            {
+              "type": "EV_CONNECTOR_TYPE_CCS_COMBO_2",
+              "maxChargeRateKw": 100,
+              "count": 2
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "903 Jurong West Street 91, Singapore 640903",
+        "location": { "latitude": 1.3396256, "longitude": 103.6862563 },
+        "displayName": {
+          "text": "TotalEnergies Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "903 Jurong West Street 91, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 4,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 11,
+              "count": 4
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "Nanyang Link, Singapore",
+        "location": { "latitude": 1.3388779, "longitude": 103.6796256 },
+        "displayName": {
+          "text": "Charge+ Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "Nanyang Link",
+        "evChargeOptions": {
+          "connectorCount": 6,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 11,
+              "count": 6
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "844A Jurong West Street 81, Singapore 641844",
+        "location": { "latitude": 1.3459017, "longitude": 103.69245590000001 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "844A Jurong West Street 81, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 11,
+              "count": 3,
+              "availableCount": 0,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "1 Cleantech Loop, Singapore 637141",
+        "location": {
+          "latitude": 1.3549594999999999,
+          "longitude": 103.6919719
+        },
+        "displayName": {
+          "text": "Greenlots Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "1 Cleantech Loop, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 1,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_J1772",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "967 Jurong West Street 93, Singapore 648967",
+        "location": { "latitude": 1.3409517, "longitude": 103.692748 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "967 Jurong West Street 93, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.360000133514404,
+              "count": 3,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "905 Jurong West Street 91, Singapore 640905",
+        "location": { "latitude": 1.3408835, "longitude": 103.68540759999999 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "905 Jurong West Street 91, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 3,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "909/911 Jurong West Street 91, Singapore 640909",
+        "location": { "latitude": 1.3417729, "longitude": 103.6864428 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "909/911 Jurong West Street 91, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 3,
+              "availableCount": 2,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "975 Jurong West Street 93, Singapore 640975",
+        "location": { "latitude": 1.3404337, "longitude": 103.69338979999999 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "975 Jurong West Street 93, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 3,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "918 Jurong West Street 91, Singapore 640918",
+        "location": { "latitude": 1.340849, "longitude": 103.68740799999999 },
+        "displayName": {
+          "text": "Charge+ Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "918 Jurong West Street 91, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 12,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 12,
+              "availableCount": 11,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "960 Jurong West Street 92, Singapore 640960",
+        "location": {
+          "latitude": 1.3411826999999998,
+          "longitude": 103.6912806
+        },
+        "displayName": {
+          "text": "Charge+ Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "960 Jurong West Street 92, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 6,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 6,
+              "availableCount": 5,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "3 Cleantech Loop, Singapore 637143",
+        "location": {
+          "latitude": 1.3548289999999998,
+          "longitude": 103.6937729
+        },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "3 Cleantech Loop, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 4,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 22,
+              "count": 4,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "511 Upper Jurong Rd, Singapore 638366",
+        "location": {
+          "latitude": 1.3297307999999999,
+          "longitude": 103.6811683
+        },
+        "displayName": {
+          "text": "Hiconics Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "511 Upper Jurong Rd, Singapore"
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "1 Cleantech Loop, Singapore 637141",
+        "location": { "latitude": 1.355245, "longitude": 103.692588 },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "1 Cleantech Loop, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 4,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 22,
+              "count": 4,
+              "availableCount": 2,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "Jurong West Street 93, Block 975, Singapore 640975",
+        "location": { "latitude": 1.3413384, "longitude": 103.69334640000001 },
+        "displayName": {
+          "text": "CDG ENGIE Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "Jurong West Street 93, Block 975, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 3,
+              "availableCount": 1,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "821A Jurong West Street 81, Singapore 641821",
+        "location": { "latitude": 1.346617, "longitude": 103.694839 },
+        "displayName": {
+          "text": "Charge+ Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "821A Jurong West Street 81, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 4,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 3.700000047683716,
+              "count": 4,
+              "availableCount": 4,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "3 Cleantech Loop, Singapore 637143",
+        "location": { "latitude": 1.355569, "longitude": 103.69361 },
+        "displayName": {
+          "text": "Greenlots Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "3 Cleantech Loop, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 1,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_J1772",
+              "maxChargeRateKw": 7.400000095367432,
+              "count": 1
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "865A Jurong West Street 81, Singapore 641865",
+        "location": {
+          "latitude": 1.3503296999999999,
+          "longitude": 103.69509099999999
+        },
+        "displayName": {
+          "text": "CDG Engie Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "865A Jurong West Street 81, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 3,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 11,
+              "count": 3,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      },
+      {
+        "types": [
+          "electric_vehicle_charging_station",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "702A Jurong West Street 71, Singapore 641702",
+        "location": { "latitude": 1.341618, "longitude": 103.69506899999999 },
+        "displayName": {
+          "text": "Charge+ Charging Station",
+          "languageCode": "en"
+        },
+        "shortFormattedAddress": "702A Jurong West Street 71, Singapore",
+        "evChargeOptions": {
+          "connectorCount": 6,
+          "connectorAggregation": [
+            {
+              "type": "EV_CONNECTOR_TYPE_TYPE_2",
+              "maxChargeRateKw": 6.599999904632568,
+              "count": 6,
+              "availableCount": 3,
+              "outOfServiceCount": 0,
+              "availabilityLastUpdateTime": "2025-03-23T17:40:00Z"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "status": 200,
+  "headers": {
+    "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+    "content-type": "application/json; charset=UTF-8",
+    "date": "Sun, 23 Mar 2025 17:47:19 GMT",
+    "server": "scaffolding on HTTPServer2",
+    "server-timing": "gfet4t7; dur=103",
+    "vary": "*",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "SAMEORIGIN",
+    "x-xss-protection": "0"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": ["xhr", "http", "fetch"],
+    "transformRequest": [null],
+    "transformResponse": [null],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": "AIzaSyCcHMugv8qXNg10Fi9H5fCCnZkqQWH_DiM",
+      "X-Goog-FieldMask": "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.shortFormattedAddress"
+    },
+    "method": "post",
+    "url": "https://places.googleapis.com/v1/places:searchNearby",
+    "data": "{\"includedTypes\":[\"electric_vehicle_charging_station\"],\"locationRestriction\":{\"circle\":{\"center\":{\"latitude\":1.347064,\"longitude\":103.6782468},\"radius\":2000}}}",
+    "allowAbsoluteUrls": true
+  },
+  "request": {
+    "UNSENT": 0,
+    "OPENED": 1,
+    "HEADERS_RECEIVED": 2,
+    "LOADING": 3,
+    "DONE": 4,
+    "readyState": 4,
+    "status": 200,
+    "timeout": 0,
+    "withCredentials": true,
+    "upload": {},
+    "_aborted": false,
+    "_hasError": false,
+    "_method": "POST",
+    "_perfKey": "network_XMLHttpRequest_https://places.googleapis.com/v1/places:searchNearby",
+    "_response": "{\n  \"places\": [\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"38 Cleantech Loop, Singapore 636741\",\n      \"location\": {\n        \"latitude\": 1.3530720999999999,\n        \"longitude\": 103.6914374\n      },\n      \"displayName\": {\n        \"text\": \"SP Mobility Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"38 Cleantech Loop, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 7,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 5\n          },\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_CCS_COMBO_2\",\n            \"maxChargeRateKw\": 100,\n            \"count\": 2\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"903 Jurong West Street 91, Singapore 640903\",\n      \"location\": {\n        \"latitude\": 1.3396256,\n        \"longitude\": 103.6862563\n      },\n      \"displayName\": {\n        \"text\": \"TotalEnergies Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"903 Jurong West Street 91, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 4,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 11,\n            \"count\": 4\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"Nanyang Link, Singapore\",\n      \"location\": {\n        \"latitude\": 1.3388779,\n        \"longitude\": 103.6796256\n      },\n      \"displayName\": {\n        \"text\": \"Charge+ Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"Nanyang Link\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 6,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 11,\n            \"count\": 6\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"844A Jurong West Street 81, Singapore 641844\",\n      \"location\": {\n        \"latitude\": 1.3459017,\n        \"longitude\": 103.69245590000001\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"844A Jurong West Street 81, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 11,\n            \"count\": 3,\n            \"availableCount\": 0,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"1 Cleantech Loop, Singapore 637141\",\n      \"location\": {\n        \"latitude\": 1.3549594999999999,\n        \"longitude\": 103.6919719\n      },\n      \"displayName\": {\n        \"text\": \"Greenlots Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"1 Cleantech Loop, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 1,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_J1772\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 1\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"967 Jurong West Street 93, Singapore 648967\",\n      \"location\": {\n        \"latitude\": 1.3409517,\n        \"longitude\": 103.692748\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"967 Jurong West Street 93, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.3600001335144043,\n            \"count\": 3,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"905 Jurong West Street 91, Singapore 640905\",\n      \"location\": {\n        \"latitude\": 1.3408835,\n        \"longitude\": 103.68540759999999\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"905 Jurong West Street 91, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 3,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"909/911 Jurong West Street 91, Singapore 640909\",\n      \"location\": {\n        \"latitude\": 1.3417729,\n        \"longitude\": 103.6864428\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"909/911 Jurong West Street 91, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 3,\n            \"availableCount\": 2,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"975 Jurong West Street 93, Singapore 640975\",\n      \"location\": {\n        \"latitude\": 1.3404337,\n        \"longitude\": 103.69338979999999\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"975 Jurong West Street 93, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 3,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"918 Jurong West Street 91, Singapore 640918\",\n      \"location\": {\n        \"latitude\": 1.340849,\n        \"longitude\": 103.68740799999999\n      },\n      \"displayName\": {\n        \"text\": \"Charge+ Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"918 Jurong West Street 91, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 12,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 12,\n            \"availableCount\": 11,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"960 Jurong West Street 92, Singapore 640960\",\n      \"location\": {\n        \"latitude\": 1.3411826999999998,\n        \"longitude\": 103.6912806\n      },\n      \"displayName\": {\n        \"text\": \"Charge+ Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"960 Jurong West Street 92, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 6,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 6,\n            \"availableCount\": 5,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"3 Cleantech Loop, Singapore 637143\",\n      \"location\": {\n        \"latitude\": 1.3548289999999998,\n        \"longitude\": 103.6937729\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"3 Cleantech Loop, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 4,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 22,\n            \"count\": 4,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"511 Upper Jurong Rd, Singapore 638366\",\n      \"location\": {\n        \"latitude\": 1.3297307999999999,\n        \"longitude\": 103.6811683\n      },\n      \"displayName\": {\n        \"text\": \"Hiconics Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"511 Upper Jurong Rd, Singapore\"\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"1 Cleantech Loop, Singapore 637141\",\n      \"location\": {\n        \"latitude\": 1.355245,\n        \"longitude\": 103.692588\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"1 Cleantech Loop, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 4,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 22,\n            \"count\": 4,\n            \"availableCount\": 2,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"Jurong West Street 93, Block 975, Singapore 640975\",\n      \"location\": {\n        \"latitude\": 1.3413384,\n        \"longitude\": 103.69334640000001\n      },\n      \"displayName\": {\n        \"text\": \"CDG ENGIE Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"Jurong West Street 93, Block 975, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 3,\n            \"availableCount\": 1,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"821A Jurong West Street 81, Singapore 641821\",\n      \"location\": {\n        \"latitude\": 1.346617,\n        \"longitude\": 103.694839\n      },\n      \"displayName\": {\n        \"text\": \"Charge+ Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"821A Jurong West Street 81, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 4,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 3.7000000476837158,\n            \"count\": 4,\n            \"availableCount\": 4,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"3 Cleantech Loop, Singapore 637143\",\n      \"location\": {\n        \"latitude\": 1.355569,\n        \"longitude\": 103.69361\n      },\n      \"displayName\": {\n        \"text\": \"Greenlots Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"3 Cleantech Loop, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 1,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_J1772\",\n            \"maxChargeRateKw\": 7.4000000953674316,\n            \"count\": 1\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"865A Jurong West Street 81, Singapore 641865\",\n      \"location\": {\n        \"latitude\": 1.3503296999999999,\n        \"longitude\": 103.69509099999999\n      },\n      \"displayName\": {\n        \"text\": \"CDG Engie Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"865A Jurong West Street 81, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 3,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 11,\n            \"count\": 3,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    },\n    {\n      \"types\": [\n        \"electric_vehicle_charging_station\",\n        \"point_of_interest\",\n        \"establishment\"\n      ],\n      \"formattedAddress\": \"702A Jurong West Street 71, Singapore 641702\",\n      \"location\": {\n        \"latitude\": 1.341618,\n        \"longitude\": 103.69506899999999\n      },\n      \"displayName\": {\n        \"text\": \"Charge+ Charging Station\",\n        \"languageCode\": \"en\"\n      },\n      \"shortFormattedAddress\": \"702A Jurong West Street 71, Singapore\",\n      \"evChargeOptions\": {\n        \"connectorCount\": 6,\n        \"connectorAggregation\": [\n          {\n            \"type\": \"EV_CONNECTOR_TYPE_TYPE_2\",\n            \"maxChargeRateKw\": 6.5999999046325684,\n            \"count\": 6,\n            \"availableCount\": 3,\n            \"outOfServiceCount\": 0,\n            \"availabilityLastUpdateTime\": \"2025-03-23T17:40:00Z\"\n          }\n        ]\n      }\n    }\n  ]\n}\n",
+    "_url": "https://places.googleapis.com/v1/places:searchNearby",
+    "_timedOut": false,
+    "_trackingName": "unknown",
+    "_incrementalEvents": false,
+    "_performanceLogger": {
+      "_timespans": {
+        "network_XMLHttpRequest_https://places.googleapis.com/v1/places:searchNearby": {
+          "startTime": 4813957.425624,
+          "endTime": 4814217.483676,
+          "totalTime": 260.05805199965835
+        }
+      },
+      "_extras": {},
+      "_points": {
+        "initializeCore_start": 4810426.053979,
+        "initializeCore_end": 4810893.390296
+      },
+      "_pointExtras": {},
+      "_closed": false
+    },
+    "responseHeaders": {
+      "content-type": "application/json; charset=UTF-8",
+      "server": "scaffolding on HTTPServer2",
+      "date": "Sun, 23 Mar 2025 17:47:19 GMT",
+      "server-timing": "gfet4t7; dur=103",
+      "x-frame-options": "SAMEORIGIN",
+      "vary": "*",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "x-content-type-options": "nosniff",
+      "x-xss-protection": "0"
+    },
+    "_requestId": null,
+    "_headers": {
+      "accept": "application/json, text/plain, */*",
+      "content-type": "application/json",
+      "x-goog-api-key": "AIzaSyCcHMugv8qXNg10Fi9H5fCCnZkqQWH_DiM",
+      "x-goog-fieldmask": "places.types,places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.shortFormattedAddress"
+    },
+    "_responseType": "",
+    "_sent": true,
+    "_lowerCaseResponseHeaders": {
+      "content-type": "application/json; charset=UTF-8",
+      "server": "scaffolding on HTTPServer2",
+      "date": "Sun, 23 Mar 2025 17:47:19 GMT",
+      "server-timing": "gfet4t7; dur=103",
+      "x-frame-options": "SAMEORIGIN",
+      "vary": "*",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "x-content-type-options": "nosniff",
+      "x-xss-protection": "0"
+    },
+    "_subscriptions": [],
+    "responseURL": "https://places.googleapis.com/v1/places:searchNearby"
+  }
+}

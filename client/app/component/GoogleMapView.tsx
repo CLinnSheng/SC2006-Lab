@@ -20,6 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
 import NearByEVCarPark from "../utils/evChargingStationAPI";
+import EVPlaceListView from "./EVPlaceListView";
 const deviceHeight = Dimensions.get("window").height;
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
@@ -38,9 +39,14 @@ const GoogleMapView: React.FC = () => {
 
   // const [loading, setLoading] = useState(true);
   const mapRef = useRef<MapView | null>(null);
-  const { location, errorMsg, loading, recenterRefreshLocation } =
-    useContext(UserLocationContext);
-
+  const {
+    location,
+    loading,
+    recenterRefreshLocation,
+    evCarParksList,
+  } = useContext(UserLocationContext);
+  const bottomSheetPosition = useSharedValue<number>(0);
+  const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
   // const getNearByCarPark = () => {
   //   const data = {
   //     includedTypes: ["electric_vehicle_charging_station"],
@@ -88,7 +94,7 @@ const GoogleMapView: React.FC = () => {
 
   const handleRecenterMap = () => {
     if (location) {
-      recenterRefreshLocation();
+      // recenterRefreshLocation();
       mapRef.current?.animateToRegion({
         latitude: location.latitude,
         longitude: location.longitude,
@@ -97,9 +103,6 @@ const GoogleMapView: React.FC = () => {
       });
     }
   };
-
-  const bottomSheetPosition = useSharedValue<number>(0);
-  const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
 
   // Animate the button to stay above the BottomSheet
   const animatedButtonStyle = useAnimatedStyle(() => {
@@ -152,7 +155,10 @@ const GoogleMapView: React.FC = () => {
               <Ionicons name="locate" size={24} color="#007AFF" />
             </TouchableOpacity>
           </Animated.View>
-          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} />
+          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} placelist={evCarParksList} />
+          {/* <View style={styles.EVPlaceList_container}>
+            {evCarParksList && <EVPlaceListView placelist={evCarParksList} />}
+          </View> */}
         </>
       )}
     </View>
