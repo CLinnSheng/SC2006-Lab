@@ -10,7 +10,7 @@ import (
 	"github.com/SC2006-Lab/MobileAppProject/model"
 )
 
-func GetDataGovDataWeather() {
+func GetDataGovDataWeather() map[string]model.WeatherAreaInfo{
 	log.Println("Fetching Weather Information from DataGov")
 	resp, err := http.Get("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast") 
 	if err != nil {                                                                        
@@ -28,7 +28,6 @@ func GetDataGovDataWeather() {
 	if err != nil {
 		log.Fatalf("Fail to unmarshal JSON: %v", err)
 	}
-
 
 	// temp map to store location information
 	log.Println("Processing Weather Information")
@@ -66,4 +65,6 @@ func GetDataGovDataWeather() {
 		log.Println("Closing response body for Weather Information")
 		resp.Body.Close()
 	}()
+
+	return areaData
 }

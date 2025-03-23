@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/SC2006-Lab/MobileAppProject/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -23,13 +24,26 @@ func NewServer() *Server {
 	}
 }
 
+func ServerInit() {
+	log.Print("Loading dotenv file")
+	envConfig := utils.GetEnvConfig()
+
+	server := NewServer()
+	Settings(server.App)
+
+	log.Printf("Starting server on port %s", envConfig.Port)
+	if err := server.App.Listen(":" + envConfig.Port); err != nil {
+		log.Fatalf("Error starting server %e", err)
+	}
+}
+
 func Settings(app *fiber.App) {
 	app.Use(func(c *fiber.Ctx) error {
 		protocol := c.Protocol()
 		log.Printf("Incoming request: %s %s", protocol, c.OriginalURL())
 		return c.Next()
 	})
-	
+
 	app.Use(cors.New(cors.Config{
 		AllowHeaders: "Authorization, Content-Type, Origin, Accept", // List of request header that can be use when making a request
 		AllowOrigins: "*",

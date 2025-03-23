@@ -2,7 +2,7 @@ package external_services
 
 import (
 	"encoding/json"
-	"fmt"
+	_"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -13,7 +13,7 @@ import (
 	"github.com/SC2006-Lab/MobileAppProject/utils"
 )
 
-func InitCarParkInformation() {
+func InitCarParkInformation() map[string]*model.CarPark {
 	envConfig := utils.GetEnvConfig()
 	client := &http.Client{}
 
@@ -98,15 +98,18 @@ func InitCarParkInformation() {
 		longitude, _ := strconv.ParseFloat(latLon[1], 64)
 
 		carPark[info.CarparkID] = &model.CarPark{
-			CarParkID:     info.CarparkID,
-			Address:       info.Development,
-			Longitude:     longitude,
-			Latitude:      latitude,
-			LotType:       info.LotType,
-			AvailableLots: strconv.Itoa(info.AvailableLots),
+			CarParkID:  info.CarparkID,
+			Address:    info.Development,
+			Longitude:  longitude,
+			Latitude:   latitude,
+			LotDetails: make(map[string]*model.Lot),
 		}
 
 		temp_carpark := carPark[info.CarparkID]
+		temp_carpark.LotDetails[info.LotType] = &model.Lot{
+			AvailableLots: strconv.Itoa(info.AvailableLots),
+		}
+
 		if info.Agency == "LTA" {
 			temp_carpark.CarParkType = "MULTI-STOREY CAR PARK"
 		} else if info.Agency == "URA" {
@@ -119,14 +122,24 @@ func InitCarParkInformation() {
 	// process DataGov api for carpark availability
 	log.Println("Processing DataGov Car Park Information (Car Park Availability)")
 	for _, carpark_data := range DataGovCarParkAvaiResp_Unmarshal.Items[0].CarparkData {
-		if existsMap, ok := carPark[carpark_data.CarparkNumber]; ok {
-			existsMap.TotalLots = carpark_data.CarparkInfo[0].TotalLots
-		} else {
+		if _, ok := carPark[carpark_data.CarparkNumber]; !ok {
 			carPark[carpark_data.CarparkNumber] = &model.CarPark{
 				CarParkID:     carpark_data.CarparkNumber,
-				TotalLots:     carpark_data.CarparkInfo[0].TotalLots,
-				LotType:       carpark_data.CarparkInfo[0].LotType,
-				AvailableLots: carpark_data.CarparkInfo[0].LotsAvailable,
+				LotDetails:   make(map[string]*model.Lot),
+			}
+		}
+
+		temp_carpark := carPark[carpark_data.CarparkNumber]
+		
+		for _, carpark_info := range carpark_data.CarparkInfo {
+			existsLot, ok := temp_carpark.LotDetails[carpark_info.LotType]
+			if !ok {
+				temp_carpark.LotDetails[carpark_info.LotType] = &model.Lot{
+					TotalLots:     carpark_info.TotalLots,
+					AvailableLots: carpark_info.LotsAvailable,
+				}
+			} else {
+				existsLot.TotalLots = carpark_info.TotalLots
 			}
 		}
 	}
@@ -137,11 +150,10 @@ func InitCarParkInformation() {
 	svy21_Converter := utils.NewSVY21()
 
 	for _, carpark_info := range DataGovCarParkInfoResp_Unmarshal.Result.Records {
-		// log.Println("TESTING")
-		if (carPark[carpark_info.CarparkNumber] == nil) {
+		if carPark[carpark_info.CarparkNumber] == nil {
 			carPark[carpark_info.CarparkNumber] = &model.CarPark{
-				CarParkID: carpark_info.CarparkNumber,
-				Address: carpark_info.Address,
+				CarParkID:   carpark_info.CarparkNumber,
+				Address:     carpark_info.Address,
 				CarParkType: carpark_info.CarParkType,
 			}
 
@@ -152,7 +164,7 @@ func InitCarParkInformation() {
 			temp_carpark := carPark[carpark_info.CarparkNumber]
 			temp_carpark.Latitude = lat
 			temp_carpark.Longitude = lon
-			
+
 		} else if carPark[carpark_info.CarparkNumber].Longitude == 0 && carPark[carpark_info.CarparkNumber].Latitude == 0 {
 			xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
 			yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)
@@ -165,19 +177,20 @@ func InitCarParkInformation() {
 			temp_carpark.CarParkType = carpark_info.CarParkType
 		}
 	}
-	
-	log.Println("Processed DataGov Car Park Information (Car Park Info)")
-	for carParkId, carParkInfo := range carPark {
-		fmt.Printf("CarParkID: %s\n", carParkId)
-		fmt.Printf("Address: %s\n", carParkInfo.Address)
-		fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
-		fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
-		fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
-		fmt.Printf("AvailableLots: %s\n", carParkInfo.AvailableLots)
-		fmt.Printf("LotType: %s\n", carParkInfo.LotType)
-		fmt.Printf("TotalLots: %s\n", carParkInfo.TotalLots)
-		fmt.Printf("-----------------------------------\n")
-	}
+
+	// for carParkId, carParkInfo := range carPark {
+	// 	fmt.Printf("CarParkID: %s\n", carParkId)
+	// 	fmt.Printf("Address: %s\n", carParkInfo.Address)
+	// 	fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
+	// 	fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
+	// 	fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
+	// 	for lottype, lotinfo := range carParkInfo.LotDetails {
+	// 		fmt.Println("LotType: ", lottype)
+	// 		fmt.Printf("\tTotalLots: %s\n", lotinfo.TotalLots)
+	// 		fmt.Printf("\tAvailableLots: %s\n", lotinfo.AvailableLots)
+	// 	}
+	// 	fmt.Printf("-----------------------------------\n")
+	// }
 	log.Println("Car Park Information Processed")
 
 	defer func() {
@@ -186,4 +199,6 @@ func InitCarParkInformation() {
 		DataGovCarParkAvaiResp.Body.Close()
 		DataGovCarParkInfoResp.Body.Close()
 	}()
+
+	return carPark
 }
