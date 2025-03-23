@@ -178,6 +178,18 @@ func InitCarParkInformation() map[string]*model.CarPark {
 		}
 	}
 
+
+	log.Println("Car Park Information Processed")
+
+	defer func() {
+		log.Println("Closing Response Body for getting Car Park Information")
+		LTAResp.Body.Close()
+		DataGovCarParkAvaiResp.Body.Close()
+		DataGovCarParkInfoResp.Body.Close()
+	}()
+
+	CleanCarParkInfo(carPark)
+
 	// for carParkId, carParkInfo := range carPark {
 	// 	fmt.Printf("CarParkID: %s\n", carParkId)
 	// 	fmt.Printf("Address: %s\n", carParkInfo.Address)
@@ -191,14 +203,16 @@ func InitCarParkInformation() map[string]*model.CarPark {
 	// 	}
 	// 	fmt.Printf("-----------------------------------\n")
 	// }
-	log.Println("Car Park Information Processed")
-
-	defer func() {
-		log.Println("Closing Response Body for getting Car Park Information")
-		LTAResp.Body.Close()
-		DataGovCarParkAvaiResp.Body.Close()
-		DataGovCarParkInfoResp.Body.Close()
-	}()
 
 	return carPark
+}
+
+func CleanCarParkInfo (carPark map[string]*model.CarPark) {
+	log.Println("Cleaning Car Park Information")
+	for _, carParkInfo := range carPark {
+		if carParkInfo.Latitude == 0 && carParkInfo.Longitude == 0 {
+			delete(carPark, carParkInfo.CarParkID)
+		}
+	}
+	log.Println("Car Park Information Cleaned")
 }
