@@ -75,13 +75,14 @@ const BottomSheetContainer = ({
       index={1}
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
-      handleIndicatorStyle={styles.indicator}
+      // handleIndicatorStyle={styles.indicator}
       backgroundStyle={{ backgroundColor: "#F5F5F7" }}
       onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
       enablePanDownToClose={false}
       animatedPosition={bottomSheetPosition}
       // enableOverDrag={false}
-      enableContentPanningGesture={true} // <-- Add this
+      // enableContentPanningGesture={true} // <-- Add this
+      enableDynamicSizing={false}
     >
       <BottomSheetView style={styles.searchBarContainer}>
         <GoogleSearchBar
