@@ -2,14 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import * as Location from "expo-location";
 import NearByEVCarPark from "../utils/evChargingStationAPI";
 import { ReactNode } from "react";
-import { Alert, Linking } from "react-native";
-
-// interface UserLocationContextValue {
-//   location: Location.LocationObjectCoords;
-//   setLocation: React.Dispatch<
-//     React.SetStateAction<Location.LocationObjectCoords>
-//   >;
-// }
+import processNearbyEVReqPayload from "../utils/processReqPayload";
 
 export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   latitude: 1.347064,
@@ -21,54 +14,38 @@ export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   speed: 0,
 };
 
-// export const UserLocationContext = createContext<UserLocationContextValue>({
-//   location: DEFAULT_LOCATION,
-//   setLocation: () => {},
-// });
-
 interface UserLocationContextValue {
-  location: Location.LocationObjectCoords | null;
-  setLocation: React.Dispatch<
+  userLocation: Location.LocationObjectCoords | null;
+  setUserLocation: React.Dispatch<
     React.SetStateAction<Location.LocationObjectCoords | null>
   >;
-  // errorMsg: string | null;
   loading: boolean;
   getNearbyCarParks: () => Promise<void>;
   getUserLocation: () => Promise<void>;
   recenterRefreshLocation: () => Promise<void>;
   evCarParksList: any[];
+  initialProcessedPayload: null;
 }
 
 export const UserLocationContext = createContext<UserLocationContextValue>({
-  location: null,
-  setLocation: () => {},
+  userLocation: null,
+  setUserLocation: () => {},
   loading: true,
   getNearbyCarParks: async () => {},
   getUserLocation: async () => {},
   recenterRefreshLocation: async () => {},
   evCarParksList: [],
+  initialProcessedPayload: null,
 });
 
-export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
-  const [location, setLocation] =
-    useState<Location.LocationObjectCoords | null>(DEFAULT_LOCATION);
+const UserLocationProvider = ({ children }: { children: ReactNode }) => {
+  const [userLocation, setUserLocation] =
+    useState<Location.LocationObjectCoords | null>(null);
   const [loading, setLoading] = useState(true);
   const [evCarParksList, setEvCarParksList] = useState<any[]>([]);
-
-  const showLocationPermissionAlert = () => {
-    Alert.alert(
-      "Location Permission Denied",
-      "Please enable location services to use this app.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Open Settings",
-          onPress: () => Linking.openSettings(),
-        },
-      ],
-      { cancelable: false }
-    );
-  };
+  const [initialProcessedPayload, setInitialProcessedPayload] = useState<
+    any | null
+  >(null);
 
   const getUserLocation = async () => {
     setLoading(true);
@@ -78,12 +55,10 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (locationData?.coords) {
-        console.log("User Location:", locationData.coords);
-        setLocation(locationData.coords);
+        setUserLocation(locationData.coords);
       }
 
       console.log("User Location Fetched");
-      console.log(location);
     } catch (error) {
       console.warn("Failed to fetch user location");
     } finally {
@@ -95,20 +70,20 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     let locationData = await Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High,
     });
-    setLocation(locationData.coords);
+    setUserLocation(locationData.coords);
     await getNearbyCarParks();
   };
 
   const getNearbyCarParks = async () => {
-    if (!location) return;
+    if (!userLocation) return;
 
     const data = {
       includedTypes: ["electric_vehicle_charging_station"],
       locationRestriction: {
         circle: {
           center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
           },
           radius: 2000.0,
         },
@@ -116,10 +91,13 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     };
 
     try {
-      NearByEVCarPark(data).then((resp: any) => {
-        console.log(JSON.stringify(resp));
-        setEvCarParksList(resp.data?.places);
-      });
+      const resp = await NearByEVCarPark(data);
+      const places = resp.data?.places || [];
+      setEvCarParksList(places);
+
+      const processedPayload = processNearbyEVReqPayload(places, userLocation);
+      setInitialProcessedPayload(processedPayload);
+      console.log("Processed initial nearby req payload");
     } catch (err) {
       console.error("Error fetching car parks:", err);
     }
@@ -127,41 +105,60 @@ export const UserLocationProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     (async () => {
+      let finalUserLocation: Location.LocationObjectCoords | null = null;
+      let permissionGranted = false;
+
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
+        permissionGranted = status === "granted";
 
         if (status !== "granted") {
-          setLoading(false);
-          // showLocationPermissionAlert();
-          return;
+          setUserLocation(DEFAULT_LOCATION);
+        } else {
+          console.log("Fetching user location");
+          const locationData = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.High,
+          });
+          if (locationData?.coords) {
+            setUserLocation(locationData.coords); // Update state
+            console.log("User Location Fetched successfully.");
+          } else {
+            console.log("Location data or coordinates are null after fetch.");
+          }
         }
-
-        console.log("Fetching user location");
-        await getUserLocation();
-
-        console.log("Getting nearby car parks");
-        await getNearbyCarParks();
       } catch (error) {
-        // setErrorMsg("Failed to get current position/location");
+        console.error("Failed to get current position/location:", error);
       } finally {
         setLoading(false);
+        console.log("Location fetching and related tasks completed.");
       }
     })();
   }, []);
 
+  useEffect(() => {
+    if (userLocation) {
+      console.log("User Location Fetched successfully:", userLocation);
+      console.log("Getting nearby car parks (after location fetch)");
+      getNearbyCarParks();
+    }
+  }, [userLocation]);
+
   return (
     <UserLocationContext.Provider
       value={{
-        location,
-        setLocation,
+        userLocation,
+        setUserLocation,
         loading,
         getNearbyCarParks,
         getUserLocation,
         recenterRefreshLocation,
         evCarParksList,
+        initialProcessedPayload,
       }}
     >
       {children}
     </UserLocationContext.Provider>
   );
 };
+
+export default UserLocationProvider;

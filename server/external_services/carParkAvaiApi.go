@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/SC2006-Lab/MobileAppProject/model"
 	"github.com/SC2006-Lab/MobileAppProject/utils"
@@ -48,7 +49,11 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 
 	// DataGov First Api Call, Car Park Availability
 	log.Println("Fetching Car Park Information from DataGov (Car Park Availability)")
-	DataGovCarParkAvaiResp, err := http.Get("https://api.data.gov.sg/v1/transport/carpark-availability")
+
+	currentTime := time.Now().Format("2006-01-02T15:04:05")
+	url := fmt.Sprintf("https://api.data.gov.sg/v1/transport/carpark-availability?date_time=%s", currentTime)
+
+	DataGovCarParkAvaiResp, err := http.Get(url)
 	if err != nil {
 		log.Fatalf("Fail to fetch URL: %v", err)
 	}
@@ -121,6 +126,12 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 	// process DataGov api for carpark availability
 	log.Println("Processing DataGov Car Park Information (Car Park Availability)")
 	for _, carpark_data := range DataGovCarParkAvaiResp_Unmarshal.Items[0].CarparkData {
+		
+		dataYear, _ := strconv.Atoi(carpark_data.UpdateDatetime[:4])
+		if dataYear != time.Now().Year() {
+			continue
+		}
+
 		if _, ok := carPark[carpark_data.CarparkNumber]; !ok {
 			carPark[carpark_data.CarparkNumber] = &model.CarPark{
 				CarParkID:     carpark_data.CarparkNumber,
@@ -189,19 +200,19 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 
 	CleanCarParkInfo(carPark)
 
-	for carParkId, carParkInfo := range carPark {
-		fmt.Printf("CarParkID: %s\n", carParkId)
-		fmt.Printf("Address: %s\n", carParkInfo.Address)
-		fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
-		fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
-		fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
-		for lottype, lotinfo := range carParkInfo.LotDetails {
-			fmt.Println("LotType: ", lottype)
-			fmt.Printf("\tTotalLots: %s\n", lotinfo.TotalLots)
-			fmt.Printf("\tAvailableLots: %s\n", lotinfo.AvailableLots)
-		}
-		fmt.Printf("-----------------------------------\n")
-	}
+	// for carParkId, carParkInfo := range carPark {
+	// 	fmt.Printf("CarParkID: %s\n", carParkId)
+	// 	fmt.Printf("Address: %s\n", carParkInfo.Address)
+	// 	fmt.Printf("CarParkType: %s\n", carParkInfo.CarParkType)
+	// 	fmt.Printf("Latitude: %f\n", carParkInfo.Latitude)
+	// 	fmt.Printf("Longitude: %f\n", carParkInfo.Longitude)
+	// 	for lottype, lotinfo := range carParkInfo.LotDetails {
+	// 		fmt.Println("LotType: ", lottype)
+	// 		fmt.Printf("\tTotalLots: %s\n", lotinfo.TotalLots)
+	// 		fmt.Printf("\tAvailableLots: %s\n", lotinfo.AvailableLots)
+	// 	}
+	// 	fmt.Printf("-----------------------------------\n")
+	// }
 }
 
 func CleanCarParkInfo (carPark map[string]*model.CarPark) {

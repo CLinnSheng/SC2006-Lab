@@ -19,8 +19,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
-import NearByEVCarPark from "../utils/evChargingStationAPI";
-import EVPlaceListView from "./EVPlaceListView";
+
 const deviceHeight = Dimensions.get("window").height;
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
@@ -39,65 +38,17 @@ const GoogleMapView: React.FC = () => {
 
   // const [loading, setLoading] = useState(true);
   const mapRef = useRef<MapView | null>(null);
-  const {
-    location,
-    loading,
-    recenterRefreshLocation,
-    evCarParksList,
-  } = useContext(UserLocationContext);
+  const { userLocation, loading, recenterRefreshLocation, evCarParksList } =
+    useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
   const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
-  // const getNearByCarPark = () => {
-  //   const data = {
-  //     includedTypes: ["electric_vehicle_charging_station"],
-  //     locationRestriction: {
-  //       circle: {
-  //         center: {
-  //           latitude: location.latitude,
-  //           longitude: location.longitude,
-  //         },
-  //         radius: 2000.0,
-  //       },
-  //     },
-  //   };
-  //   NearByEVCarPark(data)
-  //   .then((res: any) => {
-  //     console.log(res);
-  //     console.log("Nearby Car Park");
-  //   })
-  //   .catch((err) => console.error("Error fetching car parks:", err));
-  // };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       let { status } = await Location.requestForegroundPermissionsAsync();
-
-  //       if (status !== "granted") {
-  //         setErrorMsg("Permission to access location was denied");
-  //         return;
-  //       }
-
-  //       let location = await Location.getCurrentPositionAsync({
-  //         accuracy: Location.Accuracy.High,
-  //       });
-  //       setLocation(location.coords);
-  //       console.log(location);
-  //       setTimeout(() => getNearByCarPark(), 0);
-  //     } catch (error) {
-  //       setErrorMsg("Failed to get current position/location");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-  // }, []);
 
   const handleRecenterMap = () => {
-    if (location) {
+    if (userLocation) {
       // recenterRefreshLocation();
       mapRef.current?.animateToRegion({
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });
@@ -142,8 +93,8 @@ const GoogleMapView: React.FC = () => {
             showsUserLocation
             showsMyLocationButton={false}
             initialRegion={{
-              latitude: location?.latitude ?? DEFAULT_LOCATION.latitude,
-              longitude: location?.longitude ?? DEFAULT_LOCATION.longitude,
+              latitude: userLocation?.latitude ?? DEFAULT_LOCATION.latitude,
+              longitude: userLocation?.longitude ?? DEFAULT_LOCATION.longitude,
               latitudeDelta: 0.005,
               longitudeDelta: 0.005,
             }}
@@ -155,10 +106,10 @@ const GoogleMapView: React.FC = () => {
               <Ionicons name="locate" size={24} color="#007AFF" />
             </TouchableOpacity>
           </Animated.View>
-          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} placelist={evCarParksList} />
-          {/* <View style={styles.EVPlaceList_container}>
-            {evCarParksList && <EVPlaceListView placelist={evCarParksList} />}
-          </View> */}
+          <BottomSheetContainer
+            bottomSheetPosition={bottomSheetPosition}
+            placelist={evCarParksList}
+          />
         </>
       )}
     </View>

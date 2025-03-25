@@ -100,10 +100,9 @@ const GoogleSearchBar = forwardRef(
             listView: styles.listView,
             row: styles.row, // Customize each dropdown item
             separator: styles.separator,
-            // predefinedPlacesDescription: styles.predefinedPlacesDescription,
-            // description: styles.description
           }}
         />
+
         {/*Clear button*/}
         {isFocused && (
           <TouchableOpacity

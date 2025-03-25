@@ -24,11 +24,10 @@ func NewServer() *Server {
 	}
 }
 
-func ServerInit() {
+func (server *Server) Init() {
 	log.Print("Loading dotenv file")
 	envConfig := utils.GetEnvConfig()
 
-	server := NewServer()
 	Settings(server.App)
 
 	log.Printf("Starting server on port %s", envConfig.Port)
@@ -47,6 +46,7 @@ func Settings(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowHeaders: "Authorization, Content-Type, Origin, Accept", // List of request header that can be use when making a request
 		AllowOrigins: "*",
+		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
 	}),
 		limiter.New(limiter.Config{
 			Max:        100,
