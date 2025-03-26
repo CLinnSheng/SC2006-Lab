@@ -9,11 +9,12 @@ type EVLot struct {
 	} `json:"location"`
 	Name             string `json:"name"`
 	EVChargerOptions struct {
+		ConnectorCount int `json:"connectorCount"`
 		ConnectorAggregation []struct {
 			Type            string  `json:"type"`
 			Count           int     `json:"count"`
 			MaxChargeRateKW float64 `json:"maxChargeRateKw"`
 			AvailableCount  *int    `json:"availableCount"`
 		} `json:"connectorAggregation"`
-	} `json:"evChargerOptions"`
+	} `json:"evChargeOptions"`
 }
