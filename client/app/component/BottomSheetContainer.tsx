@@ -95,7 +95,7 @@ const BottomSheetContainer = ({
         }
       );
       console.log("TESTING");
-      console.log(resp.data);
+      // console.log(resp.data);
       setCarPark(resp.data.CarPark);
     } catch (error) {
       console.error("API call error:", error);
@@ -104,7 +104,7 @@ const BottomSheetContainer = ({
 
   useEffect(() => {
     if (initialProcessedPayload) {
-      fetchNearByCarParks();
+      // fetchNearByCarParks();
     } else {
       console.log("Initial Processed Payload not set");
     }
@@ -115,7 +115,7 @@ const BottomSheetContainer = ({
     return {
       opacity: interpolate(
         bottomSheetPosition.value,
-        [deviceHeight * 0.88, deviceHeight * 0.6],
+        [deviceHeight * 0.88, deviceHeight * 0.7],
         [0, 1],
         { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
       ),
@@ -124,15 +124,9 @@ const BottomSheetContainer = ({
 
   const [isSearchFocused, setIsSearchFocused] = useState(false); // Track focus state of the search bar
 
-  // Handle when search bar is focused
-  const handleFocus = () => {
-    setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
-  };
-
-  // Handle when search bar is blurred
-  const handleBlur = () => {
-    setIsSearchFocused(false); // Set search bar focus to false, show FlatList
-  };
+  // Handle search bar forcus/blur
+  const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
+  const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
   return (
     <BottomSheet
@@ -160,7 +154,6 @@ const BottomSheetContainer = ({
 
       {!isSearchFocused && (
         <BottomSheetFlatList
-          // data={placelist}
           data={carPark}
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainer}

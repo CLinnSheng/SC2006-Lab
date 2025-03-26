@@ -137,8 +137,7 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (userLocation) {
-      console.log("User Location Fetched successfully:", userLocation);
-      console.log("Getting nearby car parks (after location fetch)");
+      console.log("User Location Fetched successfully")
       getNearbyCarParks();
     }
   }, [userLocation]);
