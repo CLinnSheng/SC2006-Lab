@@ -23,9 +23,13 @@ const GoogleSearchBar = forwardRef(
     {
       onFocusExpand,
       onCancelPress,
+      onFoucs,
+      onBlur,
     }: {
       onFocusExpand: () => void;
       onCancelPress: () => void;
+      onFoucs: () => void;
+      onBlur: () => void;
     },
     ref
   ) => {
@@ -45,10 +49,12 @@ const GoogleSearchBar = forwardRef(
       console.log("Search bar focused");
       onFocusExpand();
       setIsFocused(true);
+      onFoucs();
     };
 
     const handleBlur = () => {
       setIsFocused(false);
+      onBlur();
     };
 
     const handleCancelPress = () => {
@@ -179,13 +185,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
     width: "150%",
   },
-  // description: {
-  //   fontSize: 15,
-  //   color: "#333",
-  // },
-  // predefinedPlacesDescription: {
-  //   fontSize: 14,
-  //   color: "blue",
-  // },
 });
 export default GoogleSearchBar;

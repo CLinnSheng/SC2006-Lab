@@ -110,17 +110,29 @@ const BottomSheetContainer = ({
     }
   }, [initialProcessedPayload]);
 
-  // 🔹 FIX: Use Animated Opacity based on bottomSheetPosition
+  // Animatoin for the flatlist
   const flatListAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
         bottomSheetPosition.value,
-        [deviceHeight * 0.88, deviceHeight * 0.6], // Input range (12% → 40%)
-        [0, 1], // Opacity range (Invisible → Fully Visible)
+        [deviceHeight * 0.88, deviceHeight * 0.6],
+        [0, 1],
         { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
       ),
     };
   });
+
+  const [isSearchFocused, setIsSearchFocused] = useState(false); // Track focus state of the search bar
+
+  // Handle when search bar is focused
+  const handleFocus = () => {
+    setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
+  };
+
+  // Handle when search bar is blurred
+  const handleBlur = () => {
+    setIsSearchFocused(false); // Set search bar focus to false, show FlatList
+  };
 
   return (
     <BottomSheet
@@ -139,19 +151,23 @@ const BottomSheetContainer = ({
           ref={searchBarRef}
           onFocusExpand={expandBottomSheet}
           onCancelPress={collapseBottomSheet}
+          onFoucs={handleFocus}
+          onBlur={handleBlur}
         />
       </BottomSheetView>
 
       <View style={styles.spacer} />
 
-      <BottomSheetFlatList
-        // data={placelist}
-        data={carPark}
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
-        keyboardShouldPersistTaps="handled"
-        style={[styles.flatList, flatListAnimatedStyle]}
-      ></BottomSheetFlatList>
+      {!isSearchFocused && (
+        <BottomSheetFlatList
+          // data={placelist}
+          data={carPark}
+          renderItem={renderItem}
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled"
+          style={[styles.flatList, flatListAnimatedStyle]}
+        ></BottomSheetFlatList>
+      )}
     </BottomSheet>
   );
 };
