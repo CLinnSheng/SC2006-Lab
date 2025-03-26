@@ -6,15 +6,31 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, Keyboard, Text, View, Animated } from "react-native";
+import {
+  StyleSheet,
+  Keyboard,
+  Text,
+  View,
+  Animated,
+  Dimensions,
+} from "react-native";
 import BottomSheet, {
   BottomSheetView,
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
-import { SharedValue } from "react-native-reanimated";
+import {
+  Extrapolate,
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
+
+const deviceHeight = Dimensions.get("window").height;
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
@@ -26,7 +42,7 @@ const BottomSheetContainer = ({
   const bottomSheetRef = useRef<BottomSheet>(null);
   const searchBarRef = useRef<{ clearInput: () => void }>(null);
 
-  const snapPoints = useMemo(() => ["12%", "40%", "93%"], []);
+  const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [carPark, setCarPark] = useState<any[]>([]);
 
@@ -40,17 +56,8 @@ const BottomSheetContainer = ({
     }
   }, []);
 
-  const expandBottomSheet = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.snapToIndex(2);
-    }
-  };
-
-  const collapseBottomSheet = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.snapToIndex(1);
-    }
-  };
+  const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
+  const collapseBottomSheet = () => bottomSheetRef.current?.snapToIndex(1);
 
   const handleAnimate = useCallback((fromIndex: number, toIndex: number) => {
     console.log("handleAnimate", fromIndex, toIndex);
@@ -103,6 +110,18 @@ const BottomSheetContainer = ({
     }
   }, [initialProcessedPayload]);
 
+  // 🔹 FIX: Use Animated Opacity based on bottomSheetPosition
+  const flatListAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        bottomSheetPosition.value,
+        [deviceHeight * 0.88, deviceHeight * 0.6], // Input range (12% → 40%)
+        [0, 1], // Opacity range (Invisible → Fully Visible)
+        { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+      ),
+    };
+  });
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -125,16 +144,14 @@ const BottomSheetContainer = ({
 
       <View style={styles.spacer} />
 
-      <View style={{ flex: 1 }}>
-        <BottomSheetFlatList
-          // data={placelist}
-          data={carPark}
-          renderItem={renderItem}
-          contentContainerStyle={styles.contentContainer}
-          keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
-        ></BottomSheetFlatList>
-      </View>
+      <BottomSheetFlatList
+        // data={placelist}
+        data={carPark}
+        renderItem={renderItem}
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+        style={[styles.flatList, flatListAnimatedStyle]}
+      ></BottomSheetFlatList>
     </BottomSheet>
   );
 };
@@ -168,6 +185,9 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 40, // Adjust this value to control how much lower the FlatList appears
+  },
+  flatList: {
+    flex: 1,
   },
 });
 
