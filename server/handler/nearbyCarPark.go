@@ -29,8 +29,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 
 	for _, EVLot := range reqPayload.EVLots {
 		chargers := []map[string]string{}
-		ttlCnt := 0
-		// log.Println(EVLot)
+		
 		for _, connecter := range EVLot.EVChargerOptions.ConnectorAggregation {
 			var availableCnt string
 			if connecter.AvailableCount != nil {
@@ -46,7 +45,6 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 				"availableCount":  availableCnt,
 			})
 
-			ttlCnt += connecter.Count
 		}
 
 		ProcessedEVLots = append(ProcessedEVLots, map[string]interface{}{
@@ -57,7 +55,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 			},
 			"displayName":   EVLot.Name,
 			"chargers":      chargers,
-			"totalChargers": ttlCnt,
+			"totalChargers": EVLot.EVChargerOptions.ConnectorCount,
 		})
 
 	}

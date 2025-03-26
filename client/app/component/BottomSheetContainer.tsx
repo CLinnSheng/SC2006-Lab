@@ -35,7 +35,7 @@ const BottomSheetContainer = ({
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
     setCurrentIndex(index);
-    if (index <= 2) {
+    if (index < 2) {
       Keyboard.dismiss();
     }
   }, []);
@@ -76,10 +76,7 @@ const BottomSheetContainer = ({
     []
   );
 
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
-
   const fetchNearByCarParks = async () => {
-    setLoading(true);
     try {
       const resp = await axios.post(
         "http://192.168.0.102:8000/api/carpark/nearby/",
@@ -95,8 +92,6 @@ const BottomSheetContainer = ({
       setCarPark(resp.data.CarPark);
     } catch (error) {
       console.error("API call error:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -172,7 +167,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   spacer: {
-    height: 80, // Adjust this value to control how much lower the FlatList appears
+    height: 40, // Adjust this value to control how much lower the FlatList appears
   },
 });
 
