@@ -25,16 +25,19 @@ const GoogleSearchBar = forwardRef(
       onCancelPress,
       onFoucs,
       onBlur,
+      searchedLocation,
     }: {
       onFocusExpand: () => void;
       onCancelPress: () => void;
       onFoucs: () => void;
       onBlur: () => void;
+      searchedLocation: (location: any) => void;
     },
     ref
   ) => {
     const [inputValue, setInputValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
+
     const autoCompleteRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
@@ -86,8 +89,12 @@ const GoogleSearchBar = forwardRef(
         />
         <GooglePlacesAutocomplete
           ref={autoCompleteRef}
+          minLength={2}
+          fetchDetails={true}
           placeholder="Search Maps"
-          onPress={(data, details) => console.log(data, details)}
+          onPress={(data, details = null) => {
+            searchedLocation(details?.geometry?.location);
+          }}
           textInputProps={{
             onFocus: handleFocus,
             onBlur: handleBlur,

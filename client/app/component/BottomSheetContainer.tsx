@@ -19,12 +19,9 @@ import BottomSheet, {
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
 import {
-  Extrapolate,
   interpolate,
   SharedValue,
   useAnimatedStyle,
-  useSharedValue,
-  withTiming,
 } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
@@ -47,6 +44,12 @@ const BottomSheetContainer = ({
   const [carPark, setCarPark] = useState<any[]>([]);
 
   const { initialProcessedPayload } = useContext(UserLocationContext);
+
+  const [searchedLocation, setSearchedLocation] = useState<any>(null);
+  const handleSearchedLocation = (location: any) => {
+    setSearchedLocation(location);
+    console.log("Searched location:", location);
+  };
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
@@ -84,6 +87,7 @@ const BottomSheetContainer = ({
   );
 
   const fetchNearByCarParks = async () => {
+    console.log("Fetching nearby car parks from /api/carpark/nearby/");
     try {
       const resp = await axios.post(
         `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
@@ -95,7 +99,7 @@ const BottomSheetContainer = ({
         }
       );
 
-      console.log("Fetching nearby car parks from /api/carpark/nearby/");
+      console.log("Fetched nearby car parks from /api/carpark/nearby/");
       setCarPark(resp.data.CarPark); // Assuming the choosing the carpark
     } catch (error) {
       console.error("API call error:", error);
@@ -104,13 +108,13 @@ const BottomSheetContainer = ({
 
   useEffect(() => {
     if (initialProcessedPayload) {
-      // fetchNearByCarParks();
+      fetchNearByCarParks();
     } else {
       console.log("Initial Processed Payload not set");
     }
   }, [initialProcessedPayload]);
 
-  // Animatoin for the flatlist
+  // Animation for the flatlist
   const flatListAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
@@ -147,6 +151,7 @@ const BottomSheetContainer = ({
           onCancelPress={collapseBottomSheet}
           onFoucs={handleFocus}
           onBlur={handleBlur}
+          searchedLocation={handleSearchedLocation}
         />
       </BottomSheetView>
 
