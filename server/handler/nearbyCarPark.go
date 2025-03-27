@@ -53,7 +53,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 				"latitude":  EVLot.Location.Latitude,
 				"longitude": EVLot.Location.Longitude,
 			},
-			"displayName":   EVLot.Name,
+			"displayName":   EVLot.DisplayName.Text,
 			"chargers":      chargers,
 			"totalChargers": EVLot.EVChargerOptions.ConnectorCount,
 		})
