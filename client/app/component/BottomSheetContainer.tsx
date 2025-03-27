@@ -26,26 +26,34 @@ import {
 import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
+import { Ionicons } from "@expo/vector-icons";
 
 const deviceHeight = Dimensions.get("window").height;
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
-  placelist,
 }: {
   bottomSheetPosition: SharedValue<number>;
-  placelist: any[];
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const searchBarRef = useRef<{ clearInput: () => void }>(null);
 
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [carPark, setCarPark] = useState<any[]>([]);
 
   const { initialProcessedPayload } = useContext(UserLocationContext);
 
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
+
+  const [carParks, setCarParks] = useState<any[]>([]);
+  const [EVLots, setEVLots] = useState<any[]>([]);
+  const combinedListCarPark = useMemo(() => {
+    return [
+      ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
+      ...(EVLots ?? []).map((item) => ({ ...item, type: "EV" })),
+    ];
+  }, [carParks, EVLots]);
+
   const handleSearchedLocation = (location: any) => {
     setSearchedLocation(location);
     console.log("Searched location:", location);
@@ -76,16 +84,6 @@ const BottomSheetContainer = ({
     }
   }, []);
 
-  const renderItem = useCallback(
-    ({ item }: { item: any }) => (
-      <View style={styles.itemContainer}>
-        {/* <Text>{item.displayName.text}</Text> */}
-        <Text>{item.address}</Text>
-      </View>
-    ),
-    []
-  );
-
   const fetchNearByCarParks = async () => {
     console.log("Fetching nearby car parks from /api/carpark/nearby/");
     try {
@@ -100,7 +98,8 @@ const BottomSheetContainer = ({
       );
 
       console.log("Fetched nearby car parks from /api/carpark/nearby/");
-      setCarPark(resp.data.CarPark); // Assuming the choosing the carpark
+      setCarParks(resp.data.CarPark);
+      setEVLots(resp.data.EV);
     } catch (error) {
       console.error("API call error:", error);
     }
@@ -132,6 +131,66 @@ const BottomSheetContainer = ({
   const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
   const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
+  const renderItem = useCallback(
+    ({ item }: { item: any }) => (
+      <View style={styles.itemContainer}>
+        {item.type === "CarPark" ? (
+          <>
+            <View style={styles.titleContainer}>
+              <Ionicons
+                name="car-outline"
+                size={20}
+                color="#333"
+                style={styles.iconContainer}
+              />
+              <Text style={styles.carParkTitle}>
+                Car Park: {item.carParkID}
+              </Text>
+            </View>
+            <Text style={styles.itemDetail}>Address: {item.address}</Text>
+            <Text style={styles.itemDetail}>Type: {item.carParkType}</Text>
+            <Text style={styles.itemDetail}>
+              Lots Available:
+              {item.lotDetails?.C?.availableLots !== undefined ? (
+                <Text style={styles.availableLots}>
+                  {" "}
+                  {item.lotDetails.C.availableLots}
+                </Text>
+              ) : (
+                <Text style={styles.notAvailable}> N/A</Text>
+              )}
+              {item.lotDetails?.C?.totalLots && (
+                <Text style={{ color: "#777" }}>
+                  {" "}
+                  / {item.lotDetails.C.totalLots}
+                </Text>
+              )}
+            </Text>
+          </>
+        ) : (
+          <>
+            <View style={styles.titleContainer}>
+              <Ionicons
+                name="flash-outline"
+                size={20}
+                color="#007bff"
+                style={styles.iconContainer}
+              />
+              <Text style={styles.evStationTitle}>
+                EV Station: {item.displayName}
+              </Text>
+            </View>
+            <Text style={styles.itemDetail}>
+              Chargers: {item.totalChargers}
+            </Text>
+            <Text style={styles.itemDetail}>Operator: {item.operator}</Text>
+          </>
+        )}
+      </View>
+    ),
+    []
+  );
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -159,7 +218,7 @@ const BottomSheetContainer = ({
 
       {!isSearchFocused && (
         <BottomSheetFlatList
-          data={carPark}
+          data={combinedListCarPark}
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainer}
           keyboardShouldPersistTaps="handled"
@@ -187,12 +246,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10,
   },
-  itemContainer: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: "transparent",
-    borderRadius: 8,
-  },
   searchBarContainer: {
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -202,6 +255,47 @@ const styles = StyleSheet.create({
   },
   flatList: {
     flex: 1,
+  },
+  itemContainer: {
+    backgroundColor: "#f8f8f8", // Light background for each item
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8, // Slightly rounded corners
+    borderWidth: 1,
+    borderColor: "#e0e0e0", // Light border
+  },
+  carParkTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 5,
+    color: "#333",
+  },
+  evStationTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 5,
+    color: "#007bff", // Blue color for EV Station
+  },
+  itemDetail: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 3,
+  },
+  availableLots: {
+    fontWeight: "bold",
+    color: "green", // Highlight available lots
+  },
+  notAvailable: {
+    color: "#888", // Less prominent for "N/A"
+    fontStyle: "italic",
+  },
+  iconContainer: {
+    marginRight: 8,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
   },
 });
 

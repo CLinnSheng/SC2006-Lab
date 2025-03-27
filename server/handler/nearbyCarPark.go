@@ -1,7 +1,7 @@
 package handler
 
 import (
-	_"log"
+	_ "log"
 	"strconv"
 
 	"github.com/SC2006-Lab/MobileAppProject/data"
@@ -46,14 +46,14 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 			})
 
 		}
-
+	
 		ProcessedEVLots = append(ProcessedEVLots, map[string]interface{}{
 			"formattedAddress": EVLot.FormattedAddress,
 			"location": map[string]float64{
 				"latitude":  EVLot.Location.Latitude,
 				"longitude": EVLot.Location.Longitude,
 			},
-			"displayName":   EVLot.DisplayName.Text,
+			"displayName":   EVLot.Name,
 			"chargers":      chargers,
 			"totalChargers": EVLot.EVChargerOptions.ConnectorCount,
 		})

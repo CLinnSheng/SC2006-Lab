@@ -33,10 +33,6 @@ const DEFAULT_LOCATION: Location.LocationObjectCoords = {
 };
 
 const GoogleMapView: React.FC = () => {
-  // const { location, setLocation } = useContext(UserLocationContext); // Use context instead of local state
-  // const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  // const [loading, setLoading] = useState(true);
   const mapRef = useRef<MapView | null>(null);
   const { userLocation, loading, recenterRefreshLocation, evCarParksList } =
     useContext(UserLocationContext);
@@ -106,10 +102,7 @@ const GoogleMapView: React.FC = () => {
               <Ionicons name="locate" size={24} color="#007AFF" />
             </TouchableOpacity>
           </Animated.View>
-          <BottomSheetContainer
-            bottomSheetPosition={bottomSheetPosition}
-            placelist={evCarParksList}
-          />
+          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} />
         </>
       )}
     </View>

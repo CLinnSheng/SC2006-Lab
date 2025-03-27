@@ -7,9 +7,7 @@ type EVLot struct {
 		Latitude  float64 `json:"latitude"`
 		Longitude float64 `json:"longitude"`
 	} `json:"location"`
-	DisplayName struct {
-		Text string `json:"text"`
-	} `json:"displayName"`
+	Name string `json:"name"`
 	EVChargerOptions struct {
 		ConnectorCount       int `json:"connectorCount"`
 		ConnectorAggregation []struct {
