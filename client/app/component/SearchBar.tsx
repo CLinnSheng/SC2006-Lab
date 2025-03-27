@@ -76,13 +76,6 @@ const GoogleSearchBar = forwardRef(
       console.log("X pressed");
     };
 
-    const [inputWidth, setInputWidth] = useState(width * 0.86 - 40); // Initial width considering padding for 'X' button
-    const handleContentSizeChange = (contentWidth: number) => {
-      // Limit the input width to ensure it doesn't overlap with the 'X' button
-      const maxInputWidth = width * 0.86 - 40; // Make sure the input text fits before the 'X' button
-      setInputWidth(Math.min(contentWidth, maxInputWidth));
-    };
-
     return (
       <View style={styles.searchBarContainer}>
         <Ionicons
@@ -99,7 +92,7 @@ const GoogleSearchBar = forwardRef(
             onFocus: handleFocus,
             onBlur: handleBlur,
             onChangeText: setInputValue,
-            value: inputValue,  
+            value: inputValue,
             placeholderTextColor: "grey",
             clearButtonMode: "never",
             scrollEnabled: true,

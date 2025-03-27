@@ -86,7 +86,7 @@ const BottomSheetContainer = ({
   const fetchNearByCarParks = async () => {
     try {
       const resp = await axios.post(
-        "http://192.168.0.102:8000/api/carpark/nearby/",
+        `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
         initialProcessedPayload,
         {
           headers: {
@@ -94,9 +94,9 @@ const BottomSheetContainer = ({
           },
         }
       );
-      console.log("TESTING");
-      // console.log(resp.data);
-      setCarPark(resp.data.CarPark);
+
+      console.log("Fetching nearby car parks from /api/carpark/nearby/");
+      setCarPark(resp.data.CarPark); // Assuming the choosing the carpark
     } catch (error) {
       console.error("API call error:", error);
     }
