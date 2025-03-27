@@ -13,6 +13,7 @@ import {
   View,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import BottomSheet, {
   BottomSheetView,
@@ -27,6 +28,7 @@ import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const deviceHeight = Dimensions.get("window").height;
 
@@ -131,9 +133,18 @@ const BottomSheetContainer = ({
   const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
   const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
+  const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
+
   const renderItem = useCallback(
     ({ item }: { item: any }) => (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => {
+          // Set the selected car park
+          setSelectedCarPark(item);
+        }}
+      >
+        {" "}
         {item.type === "CarPark" ? (
           <>
             <View style={styles.titleContainer}>
@@ -153,7 +164,6 @@ const BottomSheetContainer = ({
               Lots Available:
               {item.lotDetails?.C?.availableLots !== undefined ? (
                 <Text style={styles.availableLots}>
-                  {" "}
                   {item.lotDetails.C.availableLots}
                 </Text>
               ) : (
@@ -186,46 +196,75 @@ const BottomSheetContainer = ({
             <Text style={styles.itemDetail}>Operator: {item.operator}</Text>
           </>
         )}
-      </View>
+      </TouchableOpacity>
     ),
     []
   );
 
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={1}
-      snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-      backgroundStyle={{ backgroundColor: "#F5F5F7" }}
-      onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
-      enablePanDownToClose={false}
-      animatedPosition={bottomSheetPosition}
-      enableDynamicSizing={false}
-    >
-      <BottomSheetView style={styles.searchBarContainer}>
-        <GoogleSearchBar
-          ref={searchBarRef}
-          onFocusExpand={expandBottomSheet}
-          onCancelPress={collapseBottomSheet}
-          onFoucs={handleFocus}
-          onBlur={handleBlur}
-          searchedLocation={handleSearchedLocation}
-        />
-      </BottomSheetView>
+    <>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backgroundStyle={{ backgroundColor: "#F5F5F7" }}
+        onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
+        enablePanDownToClose={false}
+        animatedPosition={bottomSheetPosition}
+        enableDynamicSizing={false}
+      >
+        <BottomSheetView style={styles.searchBarContainer}>
+          <GoogleSearchBar
+            ref={searchBarRef}
+            onFocusExpand={expandBottomSheet}
+            onCancelPress={collapseBottomSheet}
+            onFoucs={handleFocus}
+            onBlur={handleBlur}
+            searchedLocation={handleSearchedLocation}
+          />
+        </BottomSheetView>
 
-      <View style={styles.spacer} />
+        <View style={styles.spacer} />
 
-      {!isSearchFocused && (
-        <BottomSheetFlatList
-          data={combinedListCarPark}
-          renderItem={renderItem}
-          contentContainerStyle={styles.contentContainer}
-          keyboardShouldPersistTaps="handled"
-          style={[styles.flatList, flatListAnimatedStyle]}
-        ></BottomSheetFlatList>
+        {!isSearchFocused && (
+          <BottomSheetFlatList
+            data={combinedListCarPark}
+            renderItem={renderItem}
+            contentContainerStyle={styles.contentContainer}
+            keyboardShouldPersistTaps="handled"
+            style={[styles.flatList, flatListAnimatedStyle]}
+          ></BottomSheetFlatList>
+        )}
+      </BottomSheet>
+
+      {/* New BottomSheet for Selected Car Park Details */}
+      {selectedCarPark && (
+        <BottomSheet
+          // ref={bottomSheetRef} // Use a separate ref if needed
+          index={2}
+          snapPoints={["40%"]} // Adjust based on your need
+          onChange={handleSheetChanges}
+          backgroundStyle={{ backgroundColor: "#F5F5F7" }}
+        >
+          <BottomSheetView style={styles.detailContainer}>
+            <Text style={styles.detailTitle}>Car Park Details</Text>
+            <Text style={styles.itemDetail}>
+              Car Park ID: {selectedCarPark.carParkID}
+            </Text>
+            <Text style={styles.itemDetail}>
+              Address: {selectedCarPark.address}
+            </Text>
+            <Text style={styles.itemDetail}>
+              Type: {selectedCarPark.carParkType}
+            </Text>
+            <Text style={styles.itemDetail}>
+              Available Lots: {selectedCarPark.lotDetails?.C?.availableLots}
+            </Text>
+          </BottomSheetView>
+        </BottomSheet>
       )}
-    </BottomSheet>
+    </>
   );
 };
 
