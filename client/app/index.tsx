@@ -1,16 +1,17 @@
-// index.tsx
 import React, { useState } from "react";
-import GoogleMapView from "./component/GoogleMapView";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
-import UserLocationProvider from "./context/userLocation"; // No need to import DEFAULT_LOCATION here
-import * as Location from "expo-location";
+import UserLocationProvider from "./context/userLocation";
+import GoogleMapView from "./component/GoogleMapView";
+import LaunchScreen from "./component/LaunchScreen"; // Import LaunchScreen
 
 const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <UserLocationProvider>
-        <GoogleMapView />
+        {isLoading ? <LaunchScreen onFinish={() => setIsLoading(false)} /> : <GoogleMapView />}
       </UserLocationProvider>
     </GestureHandlerRootView>
   );

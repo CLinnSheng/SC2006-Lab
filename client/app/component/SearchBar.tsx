@@ -93,6 +93,9 @@ const GoogleSearchBar = forwardRef(
           fetchDetails={true}
           placeholder="Search Maps"
           onPress={(data, details = null) => {
+            console.log("Suggestion selected:", data); // Log the selected suggestion data
+            console.log("Location details:", details); // Log the location details
+
             searchedLocation(details?.geometry?.location);
           }}
           textInputProps={{
