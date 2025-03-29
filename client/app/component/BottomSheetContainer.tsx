@@ -11,7 +11,6 @@ import {
   Keyboard,
   Text,
   View,
-  Animated,
   Dimensions,
   TouchableOpacity,
   Image,
@@ -47,9 +46,6 @@ const BottomSheetContainer = ({
 }) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
 
-  useEffect(() => {
-    loadFonts().then(() => setIsFontLoaded(true));
-  }, []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
 
@@ -58,12 +54,18 @@ const BottomSheetContainer = ({
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  const { initialProcessedPayload } = useContext(UserLocationContext);
+  const { initialProcessedPayload, userLocation } =
+    useContext(UserLocationContext);
 
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
 
   const [carParks, setCarParks] = useState<any[]>([]);
   const [EVLots, setEVLots] = useState<any[]>([]);
+
+  useEffect(() => {
+    loadFonts().then(() => setIsFontLoaded(true));
+  }, []);
+
   const combinedListCarPark = useMemo(() => {
     return [
       ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
@@ -160,7 +162,7 @@ const BottomSheetContainer = ({
         onPress={() => {
           setSelectedCarPark(item);
           if (selectedCarParkBottomSheetRef.current) {
-            selectedCarParkBottomSheetRef.current.snapToIndex(0);
+            selectedCarParkBottomSheetRef.current.snapToIndex(1);
           }
         }}
       >
