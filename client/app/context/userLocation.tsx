@@ -118,12 +118,10 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
           console.log("User Location Fetched successfully.");
         } else {
           console.log("Location data or coordinates are null after fetch.");
-          setUserLocation(DEFAULT_LOCATION);
         }
       }
     } catch (error) {
       console.error("Failed to get current position/location:", error);
-      setUserLocation(DEFAULT_LOCATION);
     } finally {
       setLoading(false);
       setInitialized(true);
@@ -133,7 +131,6 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log(DEFAULT_LOCATION);
     if (userLocation) {
       console.log("User Location Saved successfully");
       getNearbyCarParks();

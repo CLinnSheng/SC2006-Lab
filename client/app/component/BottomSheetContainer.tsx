@@ -31,8 +31,10 @@ import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
+  searchedLocation: setSearchedLocationFromMap,
 }: {
   bottomSheetPosition: SharedValue<number>;
+  searchedLocation: (location: any) => void;
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
@@ -58,8 +60,10 @@ const BottomSheetContainer = ({
   }, [carParks, EVLots]);
 
   const handleSearchedLocation = (location: any) => {
+    console.log("Searched location received in BottomSheetContainer")
     setSearchedLocation(location);
-    console.log("Searched location:", location);
+    setSearchedLocationFromMap(location);
+    console.log("Set searched location in BottomSheetContainer & MapView");
   };
 
   const handleSheetChanges = useCallback((index: number) => {

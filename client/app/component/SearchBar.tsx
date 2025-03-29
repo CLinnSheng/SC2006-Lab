@@ -7,7 +7,6 @@ import React, {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import "react-native-get-random-values";
 import {
-  Dimensions,
   Keyboard,
   StyleSheet,
   Text,
@@ -36,7 +35,6 @@ const GoogleSearchBar = forwardRef(
   ) => {
     const [inputValue, setInputValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
-
     const autoCompleteRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
@@ -92,10 +90,8 @@ const GoogleSearchBar = forwardRef(
           fetchDetails={true}
           placeholder="Search Maps"
           onPress={(data, details = null) => {
-            console.log("Suggestion selected:", data); // Log the selected suggestion data
-            console.log("Location details:", details); // Log the location details
-
-            searchedLocation(details?.geometry?.location);
+            searchedLocation(details?.geometry.location);
+            onCancelPress();
           }}
           textInputProps={{
             onFocus: handleFocus,
