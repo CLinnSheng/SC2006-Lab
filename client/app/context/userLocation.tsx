@@ -3,16 +3,7 @@ import * as Location from "expo-location";
 import NearByEVCarPark from "../utils/evChargingStationAPI";
 import { ReactNode } from "react";
 import processNearbyEVReqPayload from "../utils/processReqPayload";
-
-export const DEFAULT_LOCATION: Location.LocationObjectCoords = {
-  latitude: 1.347064,
-  longitude: 103.6782468,
-  altitude: 0,
-  accuracy: 0,
-  altitudeAccuracy: 0,
-  heading: 0,
-  speed: 0,
-};
+import  DEFAULT_LOCATION  from "../constants/defaultLocation";
 
 interface UserLocationContextValue {
   userLocation: Location.LocationObjectCoords | null;
@@ -142,6 +133,7 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log(DEFAULT_LOCATION);
     if (userLocation) {
       console.log("User Location Saved successfully");
       getNearbyCarParks();

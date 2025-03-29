@@ -15,8 +15,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const { width } = Dimensions.get("window");
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const GoogleSearchBar = forwardRef(
   (
@@ -148,7 +147,7 @@ const GoogleSearchBar = forwardRef(
 const styles = StyleSheet.create({
   searchBarContainer: {
     position: "absolute",
-    width: width * 0.86,
+    width: SCREEN_DIMENSIONS.width * 0.86,
     paddingHorizontal: 10,
     top: -20,
     left: 2,

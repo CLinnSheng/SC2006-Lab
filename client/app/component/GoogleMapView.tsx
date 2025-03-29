@@ -1,7 +1,6 @@
 import React, { useContext, useRef } from "react";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import {
-  Dimensions,
   Platform,
   StatusBar,
   StyleSheet,
@@ -18,8 +17,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
-
-const deviceHeight = Dimensions.get("window").height;
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const DEFAULT_LOCATION: Location.LocationObjectCoords = {
   latitude: 1.347064,
@@ -35,7 +33,7 @@ const GoogleMapView: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
   const { userLocation } = useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
-  const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
+  const maxBottomSheetHeight = parseFloat((0.58487 * SCREEN_DIMENSIONS.height).toFixed(1));
 
   const handleRecenterMap = () => {
     if (userLocation) {
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     justifyContent: "center",
     alignItems: "center",
-    height: deviceHeight,
+    height: SCREEN_DIMENSIONS.height,
   },
   myLocationButton: {
     position: "absolute",

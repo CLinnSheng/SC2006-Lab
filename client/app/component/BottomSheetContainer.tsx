@@ -11,7 +11,6 @@ import {
   Keyboard,
   Text,
   View,
-  Dimensions,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -28,16 +27,13 @@ import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-
-const deviceHeight = Dimensions.get("window").height;
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
 }: {
   bottomSheetPosition: SharedValue<number>;
 }) => {
-  // const [isFontLoaded, setIsFontLoaded] = useState(false);
-
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
 
@@ -76,6 +72,9 @@ const BottomSheetContainer = ({
 
   const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
   const collapseBottomSheet = () => bottomSheetRef.current?.snapToIndex(1);
+  // Handle search bar forcus/blur
+  const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
+  const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
   const handleAnimate = useCallback((fromIndex: number, toIndex: number) => {
     console.log("handleAnimate", fromIndex, toIndex);
@@ -125,7 +124,7 @@ const BottomSheetContainer = ({
     return {
       opacity: interpolate(
         bottomSheetPosition.value,
-        [deviceHeight * 0.88, deviceHeight * 0.7],
+        [SCREEN_DIMENSIONS.height * 0.88, SCREEN_DIMENSIONS.height * 0.7],
         [0, 1],
         { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
       ),
@@ -133,10 +132,6 @@ const BottomSheetContainer = ({
   });
 
   const [isSearchFocused, setIsSearchFocused] = useState(false); // Track focus state of the search bar
-
-  // Handle search bar forcus/blur
-  const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
-  const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
   const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
   const getStreetViewUrl = (latitude: number, longitude: number) => {
