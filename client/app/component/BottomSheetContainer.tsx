@@ -173,13 +173,8 @@ const BottomSheetContainer = ({
                 color="#333"
                 style={styles.iconContainer}
               />
-              <Text style={styles.carParkTitle}>
-                Car Park: {item.carParkID || "N/A"}
-              </Text>
+              <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
             </View>
-            <Text style={styles.itemDetail}>
-              Address: {item.address || "Unknown"}
-            </Text>
             <Text style={styles.itemDetail}>
               Type: {item.carParkType || "N/A"}
             </Text>
@@ -210,7 +205,7 @@ const BottomSheetContainer = ({
                 style={styles.iconContainer}
               />
               <Text style={styles.evStationTitle}>
-                EV Station: {item.displayName || "N/A"}
+                {item.displayName || "N/A"}
               </Text>
             </View>
             <Text style={styles.itemDetail}>
@@ -370,13 +365,13 @@ const styles = StyleSheet.create({
   carParkTitle: {
     fontWeight: "bold",
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 2,
     color: "#333",
   },
   evStationTitle: {
     fontWeight: "bold",
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 2,
     color: "#007bff", // Blue color for EV Station
   },
   itemDetail: {
