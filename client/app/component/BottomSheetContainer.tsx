@@ -28,14 +28,6 @@ import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import * as Font from "expo-font";
-
-const loadFonts = () => {
-  return Font.loadAsync({
-    "DejaVuSansMono-BoldOblique": require("../../assets/fonts/DejaVuSansMono-BoldOblique.ttf"),
-    ArialRoundedBold: require("../../assets/fonts/SourceCodePro-BlackIt.ttf"), // Make sure the path is correct
-  });
-};
 
 const deviceHeight = Dimensions.get("window").height;
 
@@ -44,7 +36,7 @@ const BottomSheetContainer = ({
 }: {
   bottomSheetPosition: SharedValue<number>;
 }) => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
+  // const [isFontLoaded, setIsFontLoaded] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
@@ -61,10 +53,6 @@ const BottomSheetContainer = ({
 
   const [carParks, setCarParks] = useState<any[]>([]);
   const [EVLots, setEVLots] = useState<any[]>([]);
-
-  useEffect(() => {
-    loadFonts().then(() => setIsFontLoaded(true));
-  }, []);
 
   const combinedListCarPark = useMemo(() => {
     return [

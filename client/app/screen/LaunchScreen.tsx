@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Animated, StatusBar } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Font from "expo-font";
-
-const LoadFonts = async () => {
-  await Font.loadAsync({
-    ArialRoundedBold: require("../../assets/fonts/ArialRoundedBold.ttf"),
-  });
-};
 
 export default function LaunchScreen({
   onAnimationComplete,
@@ -16,10 +9,8 @@ export default function LaunchScreen({
 }) {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [textAnim] = useState(new Animated.Value(0));
-  const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
-    LoadFonts().then(() => setFontLoaded(true));
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -33,9 +24,7 @@ export default function LaunchScreen({
       }),
     ]).start(({ finished }) => {
       if (finished) {
-        setTimeout(() => {
-          onAnimationComplete && onAnimationComplete();
-        }, 500);
+        onAnimationComplete && onAnimationComplete();
       }
     });
   }, []);
