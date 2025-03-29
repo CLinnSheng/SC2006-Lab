@@ -44,8 +44,14 @@ const BottomSheetContainer = ({
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  const { initialProcessedPayload, userLocation } =
-    useContext(UserLocationContext);
+  const {
+    initialProcessedPayload,
+    userLocation,
+    getNearbyCarParks,
+    searchedLocationPayload,
+    isShowingSearchedLocation,
+    resetToUserLocation,
+  } = useContext(UserLocationContext);
 
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
 
@@ -60,10 +66,10 @@ const BottomSheetContainer = ({
   }, [carParks, EVLots]);
 
   const handleSearchedLocation = (location: any) => {
-    console.log("Searched location received in BottomSheetContainer")
+    console.log("Searched location received in BottomSheetContainer");
     setSearchedLocation(location);
-    setSearchedLocationFromMap(location);
-    console.log("Set searched location in BottomSheetContainer & MapView");
+    setSearchedLocationFromMap(location); // for animation
+    getNearbyCarParks({ latitude: location.lat, longitude: location.lng });
   };
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -72,6 +78,12 @@ const BottomSheetContainer = ({
     if (index < 2) {
       Keyboard.dismiss();
     }
+  }, []);
+
+  const handleSheetChanges_SelectedCarPark = useCallback((index: number) => {
+    console.log("handleSheetChanges_SelectedCarPark", index);
+    // bottomSheetRef.current?.snapToIndex(index);
+    // selectedCarParkBottomSheetRef.current?.snapToIndex(1);
   }, []);
 
   const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
@@ -94,12 +106,34 @@ const BottomSheetContainer = ({
     }
   }, []);
 
+  // for car park bottomsheet
+  const handleExitSearch = () => {
+    resetToUserLocation();
+    searchBarRef.current?.clearInput();
+    collapseBottomSheet();
+  };
+
   const fetchNearByCarParks = async () => {
     console.log("Fetching nearby car parks from /api/carpark/nearby/");
     try {
+      // const resp = await axios.post(
+      //   `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
+      //   initialProcessedPayload,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
+      const payloadToUse = isShowingSearchedLocation
+        ? searchedLocationPayload
+        : initialProcessedPayload;
+      if (!payloadToUse) return;
+
       const resp = await axios.post(
         `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
-        initialProcessedPayload,
+        payloadToUse,
         {
           headers: {
             "Content-Type": "application/json",
@@ -116,12 +150,13 @@ const BottomSheetContainer = ({
   };
 
   useEffect(() => {
-    if (initialProcessedPayload) {
-      fetchNearByCarParks();
-    } else {
-      console.log("Initial Processed Payload not set");
-    }
-  }, [initialProcessedPayload]);
+    console.log("Started fetching nearby car parks");
+    fetchNearByCarParks();
+  }, [
+    initialProcessedPayload,
+    searchedLocationPayload,
+    isShowingSearchedLocation,
+  ]);
 
   // Animation for the flatlist
   const flatListAnimatedStyle = useAnimatedStyle(() => {
@@ -136,8 +171,8 @@ const BottomSheetContainer = ({
   });
 
   const [isSearchFocused, setIsSearchFocused] = useState(false); // Track focus state of the search bar
-
   const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
+
   const getStreetViewUrl = (latitude: number, longitude: number) => {
     return `https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${latitude},${longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`;
   };
@@ -148,9 +183,8 @@ const BottomSheetContainer = ({
         style={[styles.itemContainer, { backgroundColor: "white" }]}
         onPress={() => {
           setSelectedCarPark(item);
-          if (selectedCarParkBottomSheetRef.current) {
-            selectedCarParkBottomSheetRef.current.snapToIndex(1);
-          }
+          collapseBottomSheet();
+          selectedCarParkBottomSheetRef.current?.snapToIndex(1);
         }}
       >
         {item.type === "CarPark" ? (
@@ -178,7 +212,6 @@ const BottomSheetContainer = ({
               )}
               {item.lotDetails?.C?.totalLots && (
                 <Text style={{ color: "#777" }}>
-                  {" "}
                   / {item.lotDetails.C.totalLots}
                 </Text>
               )}
@@ -251,11 +284,12 @@ const BottomSheetContainer = ({
       {selectedCarPark && (
         <BottomSheet
           ref={selectedCarParkBottomSheetRef} // Use a separate ref if needed
-          index={0}
-          snapPoints={["40%"]}
-          onChange={handleSheetChanges}
+          index={1}
+          snapPoints={["10%", "40%", "93%"]}
+          onChange={handleSheetChanges_SelectedCarPark}
           backgroundStyle={{ backgroundColor: "#F5F5F7" }}
-          enablePanDownToClose={true} // Allow swiping down to close the bottom sheet
+          enablePanDownToClose={false}
+          enableDynamicSizing={false}
         >
           <BottomSheetView style={styles.itemDetail}>
             {selectedCarPark.type === "CarPark" ? (

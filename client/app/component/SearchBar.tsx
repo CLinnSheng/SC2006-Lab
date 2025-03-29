@@ -127,7 +127,7 @@ const GoogleSearchBar = forwardRef(
         )}
 
         {/* 'X' Button */}
-        {inputValue.length > 0 && (
+        {inputValue.length > 0  && isFocused && (
           <TouchableOpacity
             onPress={handleClearPress}
             style={styles.clearButton}

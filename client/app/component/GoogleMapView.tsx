@@ -7,7 +7,6 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import * as Location from "expo-location";
 import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -67,7 +66,6 @@ const GoogleMapView: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(searchedLocation);
     if (searchedLocation) {
       console.log("Animating to searched location:", searchedLocation);
       mapRef.current?.animateToRegion(
@@ -77,7 +75,7 @@ const GoogleMapView: React.FC = () => {
           latitudeDelta: 0.01, // Adjust delta for desired zoom level
           longitudeDelta: 0.01,
         },
-        3000 // Animation duration in milliseconds
+        1500 // Animation duration in milliseconds
       );
     }
   }, [searchedLocation]); // Re-run when searchedLocation changes
@@ -126,11 +124,6 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-  loadingContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: SCREEN_DIMENSIONS.height,
-  },
   myLocationButton: {
     position: "absolute",
     backgroundColor: "#FFFFFF",
@@ -145,7 +138,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     right: 15,
-    bottom: 395,
+    bottom: SCREEN_DIMENSIONS.height * 0.424,
   },
 });
 
