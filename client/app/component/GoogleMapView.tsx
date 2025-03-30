@@ -103,6 +103,7 @@ const GoogleMapView: React.FC = () => {
             </TouchableOpacity>
           </Animated.View>
           <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} />
+          
         </>
       )}
     </View>
