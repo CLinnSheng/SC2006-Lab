@@ -24,12 +24,14 @@ const GoogleSearchBar = forwardRef(
       onFoucs,
       onBlur,
       searchedLocation,
+      onExitSearch,
     }: {
       onFocusExpand: () => void;
       onCancelPress: () => void;
       onFoucs: () => void;
       onBlur: () => void;
       searchedLocation: (location: any) => void;
+      onExitSearch: () => void;
     },
     ref
   ) => {
@@ -66,6 +68,7 @@ const GoogleSearchBar = forwardRef(
       onCancelPress();
       Keyboard.dismiss();
       setIsFocused(false);
+      onExitSearch();
     };
 
     const handleClearPress = () => {
@@ -127,11 +130,18 @@ const GoogleSearchBar = forwardRef(
         )}
 
         {/* 'X' Button */}
-        {inputValue.length > 0  && isFocused && (
+        {inputValue.length > 0 && isFocused && (
           <TouchableOpacity
             onPress={handleClearPress}
             style={styles.clearButton}
           >
+            <Ionicons name="close-circle" size={20} color="#A0A0A0" />
+          </TouchableOpacity>
+        )}
+
+        {/* Exit Button */}
+        {inputValue.length > 0 && !isFocused && (
+          <TouchableOpacity onPress={onExitSearch} style={styles.exitButton}>
             <Ionicons name="close-circle" size={20} color="#A0A0A0" />
           </TouchableOpacity>
         )}
@@ -196,6 +206,12 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#E0E0E0",
     width: "150%",
+  },
+  exitButton: {
+    position: "absolute",
+    right: -25,
+    top: 30,
+    zIndex: 3,
   },
 });
 export default GoogleSearchBar;
