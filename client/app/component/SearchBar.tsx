@@ -7,7 +7,6 @@ import React, {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import "react-native-get-random-values";
 import {
-  Dimensions,
   Keyboard,
   StyleSheet,
   Text,
@@ -15,8 +14,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const { width } = Dimensions.get("window");
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const GoogleSearchBar = forwardRef(
   (
@@ -37,7 +35,6 @@ const GoogleSearchBar = forwardRef(
   ) => {
     const [inputValue, setInputValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
-
     const autoCompleteRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
@@ -93,10 +90,8 @@ const GoogleSearchBar = forwardRef(
           fetchDetails={true}
           placeholder="Search Maps"
           onPress={(data, details = null) => {
-            console.log("Suggestion selected:", data); // Log the selected suggestion data
-            console.log("Location details:", details); // Log the location details
-
-            searchedLocation(details?.geometry?.location);
+            searchedLocation(details?.geometry.location);
+            onCancelPress();
           }}
           textInputProps={{
             onFocus: handleFocus,
@@ -132,7 +127,7 @@ const GoogleSearchBar = forwardRef(
         )}
 
         {/* 'X' Button */}
-        {inputValue.length > 0 && (
+        {inputValue.length > 0  && isFocused && (
           <TouchableOpacity
             onPress={handleClearPress}
             style={styles.clearButton}
@@ -148,7 +143,7 @@ const GoogleSearchBar = forwardRef(
 const styles = StyleSheet.create({
   searchBarContainer: {
     position: "absolute",
-    width: width * 0.86,
+    width: SCREEN_DIMENSIONS.width * 0.86,
     paddingHorizontal: 10,
     top: -20,
     left: 2,

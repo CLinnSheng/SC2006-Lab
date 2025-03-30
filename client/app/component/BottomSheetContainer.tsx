@@ -11,8 +11,6 @@ import {
   Keyboard,
   Text,
   View,
-  Animated,
-  Dimensions,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -29,27 +27,15 @@ import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
-import * as Font from "expo-font";
-
-const loadFonts = () => {
-  return Font.loadAsync({
-    "DejaVuSansMono-BoldOblique": require("../../assets/fonts/DejaVuSansMono-BoldOblique.ttf"),
-    ArialRoundedBold: require("../../assets/fonts/SourceCodePro-BlackIt.ttf"), // Make sure the path is correct
-  });
-};
-
-const deviceHeight = Dimensions.get("window").height;
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
+  searchedLocation: setSearchedLocationFromMap,
 }: {
   bottomSheetPosition: SharedValue<number>;
+  searchedLocation: (location: any) => void;
 }) => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-
-  useEffect(() => {
-    loadFonts().then(() => setIsFontLoaded(true));
-  }, []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
 
@@ -58,12 +44,20 @@ const BottomSheetContainer = ({
   const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
 
-  const { initialProcessedPayload } = useContext(UserLocationContext);
+  const {
+    initialProcessedPayload,
+    userLocation,
+    getNearbyCarParks,
+    searchedLocationPayload,
+    isShowingSearchedLocation,
+    resetToUserLocation,
+  } = useContext(UserLocationContext);
 
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
 
   const [carParks, setCarParks] = useState<any[]>([]);
   const [EVLots, setEVLots] = useState<any[]>([]);
+
   const combinedListCarPark = useMemo(() => {
     return [
       ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
@@ -72,8 +66,10 @@ const BottomSheetContainer = ({
   }, [carParks, EVLots]);
 
   const handleSearchedLocation = (location: any) => {
+    console.log("Searched location received in BottomSheetContainer");
     setSearchedLocation(location);
-    console.log("Searched location:", location);
+    setSearchedLocationFromMap(location); // for animation
+    getNearbyCarParks({ latitude: location.lat, longitude: location.lng });
   };
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -84,8 +80,17 @@ const BottomSheetContainer = ({
     }
   }, []);
 
+  const handleSheetChanges_SelectedCarPark = useCallback((index: number) => {
+    console.log("handleSheetChanges_SelectedCarPark", index);
+    // bottomSheetRef.current?.snapToIndex(index);
+    // selectedCarParkBottomSheetRef.current?.snapToIndex(1);
+  }, []);
+
   const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
   const collapseBottomSheet = () => bottomSheetRef.current?.snapToIndex(1);
+  // Handle search bar forcus/blur
+  const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
+  const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
   const handleAnimate = useCallback((fromIndex: number, toIndex: number) => {
     console.log("handleAnimate", fromIndex, toIndex);
@@ -101,12 +106,34 @@ const BottomSheetContainer = ({
     }
   }, []);
 
+  // for car park bottomsheet
+  const handleExitSearch = () => {
+    resetToUserLocation();
+    searchBarRef.current?.clearInput();
+    collapseBottomSheet();
+  };
+
   const fetchNearByCarParks = async () => {
     console.log("Fetching nearby car parks from /api/carpark/nearby/");
     try {
+      // const resp = await axios.post(
+      //   `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
+      //   initialProcessedPayload,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
+      const payloadToUse = isShowingSearchedLocation
+        ? searchedLocationPayload
+        : initialProcessedPayload;
+      if (!payloadToUse) return;
+
       const resp = await axios.post(
         `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
-        initialProcessedPayload,
+        payloadToUse,
         {
           headers: {
             "Content-Type": "application/json",
@@ -123,19 +150,20 @@ const BottomSheetContainer = ({
   };
 
   useEffect(() => {
-    if (initialProcessedPayload) {
-      fetchNearByCarParks();
-    } else {
-      console.log("Initial Processed Payload not set");
-    }
-  }, [initialProcessedPayload]);
+    console.log("Started fetching nearby car parks");
+    fetchNearByCarParks();
+  }, [
+    initialProcessedPayload,
+    searchedLocationPayload,
+    isShowingSearchedLocation,
+  ]);
 
   // Animation for the flatlist
   const flatListAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
         bottomSheetPosition.value,
-        [deviceHeight * 0.88, deviceHeight * 0.7],
+        [SCREEN_DIMENSIONS.height * 0.88, SCREEN_DIMENSIONS.height * 0.7],
         [0, 1],
         { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
       ),
@@ -143,12 +171,8 @@ const BottomSheetContainer = ({
   });
 
   const [isSearchFocused, setIsSearchFocused] = useState(false); // Track focus state of the search bar
-
-  // Handle search bar forcus/blur
-  const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
-  const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
-
   const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
+
   const getStreetViewUrl = (latitude: number, longitude: number) => {
     return `https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${latitude},${longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`;
   };
@@ -189,9 +213,8 @@ const BottomSheetContainer = ({
       style={[styles.itemContainer, { backgroundColor: "white" }]}        
       onPress={() => {
           setSelectedCarPark(item);
-          if (selectedCarParkBottomSheetRef.current) {
-            selectedCarParkBottomSheetRef.current.snapToIndex(0);
-          }
+          collapseBottomSheet();
+          selectedCarParkBottomSheetRef.current?.snapToIndex(1);
         }}
       >
         {item.type === "CarPark" ? (
@@ -283,7 +306,8 @@ const BottomSheetContainer = ({
           snapPoints={["50%"]}
           onChange={handleSheetChanges}
           backgroundStyle={{ backgroundColor: "#F5F5F7" }}
-          enablePanDownToClose={true} // Allow swiping down to close the bottom sheet
+          enablePanDownToClose={false}
+          enableDynamicSizing={false}
         >
           <BottomSheetView style={styles.itemDetail}>
             {selectedCarPark.type === "CarPark" ? (

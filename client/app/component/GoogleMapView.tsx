@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import {
-  Dimensions,
   Platform,
   StatusBar,
   StyleSheet,
   View,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
-import * as Location from "expo-location";
 import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -19,29 +16,20 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
-
-const deviceHeight = Dimensions.get("window").height;
-
-const DEFAULT_LOCATION: Location.LocationObjectCoords = {
-  latitude: 1.347064,
-  longitude: 103.6782468,
-  altitude: 0,
-  accuracy: 0,
-  altitudeAccuracy: 0,
-  heading: 0,
-  speed: 0,
-};
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
+import DEFAULT_LOCATION from "../constants/defaultLocation";
 
 const GoogleMapView: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
-  const { userLocation, loading, recenterRefreshLocation, evCarParksList } =
-    useContext(UserLocationContext);
+  const { userLocation } = useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
-  const maxBottomSheetHeight = parseFloat((0.58487 * deviceHeight).toFixed(1));
+  const maxBottomSheetHeight = parseFloat(
+    (0.58487 * SCREEN_DIMENSIONS.height).toFixed(1)
+  );
+  const [searchedLocation, setSearchedLocation] = useState<any>(null); // State for searched location
 
   const handleRecenterMap = () => {
     if (userLocation) {
-      // recenterRefreshLocation();
       mapRef.current?.animateToRegion({
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
@@ -72,40 +60,56 @@ const GoogleMapView: React.FC = () => {
     };
   });
 
+  const handleSearchedLocationFromBar = (location: any) => {
+    setSearchedLocation(location);
+    console.log("Searched location received in GoogleMapView:", location);
+  };
+
+  useEffect(() => {
+    if (searchedLocation) {
+      console.log("Animating to searched location:", searchedLocation);
+      mapRef.current?.animateToRegion(
+        {
+          latitude: searchedLocation.lat,
+          longitude: searchedLocation.lng,
+          latitudeDelta: 0.01, // Adjust delta for desired zoom level
+          longitudeDelta: 0.01,
+        },
+        1500 // Animation duration in milliseconds
+      );
+    }
+  }, [searchedLocation]); // Re-run when searchedLocation changes
+
   return (
     <View style={styles.container}>
       {Platform.OS === "android" && (
         <StatusBar translucent backgroundColor="transparent" />
       )}
-      {loading ? (
-        <View style={[styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="black" />
-        </View>
-      ) : (
-        <>
-          <MapView
-            ref={mapRef}
-            style={styles.map}
-            showsUserLocation
-            showsMyLocationButton={false}
-            initialRegion={{
-              latitude: userLocation?.latitude ?? DEFAULT_LOCATION.latitude,
-              longitude: userLocation?.longitude ?? DEFAULT_LOCATION.longitude,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
-            }}
-            // customMapStyle={mapViewStyle}
-            // provider={PROVIDER_GOOGLE}
-          />
-          <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
-            <TouchableOpacity onPress={handleRecenterMap}>
-              <Ionicons name="locate" size={24} color="#007AFF" />
-            </TouchableOpacity>
-          </Animated.View>
-          <BottomSheetContainer bottomSheetPosition={bottomSheetPosition} />
-          
-        </>
-      )}
+      <>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          showsUserLocation
+          showsMyLocationButton={false}
+          initialRegion={{
+            latitude: userLocation?.latitude ?? DEFAULT_LOCATION.latitude,
+            longitude: userLocation?.longitude ?? DEFAULT_LOCATION.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
+          // customMapStyle={mapViewStyle}
+          // provider={PROVIDER_GOOGLE}
+        />
+        <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
+          <TouchableOpacity onPress={handleRecenterMap}>
+            <Ionicons name="locate" size={24} color="#007AFF" />
+          </TouchableOpacity>
+        </Animated.View>
+        <BottomSheetContainer
+          bottomSheetPosition={bottomSheetPosition}
+          searchedLocation={handleSearchedLocationFromBar}
+        />
+      </>
     </View>
   );
 };
@@ -119,11 +123,6 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-  },
-  loadingContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: deviceHeight,
   },
   myLocationButton: {
     position: "absolute",
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     right: 15,
-    bottom: 395,
+    bottom: SCREEN_DIMENSIONS.height * 0.424,
   },
 });
 
