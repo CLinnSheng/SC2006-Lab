@@ -24,7 +24,9 @@ const GoogleMapView: React.FC = () => {
   const { userLocation } = useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
   const maxBottomSheetHeight = parseFloat(
-    (0.58487 * SCREEN_DIMENSIONS.height).toFixed(1)
+    Platform.OS === "ios"
+      ? (0.55 * SCREEN_DIMENSIONS.height).toFixed(1)
+      : (0.536 * SCREEN_DIMENSIONS.height).toFixed(1)
   );
   const [searchedLocation, setSearchedLocation] = useState<any>(null); // State for searched location
 
@@ -138,7 +140,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     right: 15,
-    bottom: SCREEN_DIMENSIONS.height * 0.424,
+    bottom:
+      Platform.OS === "ios"
+        ? SCREEN_DIMENSIONS.height * 0.462
+        : SCREEN_DIMENSIONS.height * 0.445,
   },
 });
 

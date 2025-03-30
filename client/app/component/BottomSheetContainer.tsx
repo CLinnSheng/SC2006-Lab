@@ -13,6 +13,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  Platform,
 } from "react-native";
 import BottomSheet, {
   BottomSheetView,
@@ -21,13 +22,16 @@ import BottomSheet, {
 import {
   interpolate,
   SharedValue,
+  useAnimatedReaction,
   useAnimatedStyle,
+  useSharedValue,
 } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
@@ -41,7 +45,7 @@ const BottomSheetContainer = ({
 
   const searchBarRef = useRef<{ clearInput: () => void }>(null);
 
-  const snapPoints = useMemo(() => ["10%", "40%", "93%"], []);
+  const snapPoints = useMemo(() => ["10%", "45%", "93%"], []);
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const {
@@ -57,6 +61,8 @@ const BottomSheetContainer = ({
 
   const [carParks, setCarParks] = useState<any[]>([]);
   const [EVLots, setEVLots] = useState<any[]>([]);
+
+  const selectedCarParkBottomSheetPosition = useSharedValue(0);
 
   const combinedListCarPark = useMemo(() => {
     return [
@@ -88,7 +94,6 @@ const BottomSheetContainer = ({
 
   const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
   const collapseBottomSheet = () => bottomSheetRef.current?.snapToIndex(1);
-  // Handle search bar forcus/blur
   const handleFocus = () => setIsSearchFocused(true); // Set search bar focus to true, hide FlatList
   const handleBlur = () => setIsSearchFocused(false); // Set search bar focus to false, show FlatList
 
@@ -106,7 +111,7 @@ const BottomSheetContainer = ({
     }
   }, []);
 
-  // for car park bottomsheet
+  // Handle exit search for a specific location
   const handleExitSearch = () => {
     resetToUserLocation();
     searchBarRef.current?.clearInput();
@@ -116,16 +121,6 @@ const BottomSheetContainer = ({
   const fetchNearByCarParks = async () => {
     console.log("Fetching nearby car parks from /api/carpark/nearby/");
     try {
-      // const resp = await axios.post(
-      //   `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
-      //   initialProcessedPayload,
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
-
       const payloadToUse = isShowingSearchedLocation
         ? searchedLocationPayload
         : initialProcessedPayload;
@@ -176,7 +171,15 @@ const BottomSheetContainer = ({
   const getStreetViewUrl = (latitude: number, longitude: number) => {
     return `https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${latitude},${longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`;
   };
-  const getCarParkIcon = (type: "MULTI-STOREY CAR PARK" | "SURFACE CAR PARK" | "BASEMENT CAR PARK" | "SURFACE/MULTI-STOREY CAR PARK" | string) => {
+
+  const getCarParkIcon = (
+    type:
+      | "MULTI-STOREY CAR PARK"
+      | "SURFACE CAR PARK"
+      | "BASEMENT CAR PARK"
+      | "SURFACE/MULTI-STOREY CAR PARK"
+      | string
+  ) => {
     switch (type) {
       case "MULTI-STOREY CAR PARK":
         return "business-outline"; // Sheltered, so use a building icon
@@ -184,13 +187,19 @@ const BottomSheetContainer = ({
         return "car-outline"; // Unsheltered, so use a car icon
       case "BASEMENT CAR PARK":
         return "download-outline"; // Basement, so use a downward arrow
-        case "SURFACE/MULTI-STOREY CAR PARK":
+      case "SURFACE/MULTI-STOREY CAR PARK":
         return "business-outline";
       default:
         return "help-circle-outline"; // Default for unknown types
     }
   };
-  const getCarParkTypeLabel = (type: "MULTI-STOREY CAR PARK" | "SURFACE CAR PARK" | "BASEMENT CAR PARK" | string) => {
+  const getCarParkTypeLabel = (
+    type:
+      | "MULTI-STOREY CAR PARK"
+      | "SURFACE CAR PARK"
+      | "BASEMENT CAR PARK"
+      | string
+  ) => {
     switch (type) {
       case "MULTI-STOREY CAR PARK":
         return "Sheltered";
@@ -203,32 +212,47 @@ const BottomSheetContainer = ({
     }
   };
 
-  
+  useAnimatedReaction(
+    () => selectedCarParkBottomSheetPosition.value,
+    (currentPosition) => {
+      bottomSheetPosition.value = currentPosition; // Sync outer with inner
+    }
+  );
 
-  
+  const [showSelectedCarParkSheet, setShowSelectedCarParkSheet] =
+    useState(false);
+
+  // Handle closing the car park detail sheet
+  const handleCloseCarParkSheet = () => {
+    setShowSelectedCarParkSheet(false);
+    setSelectedCarPark(null);
+  };
 
   const renderItem = useCallback(
     ({ item }: { item: any }) => (
       <TouchableOpacity
-      style={[styles.itemContainer, { backgroundColor: "white" }]}        
-      onPress={() => {
+        style={[styles.itemContainer, { backgroundColor: "white" }]}
+        onPress={() => {
           setSelectedCarPark(item);
-          collapseBottomSheet();
-          selectedCarParkBottomSheetRef.current?.snapToIndex(1);
+          setShowSelectedCarParkSheet(true); // Show the car park detail sheet
         }}
       >
         {item.type === "CarPark" ? (
           <>
-            <View style={[styles.titleContainer]}> {/* Ensure column layout */}
+            <View style={[styles.titleContainer]}>
+              {/* Ensure column layout */}
               <Image
                 style={styles.streetViewImageList}
                 source={{
                   uri: getStreetViewUrl(item.latitude, item.longitude),
                 }}
               />
-              <View style={{ flexDirection: 'column' }}> {/* Apply column layout only to title and details */}
+              <View style={{ flexDirection: "column" }}>
+                {/* Apply column layout only to title and details */}
                 <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
-                <Text style={styles.moreDetailsText}>Press more for details</Text> {/* Added this line */}
+                <Text style={styles.moreDetailsText}>
+                  Press more for details
+                </Text>
               </View>
             </View>
           </>
@@ -246,10 +270,10 @@ const BottomSheetContainer = ({
               </Text>
             </View>
             <Text style={styles.itemDetail}>
-              {"Chargers: " + (item.totalChargers || "N/A")}
+              Chargers: {item.totalChargers || "N/A"}
             </Text>
             <Text style={styles.itemDetail}>
-              {"Operator: " + (item.operator || "Unknown")}
+              Operator: {item.operator || "Unknown"}
             </Text>
           </>
         )}
@@ -257,59 +281,65 @@ const BottomSheetContainer = ({
     ),
     []
   );
-  
-  
-  
 
   return (
     <>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        backgroundStyle={{ backgroundColor: "white" }}
-        onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
-        enablePanDownToClose={false}
-        animatedPosition={bottomSheetPosition}
-        enableDynamicSizing={false}
-      >
-        <BottomSheetView style={styles.searchBarContainer}>
-          <GoogleSearchBar
-            ref={searchBarRef}
-            onFocusExpand={expandBottomSheet}
-            onCancelPress={collapseBottomSheet}
-            onFoucs={handleFocus}
-            onBlur={handleBlur}
-            searchedLocation={handleSearchedLocation}
-          />
-        </BottomSheetView>
+      {!showSelectedCarParkSheet && (
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+          backgroundStyle={{ backgroundColor: "white" }}
+          onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
+          enablePanDownToClose={false}
+          animatedPosition={bottomSheetPosition}
+          enableDynamicSizing={false}
+        >
+          <BottomSheetView style={styles.searchBarContainer}>
+            <GoogleSearchBar
+              ref={searchBarRef}
+              onFocusExpand={expandBottomSheet}
+              onCancelPress={collapseBottomSheet}
+              onFoucs={handleFocus}
+              onBlur={handleBlur}
+              searchedLocation={handleSearchedLocation}
+            />
+          </BottomSheetView>
 
-        <View style={styles.spacer} />
+          <View style={styles.spacer} />
 
-        {!isSearchFocused && (
-          <BottomSheetFlatList
-            data={combinedListCarPark}
-            renderItem={renderItem}
-            contentContainerStyle={styles.contentContainer}
-            keyboardShouldPersistTaps="handled"
-            style={[styles.flatList, flatListAnimatedStyle]}
-          ></BottomSheetFlatList>
-        )}
-      </BottomSheet>
+          {!isSearchFocused && (
+            <BottomSheetFlatList
+              data={combinedListCarPark}
+              renderItem={renderItem}
+              contentContainerStyle={styles.contentContainer}
+              keyboardShouldPersistTaps="handled"
+              style={[styles.flatList, flatListAnimatedStyle]}
+            ></BottomSheetFlatList>
+          )}
+        </BottomSheet>
+      )}
 
       {/* New BottomSheet for Selected Car Park Details */}
-      {selectedCarPark && (
+      {selectedCarPark && showSelectedCarParkSheet && (
         <BottomSheet
           ref={selectedCarParkBottomSheetRef} // Use a separate ref if needed
-          index={0}
-          snapPoints={["50%"]}
-          onChange={handleSheetChanges}
+          index={1}
+          snapPoints={["13%", "45%"]}
+          onChange={handleSheetChanges_SelectedCarPark}
           backgroundStyle={{ backgroundColor: "#F5F5F7" }}
           enablePanDownToClose={false}
           enableDynamicSizing={false}
+          animatedPosition={selectedCarParkBottomSheetPosition}
         >
           <BottomSheetView style={styles.itemDetail}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleCloseCarParkSheet}
+            >
+              <AntDesign name="closecircle" size={16} color="grey" />
+            </TouchableOpacity>
             {selectedCarPark.type === "CarPark" ? (
               <>
                 {/* Display the Street View Image */}
@@ -332,41 +362,42 @@ const BottomSheetContainer = ({
                   Address: {selectedCarPark.address}
                 </Text>
                 <Text style={styles.selectedCarParkDetails}>
-      Type: {getCarParkTypeLabel(selectedCarPark.carParkType)}{" "}
-      <Ionicons
-      name={getCarParkIcon(selectedCarPark.carParkType)}
-      size={16}
-      color="black" // Customize color
-    />
-    </Text>
-    <Text style={styles.selectedCarParkDetails}>
-              Lots Available:
-              {selectedCarPark.lotDetails?.C?.availableLots !== undefined ? (
-    <Text
-      style={[
-        styles.availableLots,
-        {
-          color:
-            selectedCarPark.lotDetails.C.availableLots < 20
-              ? "red"
-              : selectedCarPark.lotDetails.C.availableLots < 100
-              ? "orange"
-              : "green", // Default to green if 50 or more
-        },
-      ]}
-    >
-      {selectedCarPark.lotDetails.C.availableLots}
-    </Text>
-              ) : (
-                <Text style={styles.notAvailable}> N/A</Text>
-              )}
-              {selectedCarPark.lotDetails?.C?.totalLots && (
-                <Text style={{ color: "#777" }}>
-                  {" "}
-                  / {selectedCarPark.lotDetails.C.totalLots}
+                  Type: {getCarParkTypeLabel(selectedCarPark.carParkType)}{" "}
+                  {/* <Ionicons
+                    name={getCarParkIcon(selectedCarPark.carParkType)}
+                    size={16}
+                    color="black" // Customize color
+                  /> */}
                 </Text>
-              )}
-            </Text>
+                <Text style={styles.selectedCarParkDetails}>
+                  Lots Available:{" "}
+                  {selectedCarPark.lotDetails?.C?.availableLots !==
+                  undefined ? (
+                    <Text
+                      style={[
+                        styles.availableLots,
+                        {
+                          color:
+                            selectedCarPark.lotDetails.C.availableLots < 20
+                              ? "red"
+                              : selectedCarPark.lotDetails.C.availableLots < 100
+                              ? "orange"
+                              : "green", // Default to green if 50 or more
+                        },
+                      ]}
+                    >
+                      {selectedCarPark.lotDetails.C.availableLots}
+                    </Text>
+                  ) : (
+                    <Text style={styles.notAvailable}> N/A</Text>
+                  )}
+                  {selectedCarPark.lotDetails?.C?.totalLots && (
+                    <Text style={{ color: "#777" }}>
+                      {" "}
+                      / {selectedCarPark.lotDetails.C.totalLots}
+                    </Text>
+                  )}
+                </Text>
               </>
             ) : selectedCarPark.type === "EV" ? (
               <>
@@ -427,27 +458,25 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     padding: 15,
-  borderTopWidth: 1,
-  borderBottomWidth: 1,
-  borderColor: "#e0e0e0", // Light separator lines
-  backgroundColor: "transparent", // No box effect
-  flexDirection: 'column',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#e0e0e0", // Light separator lines
+    backgroundColor: "transparent", // No box effect
+    flexDirection: "column",
   },
   carParkTitle: {
     fontWeight: "bold",
     fontSize: 16,
     marginBottom: 2,
-    marginLeft:8,
+    marginLeft: 8,
     color: "#333",
   },
-  
-    moreDetailsText: {
-      fontSize: 14,
-      color: "#007bff",  // You can adjust the color as needed
-      marginTop: 5,      // Optional, for spacing
-      marginLeft:10,
-    },
-  
+  moreDetailsText: {
+    fontSize: 14,
+    color: "#007bff", // You can adjust the color as needed
+    marginTop: 5, // Optional, for spacing
+    marginLeft: 10,
+  },
   evStationTitle: {
     fontWeight: "bold",
     fontSize: 16,
@@ -458,18 +487,19 @@ const styles = StyleSheet.create({
     fontSize: 15, // Slightly larger for better readability
     color: "#666", // Softer gray for a more subtle effect
     marginBottom: 6, // Increased bottom margin for better separation
-    lineHeight: 22, // Improves readability by increasing vertical space
+    lineHeight: 20, // Improves readability by increasing vertical space
     letterSpacing: 0.5, // Adds a slight space between characters for better legibility
     fontFamily: "Arial", // Optional: Add a modern font if available
     textAlign: "left", // Ensure text is left-aligned (or 'center' if preferred)
   },
   streetViewImage: {
-    width: "100%",
+    width: Platform.OS === "ios" ? "100%" : SCREEN_DIMENSIONS.width * 0.9,
     height: 150, // Adjust as needed
-    marginTop: 10,
+    marginTop: 30,
     borderRadius: 15,
     paddingHorizontal: 20,
-    paddingVertical: 0,
+    alignContent: "center",
+    alignSelf: "center",
   },
   streetViewImageList: {
     width: 60,
@@ -488,8 +518,7 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   iconContainer: {
-    marginRight: 8,
-    
+    marginBottom: 5,
   },
   titleContainer: {
     flexDirection: "row",
@@ -506,33 +535,39 @@ const styles = StyleSheet.create({
     lineHeight: 40, // Line height for better readability
   },
   selectedCarParkDetails: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: "ArialRoundedBold",
     color: "#FFFFF",
-    marginBottom: 0,
-    lineHeight: 20, // Line height for better readability
+    lineHeight: 25, // Line height for better readability
     paddingHorizontal: 0,
     paddingVertical: 0,
     borderWidth: 0,
     alignSelf: "center", // Center the box
     width: "90%", // Make it responsive with 80% width    borderColor: '#333',
-    borderRadius: 5, // Optional: adds rounded corners to the box
+    top: SCREEN_DIMENSIONS.height * 0.01,
   },
   navigateButton: {
     backgroundColor: "#007AFF",
-    paddingHorizontal: 0,
-    paddingVertical: 10,
-    borderRadius: 8,
-    width: "80%",
+    paddingVertical: 13,
+    borderRadius: 12,
+    width: SCREEN_DIMENSIONS.width * 0.9,
     alignSelf: "center",
-    marginTop: 25,
+    top: SCREEN_DIMENSIONS.height * 0.023,
   },
-
   navigateButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
     alignSelf: "center",
+  },
+  closeButton: {
+    position: "absolute",
+    bottom:
+      Platform.OS === "ios"
+        ? SCREEN_DIMENSIONS.height * 0.33
+        : SCREEN_DIMENSIONS.height * 0.35,
+    right: SCREEN_DIMENSIONS.width * 0.05,
+    zIndex: 10,
   },
 });
 

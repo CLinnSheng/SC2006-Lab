@@ -6,10 +6,10 @@ import GoogleMapView from "../component/GoogleMapView";
 export default function HomeScreen() {
   return (
     <GestureHandlerRootView style={styles.container}>
-        <GoogleMapView />
+      <GoogleMapView />
     </GestureHandlerRootView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
