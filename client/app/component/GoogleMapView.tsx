@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import {
   Platform,
   StatusBar,
@@ -7,7 +7,6 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   Extrapolate,
@@ -18,6 +17,8 @@ import Animated, {
 import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
+import BottomSheetContainer from "./BottomSheetContainer";
+import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
 
 const GoogleMapView: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -28,7 +29,10 @@ const GoogleMapView: React.FC = () => {
       ? (0.55 * SCREEN_DIMENSIONS.height).toFixed(1)
       : (0.536 * SCREEN_DIMENSIONS.height).toFixed(1)
   );
-  const [searchedLocation, setSearchedLocation] = useState<any>(null); // State for searched location
+  const [searchedLocation, setSearchedLocation] = useState<any>(null);
+
+  // Get car park data from the custom hook
+  const { carParks } = useCarParkData(() => {});
 
   const handleRecenterMap = () => {
     if (userLocation) {
@@ -45,13 +49,12 @@ const GoogleMapView: React.FC = () => {
   const animatedButtonStyle = useAnimatedStyle(() => {
     const translateY =
       bottomSheetPosition.value <= maxBottomSheetHeight
-        ? 0 // Keep static at 40% and above
-        : (bottomSheetPosition.value - maxBottomSheetHeight) * 1; // Move downward dynamically
+        ? 0
+        : (bottomSheetPosition.value - maxBottomSheetHeight) * 1;
 
-    // Fade out when above 40%
     const opacity = interpolate(
       bottomSheetPosition.value,
-      [maxBottomSheetHeight, maxBottomSheetHeight - 100], // Adjust range to smooth transition
+      [maxBottomSheetHeight, maxBottomSheetHeight - 100],
       [1, 0],
       Extrapolate.CLAMP
     );
@@ -62,25 +65,19 @@ const GoogleMapView: React.FC = () => {
     };
   });
 
-  const handleSearchedLocationFromBar = (location: any) => {
-    setSearchedLocation(location);
-    console.log("Searched location received in GoogleMapView:", location);
-  };
-
   useEffect(() => {
     if (searchedLocation) {
-      console.log("Animating to searched location:", searchedLocation);
       mapRef.current?.animateToRegion(
         {
           latitude: searchedLocation.lat,
           longitude: searchedLocation.lng,
-          latitudeDelta: 0.01, // Adjust delta for desired zoom level
+          latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         },
-        1500 // Animation duration in milliseconds
+        1500
       );
     }
-  }, [searchedLocation]); // Re-run when searchedLocation changes
+  }, [searchedLocation]);
 
   return (
     <View style={styles.container}>
@@ -99,9 +96,22 @@ const GoogleMapView: React.FC = () => {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-          // customMapStyle={mapViewStyle}
-          // provider={PROVIDER_GOOGLE}
-        />
+        >
+          {/* Render markers for each car park */}
+          {carParks?.map((carPark, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: carPark.latitude,
+                longitude: carPark.longitude,
+              }}
+              title={carPark.address}
+              description={`Type: ${carPark.carParkType || "Unknown"}`}
+              onPress={() => {
+                console.log("Marker pressed:", carPark);}}
+            />
+          ))}
+        </MapView>
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>
             <Ionicons name="locate" size={24} color="#007AFF" />
@@ -109,7 +119,7 @@ const GoogleMapView: React.FC = () => {
         </Animated.View>
         <BottomSheetContainer
           bottomSheetPosition={bottomSheetPosition}
-          searchedLocation={handleSearchedLocationFromBar}
+          searchedLocation={(location) => setSearchedLocation(location)}
         />
       </>
     </View>

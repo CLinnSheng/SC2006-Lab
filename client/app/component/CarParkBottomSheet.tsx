@@ -152,9 +152,9 @@ const styles = StyleSheet.create({
   streetViewImage: {
     width: Platform.OS === "ios" ? "100%" : SCREEN_DIMENSIONS.width * 0.9,
     height: 150,
-    marginTop: 30,
+    marginTop: 35,
     borderRadius: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     alignContent: "center",
     alignSelf: "center",
   },
@@ -177,12 +177,13 @@ const styles = StyleSheet.create({
   },
   selectedCarParkDetailsTitle: {
     fontFamily: "SourceCodePro-BlackIt",
-    fontSize: 27,
+    fontSize: 20,
     fontWeight: "bold",
     alignSelf: "center",
     color: "blue",
     marginBottom: 8,
-    lineHeight: 40,
+    marginTop: 20,
+    lineHeight: 60,
   },
   selectedCarParkDetails: {
     fontSize: 14,
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom:
       Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.33
+        ? SCREEN_DIMENSIONS.height * 0.22
         : SCREEN_DIMENSIONS.height * 0.32,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,
