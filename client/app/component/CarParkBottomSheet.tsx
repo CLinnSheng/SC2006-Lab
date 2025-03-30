@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     bottom:
       Platform.OS === "ios"
         ? SCREEN_DIMENSIONS.height * 0.33
-        : SCREEN_DIMENSIONS.height * 0.35,
+        : SCREEN_DIMENSIONS.height * 0.32,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,
   },
