@@ -176,12 +176,42 @@ const BottomSheetContainer = ({
   const getStreetViewUrl = (latitude: number, longitude: number) => {
     return `https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${latitude},${longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`;
   };
+  const getCarParkIcon = (type: "MULTI-STOREY CAR PARK" | "SURFACE CAR PARK" | "BASEMENT CAR PARK" | "SURFACE/MULTI-STOREY CAR PARK" | string) => {
+    switch (type) {
+      case "MULTI-STOREY CAR PARK":
+        return "business-outline"; // Sheltered, so use a building icon
+      case "SURFACE CAR PARK":
+        return "car-outline"; // Unsheltered, so use a car icon
+      case "BASEMENT CAR PARK":
+        return "download-outline"; // Basement, so use a downward arrow
+        case "SURFACE/MULTI-STOREY CAR PARK":
+        return "business-outline";
+      default:
+        return "help-circle-outline"; // Default for unknown types
+    }
+  };
+  const getCarParkTypeLabel = (type: "MULTI-STOREY CAR PARK" | "SURFACE CAR PARK" | "BASEMENT CAR PARK" | string) => {
+    switch (type) {
+      case "MULTI-STOREY CAR PARK":
+        return "Sheltered";
+      case "SURFACE CAR PARK":
+        return "Unsheltered";
+      case "BASEMENT CAR PARK":
+        return "Basement";
+      default:
+        return "N/A";
+    }
+  };
+
+  
+
+  
 
   const renderItem = useCallback(
     ({ item }: { item: any }) => (
       <TouchableOpacity
-        style={[styles.itemContainer, { backgroundColor: "white" }]}
-        onPress={() => {
+      style={[styles.itemContainer, { backgroundColor: "white" }]}        
+      onPress={() => {
           setSelectedCarPark(item);
           collapseBottomSheet();
           selectedCarParkBottomSheetRef.current?.snapToIndex(1);
@@ -189,33 +219,18 @@ const BottomSheetContainer = ({
       >
         {item.type === "CarPark" ? (
           <>
-            <View style={styles.titleContainer}>
-              <Ionicons
-                name="car-outline"
-                size={20}
-                color="#333"
-                style={styles.iconContainer}
+            <View style={[styles.titleContainer]}> {/* Ensure column layout */}
+              <Image
+                style={styles.streetViewImageList}
+                source={{
+                  uri: getStreetViewUrl(item.latitude, item.longitude),
+                }}
               />
-              <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
+              <View style={{ flexDirection: 'column' }}> {/* Apply column layout only to title and details */}
+                <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
+                <Text style={styles.moreDetailsText}>Press more for details</Text> {/* Added this line */}
+              </View>
             </View>
-            <Text style={styles.itemDetail}>
-              Type: {item.carParkType || "N/A"}
-            </Text>
-            <Text style={styles.itemDetail}>
-              Lots Available:
-              {item.lotDetails?.C?.availableLots !== undefined ? (
-                <Text style={styles.availableLots}>
-                  {item.lotDetails.C.availableLots}
-                </Text>
-              ) : (
-                <Text style={styles.notAvailable}> N/A</Text>
-              )}
-              {item.lotDetails?.C?.totalLots && (
-                <Text style={{ color: "#777" }}>
-                  / {item.lotDetails.C.totalLots}
-                </Text>
-              )}
-            </Text>
           </>
         ) : (
           <>
@@ -231,10 +246,10 @@ const BottomSheetContainer = ({
               </Text>
             </View>
             <Text style={styles.itemDetail}>
-              Chargers: {item.totalChargers || "N/A"}
+              {"Chargers: " + (item.totalChargers || "N/A")}
             </Text>
             <Text style={styles.itemDetail}>
-              Operator: {item.operator || "Unknown"}
+              {"Operator: " + (item.operator || "Unknown")}
             </Text>
           </>
         )}
@@ -242,6 +257,9 @@ const BottomSheetContainer = ({
     ),
     []
   );
+  
+  
+  
 
   return (
     <>
@@ -250,7 +268,7 @@ const BottomSheetContainer = ({
         index={1}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
-        backgroundStyle={{ backgroundColor: "#F5F5F7" }}
+        backgroundStyle={{ backgroundColor: "white" }}
         onAnimate={handleAnimate} // Use onAnimate to detect drag attempts
         enablePanDownToClose={false}
         animatedPosition={bottomSheetPosition}
@@ -284,9 +302,9 @@ const BottomSheetContainer = ({
       {selectedCarPark && (
         <BottomSheet
           ref={selectedCarParkBottomSheetRef} // Use a separate ref if needed
-          index={1}
-          snapPoints={["10%", "40%", "93%"]}
-          onChange={handleSheetChanges_SelectedCarPark}
+          index={0}
+          snapPoints={["50%"]}
+          onChange={handleSheetChanges}
           backgroundStyle={{ backgroundColor: "#F5F5F7" }}
           enablePanDownToClose={false}
           enableDynamicSizing={false}
@@ -314,11 +332,41 @@ const BottomSheetContainer = ({
                   Address: {selectedCarPark.address}
                 </Text>
                 <Text style={styles.selectedCarParkDetails}>
-                  Type: {selectedCarPark.carParkType}
+      Type: {getCarParkTypeLabel(selectedCarPark.carParkType)}{" "}
+      <Ionicons
+      name={getCarParkIcon(selectedCarPark.carParkType)}
+      size={16}
+      color="black" // Customize color
+    />
+    </Text>
+    <Text style={styles.selectedCarParkDetails}>
+              Lots Available:
+              {selectedCarPark.lotDetails?.C?.availableLots !== undefined ? (
+    <Text
+      style={[
+        styles.availableLots,
+        {
+          color:
+            selectedCarPark.lotDetails.C.availableLots < 20
+              ? "red"
+              : selectedCarPark.lotDetails.C.availableLots < 100
+              ? "orange"
+              : "green", // Default to green if 50 or more
+        },
+      ]}
+    >
+      {selectedCarPark.lotDetails.C.availableLots}
+    </Text>
+              ) : (
+                <Text style={styles.notAvailable}> N/A</Text>
+              )}
+              {selectedCarPark.lotDetails?.C?.totalLots && (
+                <Text style={{ color: "#777" }}>
+                  {" "}
+                  / {selectedCarPark.lotDetails.C.totalLots}
                 </Text>
-                <Text style={styles.selectedCarParkDetails}>
-                  Available Lots: {selectedCarPark.lotDetails?.C?.availableLots}
-                </Text>
+              )}
+            </Text>
               </>
             ) : selectedCarPark.type === "EV" ? (
               <>
@@ -360,7 +408,7 @@ const styles = StyleSheet.create({
   indicator: {
     width: 40,
     height: 4,
-    backgroundColor: "#CCCCCC",
+    backgroundColor: "#FFFFF",
     alignSelf: "center",
   },
   contentContainer: {
@@ -378,19 +426,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    backgroundColor: "red", // Light background for each item
     padding: 15,
-    marginBottom: 10,
-    borderRadius: 8, // Slightly rounded corners
-    borderWidth: 1,
-    borderColor: "#e0e0e0", // Light border
+  borderTopWidth: 1,
+  borderBottomWidth: 1,
+  borderColor: "#e0e0e0", // Light separator lines
+  backgroundColor: "transparent", // No box effect
+  flexDirection: 'column',
   },
   carParkTitle: {
     fontWeight: "bold",
     fontSize: 16,
     marginBottom: 2,
+    marginLeft:8,
     color: "#333",
   },
+  
+    moreDetailsText: {
+      fontSize: 14,
+      color: "#007bff",  // You can adjust the color as needed
+      marginTop: 5,      // Optional, for spacing
+      marginLeft:10,
+    },
+  
   evStationTitle: {
     fontWeight: "bold",
     fontSize: 16,
@@ -414,6 +471,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 0,
   },
+  streetViewImageList: {
+    width: 60,
+    height: 60, // Adjust as needed
+    marginTop: 10,
+    borderRadius: 15,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+  },
   availableLots: {
     fontWeight: "bold",
     color: "green", // Highlight available lots
@@ -424,6 +489,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginRight: 8,
+    
   },
   titleContainer: {
     flexDirection: "row",
