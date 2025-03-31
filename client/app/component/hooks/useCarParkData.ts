@@ -58,8 +58,10 @@ const useCarParkData = (
 
   // fetch nearby car park for handling user location and searched location
   useEffect(() => {
-    console.log("Started fetching nearby car parks");
-    fetchNearByCarParks();
+    if (initialProcessedPayload || searchedLocationPayload) {
+      console.log("Started fetching nearby car parks");
+      fetchNearByCarParks();
+    }
   }, [
     initialProcessedPayload,
     searchedLocationPayload,
