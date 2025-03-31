@@ -19,6 +19,7 @@ interface UserLocationContextValue {
   isShowingSearchedLocation: boolean; // To track current display state
   resetToUserLocation: () => void; // Function to reset to user location
   initializeAfterLaunch: () => Promise<void>; // New function to initialize after animation
+  setIsShowingSearchedLocation: () => void;
 }
 
 export const UserLocationContext = createContext<UserLocationContextValue>({
@@ -32,6 +33,7 @@ export const UserLocationContext = createContext<UserLocationContextValue>({
   isShowingSearchedLocation: false,
   resetToUserLocation: () => {},
   initializeAfterLaunch: async () => {}, // Initialize default
+  setIsShowingSearchedLocation: () => {},
 });
 
 const UserLocationProvider = ({ children }: { children: ReactNode }) => {
@@ -155,6 +157,9 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
         searchedLocationPayload,
         isShowingSearchedLocation,
         resetToUserLocation,
+        setIsShowingSearchedLocation: () => {
+          setIsShowingSearchedLocation(true);
+        },
       }}
     >
       {children}
