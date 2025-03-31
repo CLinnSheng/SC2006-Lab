@@ -30,8 +30,8 @@ func (server *Server) Init() {
 
 	Settings(server.App)
 
-	log.Printf("Starting server on port %s", envConfig.Port)
-	if err := server.App.Listen(":" + envConfig.Port); err != nil {
+	log.Printf("Starting server on port %s", envConfig.PORT)
+	if err := server.App.Listen(":" + envConfig.PORT); err != nil {
 		log.Fatalf("Error starting server %e", err)
 	}
 }

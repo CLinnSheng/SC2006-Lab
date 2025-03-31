@@ -26,7 +26,7 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 		log.Fatalf("Fail to create request: %v", err)
 	}
 
-	LTA_Req.Header.Add("AccountKey", envConfig.LTA_AccountKey)
+	LTA_Req.Header.Add("AccountKey", envConfig.LTA_ACCOUNT_KEY)
 	LTA_Req.Header.Add("Content-Type", "application/json")
 
 	// request for LTA Call
@@ -161,20 +161,20 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 
 	for _, carpark_info := range DataGovCarParkInfoResp_Unmarshal.Result.Records {
 		if carPark[carpark_info.CarparkNumber] == nil {
-			carPark[carpark_info.CarparkNumber] = &model.CarPark{
-				CarParkID:   carpark_info.CarparkNumber,
-				Address:     carpark_info.Address,
-				CarParkType: carpark_info.CarParkType,
-			}
+			// carPark[carpark_info.CarparkNumber] = &model.CarPark{
+			// 	CarParkID:   carpark_info.CarparkNumber,
+			// 	Address:     carpark_info.Address,
+			// 	CarParkType: carpark_info.CarParkType,
+			// }
 
-			xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
-			yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)
-			lat, lon := svy21_Converter.ToLatLon(yCoord, xCoord)
+			// xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
+			// yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)
+			// lat, lon := svy21_Converter.ToLatLon(yCoord, xCoord)
 
-			temp_carpark := carPark[carpark_info.CarparkNumber]
-			temp_carpark.Latitude = lat
-			temp_carpark.Longitude = lon
-
+			// temp_carpark := carPark[carpark_info.CarparkNumber]
+			// temp_carpark.Latitude = lat
+			// temp_carpark.Longitude = lon
+			continue
 		} else if carPark[carpark_info.CarparkNumber].Longitude == 0 && carPark[carpark_info.CarparkNumber].Latitude == 0 {
 			xCoord, _ := strconv.ParseFloat(carpark_info.XCoord, 64)
 			yCoord, _ := strconv.ParseFloat(carpark_info.YCoord, 64)

@@ -7,6 +7,7 @@ interface EVListItemProps {
   onPress: () => void;
 }
 
+// render all the ev lots
 const EVListItem = ({ item, onPress }: EVListItemProps) => {
   return (
     <TouchableOpacity
@@ -23,7 +24,7 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
         <Text style={styles.evStationTitle}>{item.displayName || "N/A"}</Text>
       </View>
       <Text style={styles.itemDetail}>
-        Chargers: {item.totalChargers || "N/A"}
+        Chargers: {item.location.latitude || "N/A"}
       </Text>
       <Text style={styles.itemDetail}>
         Operator: {item.operator || "Unknown"}

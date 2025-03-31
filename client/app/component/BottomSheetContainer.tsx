@@ -627,6 +627,7 @@ const BottomSheetContainer = ({
   const handleFocus = () => setIsSearchFocused(true);
   const handleBlur = () => setIsSearchFocused(false);
 
+  // Exit the search and reset the map
   const handleExitSearch = () => {
     resetToUserLocation();
     searchBarRef.current?.clearInput();
@@ -638,6 +639,7 @@ const BottomSheetContainer = ({
     setShowSelectedCarParkSheet(true);
   };
 
+  // Close the bottom sheet for car park details
   const handleCloseCarParkSheet = () => {
     setShowSelectedCarParkSheet(false);
     setSelectedCarPark(null);
@@ -671,6 +673,7 @@ const BottomSheetContainer = ({
 
           <View style={styles.spacer} />
 
+          {/* Only render the carpark list when the search bar is not focus */}
           {!isSearchFocused && (
             <CarParkList
               data={combinedListCarPark}
@@ -681,6 +684,7 @@ const BottomSheetContainer = ({
         </BottomSheet>
       )}
 
+      {/* Show selected carpark details */}
       {selectedCarPark && showSelectedCarParkSheet && (
         <CarParkBottomSheet
           selectedCarPark={selectedCarPark}

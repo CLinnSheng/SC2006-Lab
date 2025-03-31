@@ -8,8 +8,7 @@ const useBottomSheetAnimation = () => {
 
     // Prevent dragging below 10%
     if (toIndex === -1) {
-      // Return value for caller to use
-      return 1; // Snap back to 40% (or any other desired index)
+      return 1;
     }
 
     return toIndex;

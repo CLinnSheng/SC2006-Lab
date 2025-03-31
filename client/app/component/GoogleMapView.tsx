@@ -41,7 +41,7 @@ const GoogleMapView: React.FC = () => {
     }
   };
 
-  // Animate the button to stay above the BottomSheet
+  // Animate the recenter map button to stay above the BottomSheet
   const animatedButtonStyle = useAnimatedStyle(() => {
     const translateY =
       bottomSheetPosition.value <= maxBottomSheetHeight
@@ -67,6 +67,7 @@ const GoogleMapView: React.FC = () => {
     console.log("Searched location received in GoogleMapView:", location);
   };
 
+  // Animate to the searched location
   useEffect(() => {
     if (searchedLocation) {
       console.log("Animating to searched location:", searchedLocation);

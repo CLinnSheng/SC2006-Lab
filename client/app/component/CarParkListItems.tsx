@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { getStreetViewUrl } from "../utils/carParkUtils";
+import carParkUtils from "../utils/carParkUtils";
 
 interface CarParkListItemProps {
   item: any;
   onPress: () => void;
 }
 
+// render all the carpark lots
 const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
   return (
     <TouchableOpacity
@@ -17,7 +18,7 @@ const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
         <Image
           style={styles.streetViewImageList}
           source={{
-            uri: getStreetViewUrl(item.latitude, item.longitude),
+            uri: carParkUtils.getStreetViewUrl(item.latitude, item.longitude),
           }}
         />
         <View style={{ flexDirection: "column" }}>

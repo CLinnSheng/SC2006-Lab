@@ -1,4 +1,9 @@
-const processNearbyReqPayload = (googleaNearbyAPIResponse, userLocation) => {
+// const processNearbyReqPayload = (googleaNearbyAPIResponse, userLocation) => {
+const processNearbyReqPayload = (
+  googleaNearbyAPIResponse,
+  searchLocation,
+  currentUserLocation
+) => {
   console.log("PROCESSING");
 
   const EVLot = googleaNearbyAPIResponse.map((place) => ({
@@ -28,8 +33,16 @@ const processNearbyReqPayload = (googleaNearbyAPIResponse, userLocation) => {
 
   return {
     EVLot: EVLot,
-    latitude: userLocation.latitude,
-    longitude: userLocation.longitude,
+    // latitude: userLocation.latitude,
+    // longitude: userLocation.longitude,
+    SearchLocation: {
+      latitude: searchLocation.latitude,
+      longitude: searchLocation.longitude,
+    },
+    CurrentUserLocation: {
+      latitude: currentUserLocation.latitude,
+      longitude: currentUserLocation.longitude,
+    },
   };
 };
 

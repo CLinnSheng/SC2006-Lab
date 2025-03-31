@@ -14,7 +14,6 @@ interface UserLocationContextValue {
     latitude: number;
     longitude: number;
   }) => Promise<void>; // getUserLocation: () => Promise<void>;
-  // recenterRefreshLocation: () => Promise<void>;
   initialProcessedPayload: any | null;
   searchedLocationPayload: any | null; // For searched location
   isShowingSearchedLocation: boolean; // To track current display state
@@ -73,11 +72,17 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
       const resp = await NearByEVCarPark(data);
       const places = resp.data?.places || [];
 
+      // const processedPayload = processNearbyEVReqPayload(
+      //   places,
+      //   targetLocation
+      // );
+
       const processedPayload = processNearbyEVReqPayload(
         places,
-        targetLocation
+        targetLocation,
+        userLocation
       );
-
+      
       if (location) {
         setSearchedLocationPayload(processedPayload);
         setIsShowingSearchedLocation(true);
@@ -117,10 +122,10 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setInitialized(true);
       console.log("Location initialization completed.");
-      getNearbyCarParks();
     }
   };
 
+  // get nearby carpark after the userlocatoin state is saved
   useEffect(() => {
     if (userLocation) {
       console.log("User Location Saved successfully");

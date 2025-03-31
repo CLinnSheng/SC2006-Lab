@@ -2,7 +2,6 @@ import React, { useCallback, useRef } from "react";
 import {
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
   Image,
   Platform,
@@ -15,7 +14,7 @@ import {
 } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
-import { getStreetViewUrl, getCarParkTypeLabel } from "../utils/carParkUtils";
+import carParkUtils from '../utils/carParkUtils';
 
 interface CarParkBottomSheetProps {
   selectedCarPark: any;
@@ -23,6 +22,7 @@ interface CarParkBottomSheetProps {
   bottomSheetPosition: SharedValue<number>;
 }
 
+// render the selected carpark details in a new bottomsheet
 const CarParkBottomSheet = ({
   selectedCarPark,
   onClose,
@@ -31,6 +31,7 @@ const CarParkBottomSheet = ({
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetPosition = useSharedValue(0);
 
+  // to make the recenter map button stay above the inner bottom sheet 
   useAnimatedReaction(
     () => selectedCarParkBottomSheetPosition.value,
     (currentPosition) => {
@@ -50,7 +51,7 @@ const CarParkBottomSheet = ({
             <Image
               style={styles.streetViewImage}
               source={{
-                uri: getStreetViewUrl(
+                uri: carParkUtils.getStreetViewUrl(
                   selectedCarPark.latitude,
                   selectedCarPark.longitude
                 ),
@@ -65,7 +66,7 @@ const CarParkBottomSheet = ({
             Address: {selectedCarPark.address}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
-            Type: {getCarParkTypeLabel(selectedCarPark.carParkType)}
+            Type: {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
             Lots Available:{" "}

@@ -7,13 +7,14 @@ import (
 )
 
 type EnvConfig struct {
-	Port string `env:"PORT,required"`
+	PORT string `env:"PORT,required"`
 	// DBHost     string `env:"DB_HOST,required"`
 	// DBName     string `env:"DB_NAME,required"`
 	// DBUser     string `env:"DB_USER,required"`
 	// DBPassword string `env:"DB_PASSWORD,required"`
 	// DBSSLMode  string `env:"DB_SSL_MODE,required"`
-	LTA_AccountKey string `env:"LTA_ACCOUNT_KEY,required"`
+	LTA_ACCOUNT_KEY string `env:"LTA_ACCOUNT_KEY,required"`
+	GOOGLE_API_KEY string `env:"GOOGLE_API_KEY,required"`
 }
 
 func GetEnvConfig() *EnvConfig {
