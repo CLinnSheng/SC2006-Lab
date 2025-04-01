@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	_"log"
 
 	"github.com/SC2006-Lab/MobileAppProject/api"
 	"github.com/SC2006-Lab/MobileAppProject/data"

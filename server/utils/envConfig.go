@@ -18,6 +18,8 @@ type EnvConfig struct {
 	LTA_ACCOUNT_KEY string `env:"LTA_ACCOUNT_KEY,required"`
 	GOOGLE_API_KEY string `env:"GOOGLE_API_KEY,required"`
 	URA_ACCESS_KEY string `env:"URA_ACCESS_KEY,required"`
+	ONEMAP_EMAIL string `env:"ONEMAP_EMAIL,required"`
+	ONEMAP_PASSWORD string `env:"ONEMAP_PASSWORD,required"`
 }
 
 var (
@@ -47,17 +49,27 @@ func GetPort() string {
 	return cfg.PORT
 }
 
-func GetLTAAccountKey() string {
+func GetLTA_AccountKey() string {
 	cfg := GetEnvConfig()
 	return cfg.LTA_ACCOUNT_KEY
 }
 
-func GetGoogleApiKey() string {
+func GetGoogle_ApiKey() string {
 	cfg := GetEnvConfig()
 	return cfg.GOOGLE_API_KEY
 }
 
-func GetURAAccessKey() string {
+func GetURA_AccessKey() string {
 	cfg := GetEnvConfig()
 	return cfg.URA_ACCESS_KEY
+}
+
+func GetOneMap_Email() string {
+	cfg := GetEnvConfig()
+	return cfg.ONEMAP_EMAIL
+}
+
+func GetOneMap_Password() string {
+	cfg := GetEnvConfig()
+	return cfg.ONEMAP_PASSWORD
 }

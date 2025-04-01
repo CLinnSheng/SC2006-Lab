@@ -9,6 +9,7 @@ type ApiData struct {
 	CarPark map[string]*model.CarPark
 	Weather map[string]*model.WeatherAreaInfo
 	URAToken *string
+	OneMapToken *string
 }
 
 func NewApiData() *ApiData {
@@ -16,11 +17,13 @@ func NewApiData() *ApiData {
 		CarPark: model.NewCarPark(),
 		Weather: model.NewWeatherAreaInfo(),
 		URAToken: new(string),
+		OneMapToken: new(string),
 	}
 }
 
 func (apiData *ApiData) Init() {
 	external_services.InitCarParkInformation(apiData.CarPark)
 	external_services.InitWeatherInformation(apiData.Weather)
-	external_services.URAInit_GetToken(apiData.URAToken)
+	external_services.URA_Init(apiData.URAToken)
+	external_services.OneMapInit(apiData.OneMapToken)
 }
