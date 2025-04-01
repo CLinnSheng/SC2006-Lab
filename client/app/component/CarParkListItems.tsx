@@ -24,7 +24,7 @@ const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
           <Text style={styles.moreDetailsText}>
-            Press more for details
+            item.routeInfo.distance
           </Text>
         </View>
       </View>

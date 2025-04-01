@@ -84,7 +84,6 @@ const useCarParkData = (
               "Content-Type": "application/json",
             },
             signal: abortControllerRef.current.signal,
-            timeout: 10000, // 10 seconds
           }
         );
 

@@ -42,12 +42,12 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 	// 2 go routine to process the evlots and carpark concurrently
 	go func() {
 		defer wg.Done()
-		ProcessedEVLots, evLotsErr = processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation)
+		ProcessedEVLots, evLotsErr = processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation, apiData)
 	}()
 
 	go func() {
 		defer wg.Done()
-		ProcessedCarPark, carParkErr = processCarParks(apiData.CarPark, reqPayload.CurrentUserLocation, reqPayload.SearchedLocation)
+		ProcessedCarPark, carParkErr = processCarParks(apiData.CarPark, reqPayload.CurrentUserLocation, reqPayload.SearchedLocation, apiData)
 	}()
 
 	// the main thread will wait for the 2 go routine to finish
@@ -70,7 +70,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
-}) ([]map[string]interface{}, error) {
+}, apiData *data.ApiData) ([]map[string]interface{}, error) {
 	var wg sync.WaitGroup
 	var mut sync.Mutex // Prevent data race when updating the slice
 
@@ -100,7 +100,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 				})
 			}
 
-			routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, evLot.Location.Latitude, evLot.Location.Longitude)
+			routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, evLot.Location.Latitude, evLot.Location.Longitude, *apiData.OneMapToken)
 
 			processedEVLot := map[string]interface{}{
 				"formattedAddress": evLot.FormattedAddress,
@@ -133,7 +133,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 func processCarParks(carParks map[string]*model.CarPark, currentUserLocation, searchedLocation struct {
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
-}) ([]map[string]interface{}, error) {
+}, apiData *data.ApiData) ([]map[string]interface{}, error) {
 	processedCarParks := []map[string]interface{}{}
 
 	var wg sync.WaitGroup
@@ -162,7 +162,7 @@ func processCarParks(carParks map[string]*model.CarPark, currentUserLocation, se
 					}
 				}
 
-				routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, carPark.Latitude, carPark.Longitude)
+				routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, carPark.Latitude, carPark.Longitude, *apiData.OneMapToken)
 
 				processedCarPark["routeInfo"] = map[string]string{
 					"distance": strconv.FormatFloat(utils.ConvertMeterToKm(routeInfo.Distance), 'f', 1, 64),

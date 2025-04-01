@@ -27,3 +27,7 @@ func (apiData *ApiData) Init() {
 	external_services.URA_Init(apiData.URAToken)
 	external_services.OneMapInit(apiData.OneMapToken)
 }
+
+func (apiData *ApiData) getOneMapToken() string {
+	return *apiData.OneMapToken
+}
