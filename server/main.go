@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/SC2006-Lab/MobileAppProject/api"
 	"github.com/SC2006-Lab/MobileAppProject/data"
 	"github.com/SC2006-Lab/MobileAppProject/middleware"
