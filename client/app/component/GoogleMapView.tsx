@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   Platform,
   StatusBar,
@@ -18,6 +18,7 @@ import Animated, {
 import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
+import { decode } from "@googlemaps/polyline-codec";
 
 const GoogleMapView: React.FC = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -30,6 +31,38 @@ const GoogleMapView: React.FC = () => {
   );
   const [searchedLocation, setSearchedLocation] = useState<any>(null); // State for searched location
 
+  const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
+
+  const handleCarParkSelection = (carPark: any) => {
+    setSelectedCarPark(carPark);
+    console.log("Selected car park:", carPark);
+
+    if (carPark && carPark.latitude && carPark.longitude && userLocation) {
+      const latDiff = Math.abs(userLocation.latitude - carPark.latitude);
+      const lngDiff = Math.abs(userLocation.longitude - carPark.longitude);
+
+      const bufferFactor = 1.5;
+
+      const latDelta = Math.max(latDiff * bufferFactor, 0.005);
+      const lngDelta = Math.max(lngDiff * bufferFactor, 0.005);
+
+      const midLat = (userLocation.latitude + carPark.latitude) / 2;
+      const midLng = (userLocation.longitude + carPark.longitude) / 2;
+
+      const distanceFactor = Math.min(Math.max(latDiff * 10, 0.005), 0.04); // Limit the max offset
+      mapRef.current?.animateToRegion(
+        {
+          latitude: midLat - distanceFactor, 
+          longitude: midLng,
+          latitudeDelta: latDelta,
+          longitudeDelta: lngDelta,
+        },
+        1500 
+      );
+    }
+  };
+
+  
   const handleRecenterMap = () => {
     if (userLocation) {
       mapRef.current?.animateToRegion({
@@ -102,7 +135,20 @@ const GoogleMapView: React.FC = () => {
           }}
           // customMapStyle={mapViewStyle}
           // provider={PROVIDER_GOOGLE}
-        />
+        >
+          {selectedCarPark && selectedCarPark.routeInfo.polyline && (
+            <Polyline
+              coordinates={decode(selectedCarPark.routeInfo.polyline).map(
+                (point: any) => ({
+                  latitude: point[0],
+                  longitude: point[1],
+                })
+              )}
+              strokeWidth={6}
+              strokeColor="#007AFF"
+            />
+          )}
+        </MapView>
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>
             <Ionicons name="locate" size={24} color="#007AFF" />
@@ -111,6 +157,7 @@ const GoogleMapView: React.FC = () => {
         <BottomSheetContainer
           bottomSheetPosition={bottomSheetPosition}
           searchedLocation={handleSearchedLocationFromBar}
+          onSelectCarPark={handleCarParkSelection}
         />
       </>
     </View>

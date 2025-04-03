@@ -8,13 +8,16 @@ import CarParkList from "./CarParkList";
 import CarParkBottomSheet from "./CarParkBottomSheet";
 import useCarParkData from "./hooks/useCarParkData";
 import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
+import { decode } from "@googlemaps/polyline-codec";
 
 const BottomSheetContainer = ({
   bottomSheetPosition,
   searchedLocation: setSearchedLocationFromMap,
+  onSelectCarPark,
 }: {
   bottomSheetPosition: SharedValue<number>;
   searchedLocation: (location: any) => void;
+  onSelectCarPark: (carPark: any) => void;
 }) => {
   // Refs
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -63,12 +66,15 @@ const BottomSheetContainer = ({
   const handleSelectCarPark = (carPark: any) => {
     setSelectedCarPark(carPark);
     setShowSelectedCarParkSheet(true);
+    console.log(decode(carPark.routeInfo.polyline));
+    onSelectCarPark(carPark);
   };
 
   // Close the bottom sheet for car park details
   const handleCloseCarParkSheet = () => {
     setShowSelectedCarParkSheet(false);
     setSelectedCarPark(null);
+    onSelectCarPark(null);
   };
 
   return (
