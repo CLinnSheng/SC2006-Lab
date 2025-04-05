@@ -1,97 +1,105 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import carParkUtils from "../utils/carParkUtils";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons"; // Ensure you have this installed: npm install @expo/vector-icons
 
 interface CarParkListItemProps {
   item: any;
   onPress: () => void;
 }
 
-// render all the carpark lots
 const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
-  // console.log("CarParkListItem item:", JSON.stringify(item, null, 2)); // Log the full object
+  const getAvailabilityColor = (available: number, total: number) => {
+    if (total === 0) return "#999";
+    const ratio = available / total;
+    if (ratio <= 0.2) return "red";
+    if (ratio <= 0.5) return "orange";
+    return "green";
+  };
 
   return (
     <TouchableOpacity
       style={[styles.itemContainer, { backgroundColor: "white" }]}
       onPress={onPress}
     >
-      <View style={[styles.titleContainer]}>
-        <Image
-          style={styles.streetViewImageList}
-          source={{
-            uri: carParkUtils.getStreetViewUrl(item.latitude, item.longitude),
-          }}
-        />
-        <View style={{ flexDirection: "column" }}>
-          <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
-          <Text style={styles.moreDetailsText}>
-            {item.routeInfo.duration} min
-          </Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.titleText} numberOfLines={1}>
+          {item.address || "N/A"}
+        </Text>
+        <Text style={styles.secondaryInfoText}>
+          {carParkUtils.getCarParkTypeLabel(item.carParkType)} ⋅{" "}
+          {item.routeInfo?.distance} km ⋅ {item.routeInfo?.duration} min
+        </Text>
 
-          {/* Car lots */}
-          {"C" in item.lotDetails && (
-            <View style={styles.lotRow}>
-              <Ionicons name="car-outline" size={20} color="#333" />
-              <Text style={styles.lotDetailsText}> Car: </Text>
+        <View style={styles.availabilityContainer}>
+          {item.lotDetails?.C && (
+            <View style={styles.lotInfo}>
+              <FontAwesome
+                name="car"
+                size={16}
+                color="#777"
+                style={styles.icon}
+              />
               <Text
-                style={{
-                  color:
-                    item.lotDetails.C.availableLots < 20
-                      ? "red"
-                      : item.lotDetails.C.availableLots <= 50
-                      ? "orange"
-                      : "green",
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles.availabilityCount,
+                  {
+                    color: getAvailabilityColor(
+                      item.lotDetails.C.availableLots,
+                      item.lotDetails.C.totalLots
+                    ),
+                  },
+                ]}
               >
-                {item.lotDetails.C.availableLots} /{" "}
-                {item.lotDetails.C.totalLots}
+                {item.lotDetails.C.availableLots}
               </Text>
             </View>
           )}
 
-          {/* Motorcycle lots */}
-          {"Y" in item.lotDetails && (
-            <View style={styles.lotRow}>
-              <Ionicons name="bicycle-outline" size={20} color="#333" />
-              <Text style={styles.lotDetailsText}> Motorcycle: </Text>
+          {item.lotDetails?.Y && (
+            <View style={styles.lotInfo}>
+              <FontAwesome
+                name="motorcycle"
+                size={16}
+                color="#777"
+                style={styles.icon}
+              />
               <Text
-                style={{
-                  color:
-                    item.lotDetails.Y.availableLots < 5
-                      ? "red"
-                      : item.lotDetails.Y.availableLots <= 10
-                      ? "orange"
-                      : "green",
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles.availabilityCount,
+                  {
+                    color: getAvailabilityColor(
+                      item.lotDetails.Y.availableLots,
+                      item.lotDetails.Y.totalLots
+                    ),
+                  },
+                ]}
               >
-                {item.lotDetails.Y.availableLots} /{" "}
-                {item.lotDetails.Y.totalLots}
+                {item.lotDetails.Y.availableLots}
               </Text>
             </View>
           )}
 
-          {/* Heavy vehicle lots */}
-          {"H" in item.lotDetails && (
-            <View style={styles.lotRow}>
-              <Ionicons name="bus-outline" size={20} color="#333" />
-              <Text style={styles.lotDetailsText}> Heavy Vehicle: </Text>
+          {item.lotDetails?.H && (
+            <View style={styles.lotInfo}>
+              <FontAwesome
+                name="truck"
+                size={16}
+                color="#777"
+                style={styles.icon}
+              />
               <Text
-                style={{
-                  color:
-                    item.lotDetails.H.availableLots < 5
-                      ? "red"
-                      : item.lotDetails.H.availableLots <= 10
-                      ? "orange"
-                      : "green",
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles.availabilityCount,
+                  {
+                    color: getAvailabilityColor(
+                      item.lotDetails.H.availableLots,
+                      item.lotDetails.H.totalLots
+                    ),
+                  },
+                ]}
               >
-                {item.lotDetails.H.availableLots} /{" "}
-                {item.lotDetails.H.totalLots}
+                {item.lotDetails.H.availableLots}
               </Text>
             </View>
           )}
@@ -100,58 +108,48 @@ const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 15,
-    borderTopWidth: 1,
+    padding: 12,
     borderBottomWidth: 1,
     borderColor: "#e0e0e0",
-    backgroundColor: "transparent",
-    flexDirection: "column",
-  },
-  titleContainer: {
+    backgroundColor: "white",
     flexDirection: "row",
     alignItems: "center",
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 2,
+  },
+  secondaryInfoText: {
+    fontSize: 12,
+    color: "#777",
     marginBottom: 5,
   },
-  carParkTitle: {
-    fontWeight: "bold",
-    fontSize: 14,
-    marginBottom: 2,
-    marginLeft: 20,
-    flexShrink: 1,
-    maxWidth: "90%",
-    color: "#333",
-  },
-  moreDetailsText: {
-    fontSize: 14,
-    color: "blue",
-    marginTop: 1,
-    marginLeft: 20,
-    borderWidth: 0,
-    borderRadius: 8,
-    padding: 2,
-    borderColor: "#000",
-  },
-  streetViewImageList: {
-    width: 70,
-    height: 70,
-    marginTop: 3,
-    borderRadius: 15,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-  },
-  lotRow: {
+  availabilityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 1,
-    marginLeft: 20,
+    // marginTop: 5, // Add a little space from the secondary info
   },
-  lotDetailsText: {
+  lotInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  availabilityCount: {
     fontSize: 14,
-    color: "#333",
-    marginLeft: 5,
+    fontWeight: "bold",
   },
 });
 
 export default CarParkListItem;
+// ⋅

@@ -1,100 +1,158 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface EVListItemProps {
   item: any;
   onPress: () => void;
 }
 
-// render all the ev lots
 const EVListItem = ({ item, onPress }: EVListItemProps) => {
+  const getAvailabilityColor = (available: number, total: number): string => {
+    if (!total || isNaN(available)) return "#999";
+    const ratio = available / total;
+    if (ratio <= 0.2) return "red";
+    if (ratio <= 0.5) return "orange";
+    return "green";
+  };
+
+  const getTotalAvailableCount = (
+    chargers: any[] | undefined
+  ): number | null => {
+    if (!chargers || chargers.length === 0) {
+      return null;
+    }
+
+    let totalAvailable = 0;
+    for (const charger of chargers) {
+      const availableCount = parseInt(charger.availableCount, 10);
+      if (isNaN(availableCount)) {
+        return null;
+      }
+      totalAvailable += availableCount;
+    }
+    return totalAvailable;
+  };
+
+  const totalAvailable = getTotalAvailableCount(item.chargers);
+  const totalCapacity = parseInt(item.totalChargers ?? 0, 10);
+
+  const availabilityText =
+    typeof totalAvailable === "number"
+      ? `${totalAvailable}`
+      : totalCapacity > 0
+      ? `${totalCapacity}`
+      : "N/A";
+
+  const availabilityColor =
+    typeof totalAvailable === "number"
+      ? getAvailabilityColor(totalAvailable, totalCapacity)
+      : availabilityText !== "N/A"
+      ? "green"
+      : "#999";
+
   return (
     <TouchableOpacity
       style={[styles.itemContainer, { backgroundColor: "white" }]}
       onPress={onPress}
     >
-      <View style={styles.titleContainer}>
-        <Text style={styles.evStationTitle}>{item.displayName || "N/A"} </Text>
-        <FontAwesome5
-          name="charging-station"
-          size={20}
-          color="#007bff"
-          style={styles.iconContainer}
-        />
+      <View style={styles.infoContainer}>
+        <View style={styles.titleRow}>
+          <Text style={styles.titleText} numberOfLines={1} ellipsizeMode="tail">
+            {item.displayName || "N/A"}
+          </Text>
+          <MaterialCommunityIcons
+            name="lightning-bolt"
+            size={20}
+            color="#11d218"
+          />
+        </View>
+        {item.routeInfo?.duration !== undefined && (
+          <Text style={styles.secondaryInfoText}>
+            {item.routeInfo.duration} min ⋅ {item.routeInfo.distance} km
+          </Text>
+        )}
+        <View style={styles.availabilityContainer}>
+          <View style={styles.lotInfo}>
+            <MaterialCommunityIcons
+              name="power-plug"
+              size={16}
+              color="#777"
+              style={styles.icon}
+            />
+            <Text
+              style={[
+                styles.availabilityCount,
+                {
+                  color: availabilityColor,
+                },
+              ]}
+            >
+              {availabilityText}
+            </Text>
+          </View>
+        </View>
+        {/* {item.totalChargers !== undefined && (
+          <Text style={styles.totalChargersText}>
+          </Text>
+        )} */}
       </View>
-
-      <Text style={styles.itemDuration}>
-        {item.routeInfo.duration} Minutes Away
-      </Text>
-      <Text
-        style={[
-          styles.itemDetail,
-          {
-            color:
-              item.chargers?.[0]?.availableCount === "N/A"
-                ? "orange"
-                : item.chargers?.[0]?.availableCount <= "2"
-                ? "red"
-                : "green",
-          },
-        ]}
-      >
-        Chargers: {item.chargers?.[0]?.availableCount} / {item.totalChargers}
-        <MaterialCommunityIcons
-          name="power-plug-outline"
-          size={20}
-          color="black"
-          style={styles.iconContainer}
-        />
-      </Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 15,
-    borderTopWidth: 1,
+    padding: 10,
     borderBottomWidth: 1,
     borderColor: "#e0e0e0",
-    backgroundColor: "transparent",
-    flexDirection: "column",
-  },
-  titleContainer: {
+    backgroundColor: "white",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
   },
-  evStationTitle: {
+  infoContainer: {
+    flex: 1,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  titleText: {
     fontWeight: "bold",
     fontSize: 16,
-    marginBottom: 2,
-    color: "#)))",
+    color: "#333",
+    marginRight: 8,
+    // flexShrink: 1,
   },
-  itemDetail: {
-    fontSize: 15,
-    color: "#000",
-    marginBottom: 6,
-    lineHeight: 20,
-    letterSpacing: 0.5,
-    fontFamily: "Arial",
-    textAlign: "left",
-  },
-  itemDuration: {
-    fontSize: 15,
-    color: "blue",
-    marginBottom: 6,
-    lineHeight: 20,
-    letterSpacing: 0.5,
-    fontFamily: "Arial",
-    textAlign: "left",
-  },
-  iconContainer: {
+  secondaryInfoText: {
+    fontSize: 12,
+    color: "#777",
     marginBottom: 5,
   },
+  availabilityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // marginTop: 5,
+  },
+  lotInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  icon: {
+    marginRight: 8,
+    // right: 3,
+  },
+  availabilityCount: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  // totalChargersText: {
+  //   fontSize: 10,
+  //   color: "#777",
+  //   marginTop: 2,
+  // },
 });
 
 export default EVListItem;

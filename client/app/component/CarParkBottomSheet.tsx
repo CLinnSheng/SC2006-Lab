@@ -112,7 +112,7 @@ const CarParkBottomSheet = ({
             )}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
-            Distance From You: {selectedCarPark.routeInfo.distance} KM
+            Distance: {selectedCarPark.routeInfo.distance} KM
           </Text>
         </>
       );

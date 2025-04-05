@@ -38,7 +38,11 @@ const useCarParkData = (
     return isShowingSearchedLocation
       ? searchedLocationPayload
       : initialProcessedPayload;
-  }, [isShowingSearchedLocation, searchedLocationPayload, initialProcessedPayload]);
+  }, [
+    isShowingSearchedLocation,
+    searchedLocationPayload,
+    initialProcessedPayload,
+  ]);
 
   const handleSearchedLocation = useCallback(
     (location: any) => {
@@ -52,7 +56,9 @@ const useCarParkData = (
 
   const fetchNearByCarParks = useCallback(async (payload: any) => {
     if (!payload) {
-      console.log("No payload available for fetching nearby car parks, skipping request");
+      console.log(
+        "No payload available for fetching nearby car parks, skipping request"
+      );
       return;
     }
 
@@ -61,7 +67,7 @@ const useCarParkData = (
       abortControllerRef.current.abort();
       console.log("Aborted previous request");
     }
-    
+
     if (fetchTimeoutRef.current) {
       clearTimeout(fetchTimeoutRef.current);
       fetchTimeoutRef.current = null;
@@ -71,7 +77,7 @@ const useCarParkData = (
     fetchTimeoutRef.current = setTimeout(async () => {
       try {
         setIsLoading(true);
-        
+
         // Create new AbortController for this request
         abortControllerRef.current = new AbortController();
         console.log("Fetching nearby car parks from /api/carpark/nearby/");
@@ -116,9 +122,11 @@ const useCarParkData = (
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
-        console.log("Aborted fetch request due to unmount or dependency change");
+        console.log(
+          "Aborted fetch request due to unmount or dependency change"
+        );
       }
-      
+
       if (fetchTimeoutRef.current) {
         clearTimeout(fetchTimeoutRef.current);
         fetchTimeoutRef.current = null;

@@ -33,12 +33,13 @@ const CarParkList = ({
   });
 
   const renderItem = ({ item }: { item: any }) => {
+    // console.log(item);
     if (item.type === "CarPark") {
       return (
         <CarParkListItem item={item} onPress={() => onSelectCarPark(item)} />
       );
     } else if (item.type === "EV") {
-      console.log(item);
+      // console.log(item);
       return <EVListItem item={item} onPress={() => onSelectCarPark(item)} />;
     }
     return null;
