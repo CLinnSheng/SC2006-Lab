@@ -74,17 +74,12 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
       const resp = await NearByEVCarPark(data);
       const places = resp.data?.places || [];
 
-      // const processedPayload = processNearbyEVReqPayload(
-      //   places,
-      //   targetLocation
-      // );
-
       const processedPayload = processNearbyEVReqPayload(
         places,
         targetLocation,
         userLocation
       );
-      
+
       if (location) {
         setSearchedLocationPayload(processedPayload);
         setIsShowingSearchedLocation(true);

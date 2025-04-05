@@ -265,8 +265,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom:
       Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.325
-        : SCREEN_DIMENSIONS.height * 0.32,
+        ? SCREEN_DIMENSIONS.height * 0.3228
+        : SCREEN_DIMENSIONS.height * 0.3234,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,
   },

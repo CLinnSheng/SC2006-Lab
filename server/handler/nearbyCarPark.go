@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"sync"
@@ -80,7 +81,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 
 	for _, EVLot := range evLots {
 		wg.Add(1)
-
+		fmt.Print(EVLot)
 		go func(evLot *model.EVLot) {
 			defer wg.Done()
 
@@ -110,6 +111,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 					"latitude":  evLot.Location.Latitude,
 					"longitude": evLot.Location.Longitude,
 				},
+				"shortFormattedAddress": evLot.ShortFormattedAddress,
 				"displayName":   evLot.Name,
 				"chargers":      chargers,
 				"totalChargers": evLot.EVChargerOptions.ConnectorCount,

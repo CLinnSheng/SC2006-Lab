@@ -69,7 +69,8 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
         </View>
         {item.routeInfo?.duration !== undefined && (
           <Text style={styles.secondaryInfoText}>
-            {item.routeInfo.duration} min ⋅ {item.routeInfo.distance} km
+            {item.routeInfo.duration} min ⋅ {item.routeInfo.distance} km ⋅{" "}
+            {item.shortFormattedAddress}
           </Text>
         )}
         <View style={styles.availabilityContainer}>
@@ -92,10 +93,6 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
             </Text>
           </View>
         </View>
-        {/* {item.totalChargers !== undefined && (
-          <Text style={styles.totalChargersText}>
-          </Text>
-        )} */}
       </View>
     </TouchableOpacity>
   );
