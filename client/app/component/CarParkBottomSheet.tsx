@@ -14,7 +14,7 @@ import {
 } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
-import carParkUtils from '../utils/carParkUtils';
+import carParkUtils from "../utils/carParkUtils";
 import { Ionicons } from "@expo/vector-icons";
 
 interface CarParkBottomSheetProps {
@@ -32,7 +32,7 @@ const CarParkBottomSheet = ({
   const selectedCarParkBottomSheetRef = useRef<BottomSheet>(null);
   const selectedCarParkBottomSheetPosition = useSharedValue(0);
 
-  // to make the recenter map button stay above the inner bottom sheet 
+  // to make the recenter map button stay above the inner bottom sheet
   useAnimatedReaction(
     () => selectedCarParkBottomSheetPosition.value,
     (currentPosition) => {
@@ -43,7 +43,6 @@ const CarParkBottomSheet = ({
   const handleSheetChanges = useCallback((index: number) => {
     // Handle any sheet change logic
   }, []);
-  
 
   const renderCarParkDetails = () => {
     if (selectedCarPark.type === "CarPark") {
@@ -61,28 +60,28 @@ const CarParkBottomSheet = ({
             />
           )}
 
-          
           <Text style={styles.selectedCarParkDetails}>
             Address: {selectedCarPark.address}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
-  Type: {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)} <Text>`</Text>
-  <Ionicons style={styles.ioniconStyle} // Apply the style to the Ionicon
-    name={
-      selectedCarPark.carParkType === 'SURFACE CAR PARK'
-        ? 'rainy'
-        : selectedCarPark.carParkType === 'MULTI-STOREY CAR PARK'
-        ? 'business-outline'
-        : selectedCarPark.carParkType === 'BASEMENT CAR PARK'
-        ? 'layers-outline'
-        : 'help-outline'
-    }
-    size={22}
-    color="black"
-    
-  />
-
-</Text>
+            Type:{" "}
+            {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}{" "}
+            <Text>`</Text>
+            <Ionicons
+              style={styles.ioniconStyle} // Apply the style to the Ionicon
+              name={
+                selectedCarPark.carParkType === "SURFACE CAR PARK"
+                  ? "rainy"
+                  : selectedCarPark.carParkType === "MULTI-STOREY CAR PARK"
+                  ? "business-outline"
+                  : selectedCarPark.carParkType === "BASEMENT CAR PARK"
+                  ? "layers-outline"
+                  : "help-outline"
+              }
+              size={22}
+              color="black"
+            />
+          </Text>
 
           <Text style={styles.selectedCarParkDetails}>
             Lots Available:{" "}
@@ -120,11 +119,10 @@ const CarParkBottomSheet = ({
     } else if (selectedCarPark.type === "EV") {
       return (
         <>
-        <Image
-              style={styles.streetViewImage}
-              source={require("../../assets/ev.png")
-              }
-            />
+          <Image
+            style={styles.streetViewImage}
+            source={require("../../assets/ev.png")}
+          />
           <Text style={styles.selectedCarParkDetails}>
             Address: {selectedCarPark.formattedAddress}
           </Text>
@@ -132,24 +130,31 @@ const CarParkBottomSheet = ({
             Operator: {selectedCarPark.displayName}
           </Text>
           <Text
-  style={[
-    styles.selectedCarParkDetails,
-    {
-      color:
-        selectedCarPark.chargers[0].availableCount === "N/A"
-          ? "orange"
-          : selectedCarPark.chargers[0].availableCount < 2
-          ? "red"
-          : "green",
-    },
-  ]}
->
-  Chargers: {selectedCarPark.chargers[0].availableCount} / {selectedCarPark.totalChargers}
-</Text>
+            style={[
+              styles.selectedCarParkDetails,
+              {
+                color:
+                  selectedCarPark.chargers[0].availableCount === "N/A"
+                    ? "orange"
+                    : selectedCarPark.chargers[0].availableCount < 2
+                    ? "red"
+                    : "green",
+              },
+            ]}
+          >
+            Chargers: {selectedCarPark.chargers[0].availableCount} /{" "}
+            {selectedCarPark.totalChargers}
+          </Text>
 
           <Text style={styles.selectedCarParkDetails}>
-            Charge Rate: {selectedCarPark.chargers[0].maxChargeRateKW } kWh <Ionicons name="flash-outline" size={20} color="black" style={{ marginLeft:0 }} />
-            </Text>
+            Charge Rate: {selectedCarPark.chargers[0].maxChargeRateKW} kWh{" "}
+            <Ionicons
+              name="flash-outline"
+              size={20}
+              color="black"
+              style={{ marginLeft: 0 }}
+            />
+          </Text>
         </>
       );
     }
@@ -235,13 +240,12 @@ const styles = StyleSheet.create({
     top: SCREEN_DIMENSIONS.height * 0.01,
   },
   iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   ioniconStyle: {
     marginLeft: 2, // Adjust the margin to create space
   },
-
 
   navigateButton: {
     backgroundColor: "#007AFF",

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"strconv"
 	"sync"
 
@@ -64,6 +65,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 		"CarPark": ProcessedCarPark,
 	}
 
+	log.Println("Returning response to client")
 	return c.JSON(response)
 }
 

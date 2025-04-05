@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 interface EVListItemProps {
   item: any;
@@ -16,45 +16,40 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
       style={[styles.itemContainer, { backgroundColor: "white" }]}
       onPress={onPress}
     >
-      
       <View style={styles.titleContainer}>
-      <Text style={styles.evStationTitle}>{item.displayName || "N/A"} </Text> 
-      <FontAwesome5
+        <Text style={styles.evStationTitle}>{item.displayName || "N/A"} </Text>
+        <FontAwesome5
           name="charging-station"
           size={20}
           color="#007bff"
           style={styles.iconContainer}
         />
-        
       </View>
-      
+
       <Text style={styles.itemDuration}>
         {item.routeInfo.duration} Minutes Away
-        </Text>
-        <Text
-  style={[
-    styles.itemDetail,
-    {
-      color:
-        item.chargers?.[0]?.availableCount === "N/A"
-          ? "orange"
-          : item.chargers?.[0]?.availableCount <= "2"
-          ? "red"
-          : "green",
-    },
-  ]}
->
-  Chargers: {item.chargers?.[0]?.availableCount} / {item.totalChargers}
-  <MaterialCommunityIcons
-    name="power-plug-outline"
-    size={20}
-    color="black"
-    style={styles.iconContainer}
-  />
-</Text>
-
-      
-      
+      </Text>
+      <Text
+        style={[
+          styles.itemDetail,
+          {
+            color:
+              item.chargers?.[0]?.availableCount === "N/A"
+                ? "orange"
+                : item.chargers?.[0]?.availableCount <= "2"
+                ? "red"
+                : "green",
+          },
+        ]}
+      >
+        Chargers: {item.chargers?.[0]?.availableCount} / {item.totalChargers}
+        <MaterialCommunityIcons
+          name="power-plug-outline"
+          size={20}
+          color="black"
+          style={styles.iconContainer}
+        />
+      </Text>
     </TouchableOpacity>
   );
 };

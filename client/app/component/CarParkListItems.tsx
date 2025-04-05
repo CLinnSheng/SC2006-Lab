@@ -10,7 +10,7 @@ interface CarParkListItemProps {
 
 // render all the carpark lots
 const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
-  console.log("CarParkListItem item:", JSON.stringify(item, null, 2)); // Log the full object
+  // console.log("CarParkListItem item:", JSON.stringify(item, null, 2)); // Log the full object
 
   return (
     <TouchableOpacity
@@ -27,71 +27,74 @@ const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.carParkTitle}>{item.address || "N/A"}</Text>
           <Text style={styles.moreDetailsText}>
-            {item.routeInfo.duration} Minutes Away
+            {item.routeInfo.duration} min
           </Text>
-          
+
           {/* Car lots */}
-  {"C" in item.lotDetails && (
-    <View style={styles.lotRow}>
-      <Ionicons name="car-outline" size={20} color="#333" />
-      <Text style={styles.lotDetailsText}> Car: </Text>
-      <Text
-        style={{
-          color:
-            item.lotDetails.C.availableLots < 20
-              ? "red"
-              : item.lotDetails.C.availableLots <= 50
-              ? "orange"
-              : "green",
-          fontWeight: "bold",
-        }}
-      >
-        {item.lotDetails.C.availableLots} / {item.lotDetails.C.totalLots}
-      </Text>
-    </View>
-  )}
+          {"C" in item.lotDetails && (
+            <View style={styles.lotRow}>
+              <Ionicons name="car-outline" size={20} color="#333" />
+              <Text style={styles.lotDetailsText}> Car: </Text>
+              <Text
+                style={{
+                  color:
+                    item.lotDetails.C.availableLots < 20
+                      ? "red"
+                      : item.lotDetails.C.availableLots <= 50
+                      ? "orange"
+                      : "green",
+                  fontWeight: "bold",
+                }}
+              >
+                {item.lotDetails.C.availableLots} /{" "}
+                {item.lotDetails.C.totalLots}
+              </Text>
+            </View>
+          )}
 
-  {/* Motorcycle lots */}
-  {"Y" in item.lotDetails && (
-    <View style={styles.lotRow}>
-      <Ionicons name="bicycle-outline" size={20} color="#333" />
-      <Text style={styles.lotDetailsText}> Motorcycle: </Text>
-      <Text
-        style={{
-          color:
-            item.lotDetails.Y.availableLots < 5
-              ? "red"
-              : item.lotDetails.Y.availableLots <= 10
-              ? "orange"
-              : "green",
-          fontWeight: "bold",
-        }}
-      >
-        {item.lotDetails.Y.availableLots} / {item.lotDetails.Y.totalLots}
-      </Text>
-    </View>
-  )}
+          {/* Motorcycle lots */}
+          {"Y" in item.lotDetails && (
+            <View style={styles.lotRow}>
+              <Ionicons name="bicycle-outline" size={20} color="#333" />
+              <Text style={styles.lotDetailsText}> Motorcycle: </Text>
+              <Text
+                style={{
+                  color:
+                    item.lotDetails.Y.availableLots < 5
+                      ? "red"
+                      : item.lotDetails.Y.availableLots <= 10
+                      ? "orange"
+                      : "green",
+                  fontWeight: "bold",
+                }}
+              >
+                {item.lotDetails.Y.availableLots} /{" "}
+                {item.lotDetails.Y.totalLots}
+              </Text>
+            </View>
+          )}
 
-  {/* Heavy vehicle lots */}
-  {"H" in item.lotDetails && (
-    <View style={styles.lotRow}>
-      <Ionicons name="bus-outline" size={20} color="#333" />
-      <Text style={styles.lotDetailsText}> Heavy Vehicle: </Text>
-      <Text
-        style={{
-          color:
-            item.lotDetails.H.availableLots < 5
-              ? "red"
-              : item.lotDetails.H.availableLots <= 10
-              ? "orange"
-              : "green",
-          fontWeight: "bold",
-        }}
-      >
-        {item.lotDetails.H.availableLots} / {item.lotDetails.H.totalLots}
-      </Text>
-    </View>
-  )}
+          {/* Heavy vehicle lots */}
+          {"H" in item.lotDetails && (
+            <View style={styles.lotRow}>
+              <Ionicons name="bus-outline" size={20} color="#333" />
+              <Text style={styles.lotDetailsText}> Heavy Vehicle: </Text>
+              <Text
+                style={{
+                  color:
+                    item.lotDetails.H.availableLots < 5
+                      ? "red"
+                      : item.lotDetails.H.availableLots <= 10
+                      ? "orange"
+                      : "green",
+                  fontWeight: "bold",
+                }}
+              >
+                {item.lotDetails.H.availableLots} /{" "}
+                {item.lotDetails.H.totalLots}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -116,8 +119,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 2,
     marginLeft: 20,
-    flexShrink: 1, 
-  maxWidth: "90%", 
+    flexShrink: 1,
+    maxWidth: "90%",
     color: "#333",
   },
   moreDetailsText: {
