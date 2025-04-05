@@ -1,6 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface EVListItemProps {
   item: any;
@@ -14,21 +16,45 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
       style={[styles.itemContainer, { backgroundColor: "white" }]}
       onPress={onPress}
     >
+      
       <View style={styles.titleContainer}>
-        <Ionicons
-          name="flash-outline"
+      <Text style={styles.evStationTitle}>{item.displayName || "N/A"} </Text> 
+      <FontAwesome5
+          name="charging-station"
           size={20}
           color="#007bff"
           style={styles.iconContainer}
         />
-        <Text style={styles.evStationTitle}>{item.displayName || "N/A"}</Text>
+        
       </View>
-      <Text style={styles.itemDetail}>
-        Chargers: {item.location.latitude || "N/A"}
-      </Text>
-      <Text style={styles.itemDetail}>
-        Operator: {item.operator || "Unknown"}
-      </Text>
+      
+      <Text style={styles.itemDuration}>
+        {item.routeInfo.duration} Minutes Away
+        </Text>
+        <Text
+  style={[
+    styles.itemDetail,
+    {
+      color:
+        item.chargers?.[0]?.availableCount === "N/A"
+          ? "orange"
+          : item.chargers?.[0]?.availableCount <= "2"
+          ? "red"
+          : "green",
+    },
+  ]}
+>
+  Chargers: {item.chargers?.[0]?.availableCount} / {item.totalChargers}
+  <MaterialCommunityIcons
+    name="power-plug-outline"
+    size={20}
+    color="black"
+    style={styles.iconContainer}
+  />
+</Text>
+
+      
+      
     </TouchableOpacity>
   );
 };
@@ -51,11 +77,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginBottom: 2,
-    color: "#007bff",
+    color: "#)))",
   },
   itemDetail: {
     fontSize: 15,
-    color: "#666",
+    color: "#000",
+    marginBottom: 6,
+    lineHeight: 20,
+    letterSpacing: 0.5,
+    fontFamily: "Arial",
+    textAlign: "left",
+  },
+  itemDuration: {
+    fontSize: 15,
+    color: "blue",
     marginBottom: 6,
     lineHeight: 20,
     letterSpacing: 0.5,

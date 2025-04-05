@@ -15,6 +15,7 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import carParkUtils from '../utils/carParkUtils';
+import { Ionicons } from "@expo/vector-icons";
 
 interface CarParkBottomSheetProps {
   selectedCarPark: any;
@@ -42,6 +43,7 @@ const CarParkBottomSheet = ({
   const handleSheetChanges = useCallback((index: number) => {
     // Handle any sheet change logic
   }, []);
+  
 
   const renderCarParkDetails = () => {
     if (selectedCarPark.type === "CarPark") {
@@ -59,15 +61,29 @@ const CarParkBottomSheet = ({
             />
           )}
 
-          <Text style={styles.selectedCarParkDetails}>
-            Car Park ID: {selectedCarPark.carParkID}
-          </Text>
+          
           <Text style={styles.selectedCarParkDetails}>
             Address: {selectedCarPark.address}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
-            Type: {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
-          </Text>
+  Type: {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)} <Text>`</Text>
+  <Ionicons style={styles.ioniconStyle} // Apply the style to the Ionicon
+    name={
+      selectedCarPark.carParkType === 'SURFACE CAR PARK'
+        ? 'rainy'
+        : selectedCarPark.carParkType === 'MULTI-STOREY CAR PARK'
+        ? 'business-outline'
+        : selectedCarPark.carParkType === 'BASEMENT CAR PARK'
+        ? 'layers-outline'
+        : 'help-outline'
+    }
+    size={22}
+    color="black"
+    
+  />
+
+</Text>
+
           <Text style={styles.selectedCarParkDetails}>
             Lots Available:{" "}
             {selectedCarPark.lotDetails?.C?.availableLots !== undefined ? (
@@ -87,7 +103,7 @@ const CarParkBottomSheet = ({
                 {selectedCarPark.lotDetails.C.availableLots}
               </Text>
             ) : (
-              <Text style={styles.notAvailable}> N/A</Text>
+              <Text style={styles.notAvailable}> Not Available</Text>
             )}
             {selectedCarPark.lotDetails?.C?.totalLots && (
               <Text style={{ color: "#777" }}>
@@ -96,23 +112,44 @@ const CarParkBottomSheet = ({
               </Text>
             )}
           </Text>
+          <Text style={styles.selectedCarParkDetails}>
+            Distance From You: {selectedCarPark.routeInfo.distance} KM
+          </Text>
         </>
       );
     } else if (selectedCarPark.type === "EV") {
       return (
         <>
-          <Text style={styles.selectedCarParkDetailsTitle}>
-            EV Station Details
+        <Image
+              style={styles.streetViewImage}
+              source={require("../../assets/ev.png")
+              }
+            />
+          <Text style={styles.selectedCarParkDetails}>
+            Address: {selectedCarPark.formattedAddress}
           </Text>
           <Text style={styles.selectedCarParkDetails}>
-            Display Name: {selectedCarPark.displayName}
+            Operator: {selectedCarPark.displayName}
           </Text>
+          <Text
+  style={[
+    styles.selectedCarParkDetails,
+    {
+      color:
+        selectedCarPark.chargers[0].availableCount === "N/A"
+          ? "orange"
+          : selectedCarPark.chargers[0].availableCount < 2
+          ? "red"
+          : "green",
+    },
+  ]}
+>
+  Chargers: {selectedCarPark.chargers[0].availableCount} / {selectedCarPark.totalChargers}
+</Text>
+
           <Text style={styles.selectedCarParkDetails}>
-            Chargers: {selectedCarPark.totalChargers}
-          </Text>
-          <Text style={styles.selectedCarParkDetails}>
-            Operator: {selectedCarPark.operator}
-          </Text>
+            Charge Rate: {selectedCarPark.chargers[0].maxChargeRateKW } kWh <Ionicons name="flash-outline" size={20} color="black" style={{ marginLeft:0 }} />
+            </Text>
         </>
       );
     }
@@ -132,7 +169,7 @@ const CarParkBottomSheet = ({
     >
       <BottomSheetView style={styles.itemDetail}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <AntDesign name="closecircle" size={16} color="grey" />
+          <AntDesign name="closecircle" size={20} color="grey" />
         </TouchableOpacity>
 
         {renderCarParkDetails()}
@@ -191,12 +228,21 @@ const styles = StyleSheet.create({
     color: "#FFFFF",
     lineHeight: 25,
     paddingHorizontal: 0,
-    paddingVertical: 0,
+    paddingVertical: -1,
     borderWidth: 0,
     alignSelf: "center",
     width: "90%",
     top: SCREEN_DIMENSIONS.height * 0.01,
   },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ioniconStyle: {
+    marginLeft: 2, // Adjust the margin to create space
+  },
+
+
   navigateButton: {
     backgroundColor: "#007AFF",
     paddingVertical: 13,
@@ -215,7 +261,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom:
       Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.33
+        ? SCREEN_DIMENSIONS.height * 0.325
         : SCREEN_DIMENSIONS.height * 0.32,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,

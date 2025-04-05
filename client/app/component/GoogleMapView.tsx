@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import MapView, { Polyline, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Polyline, PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import {
   Platform,
   StatusBar,
@@ -19,8 +19,11 @@ import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
 import { decode } from "@googlemaps/polyline-codec";
+import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
+
 
 const GoogleMapView: React.FC = () => {
+  const { carParks } = useCarParkData(() => {});
   const mapRef = useRef<MapView | null>(null);
   const { userLocation } = useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
@@ -136,18 +139,60 @@ const GoogleMapView: React.FC = () => {
           // customMapStyle={mapViewStyle}
           // provider={PROVIDER_GOOGLE}
         >
-          {selectedCarPark && selectedCarPark.routeInfo.polyline && (
-            <Polyline
-              coordinates={decode(selectedCarPark.routeInfo.polyline).map(
-                (point: any) => ({
-                  latitude: point[0],
-                  longitude: point[1],
-                })
-              )}
-              strokeWidth={6}
-              strokeColor="#007AFF"
+          {carParks?.map((carPark, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: carPark.latitude,
+                longitude: carPark.longitude,
+              }}
+              title={carPark.address}
+              onPress={() => {
+                console.log("Marker pressed:", carPark);}}
             />
-          )}
+          ))}
+          {/* Render markers for each car park */}
+          {selectedCarPark && (
+      <Marker
+        coordinate={{
+          latitude: selectedCarPark.latitude,
+          longitude: selectedCarPark.longitude,
+        }}
+        title={selectedCarPark.address}
+        description={`Type: ${selectedCarPark.carParkType || "Unknown"}`}
+        pinColor={selectedCarPark.type === "CarPark" ? "red" : "blue"}
+  onPress={() => handleCarParkSelection(selectedCarPark)}
+      />
+    )}
+          {selectedCarPark && selectedCarPark.routeInfo.polyline && (
+  <>
+    {/* Polyline to show the route */}
+    <Polyline
+      coordinates={decode(selectedCarPark.routeInfo.polyline).map(
+        (point: any) => ({
+          latitude: point[0],
+          longitude: point[1],
+        })
+      )}
+      strokeWidth={6}
+      strokeColor="#007AFF"
+    />
+
+    {/* Marker at the end of the polyline, only if type is NOT "CarPark" */}
+    {selectedCarPark.type !== "CarPark" &&
+      decode(selectedCarPark.routeInfo.polyline).length > 0 && (
+        <Marker
+          coordinate={{
+            latitude: decode(selectedCarPark.routeInfo.polyline).slice(-1)[0][0],
+            longitude: decode(selectedCarPark.routeInfo.polyline).slice(-1)[0][1],
+          }}
+          title="Destination"
+          description="End of the route"
+          pinColor="blue" // Green marker for non-CarPark destinations
+        />
+      )}
+  </>
+)}
         </MapView>
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>

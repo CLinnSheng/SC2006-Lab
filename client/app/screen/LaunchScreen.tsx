@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Animated, StatusBar } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, Animated, StatusBar, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+
+const screenWidth = Dimensions.get("window").width;
 
 export default function LaunchScreen({
   onAnimationComplete,
@@ -9,6 +11,7 @@ export default function LaunchScreen({
 }) {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [textAnim] = useState(new Animated.Value(0));
+  const carAnim = useRef(new Animated.Value(-200)).current; // Off-screen start
 
   useEffect(() => {
     Animated.parallel([
@@ -20,6 +23,12 @@ export default function LaunchScreen({
       Animated.timing(textAnim, {
         toValue: 1,
         duration: 3000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(carAnim, {
+        toValue: 0,
+        duration: 2000,
+        delay: 500,
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
@@ -34,7 +43,13 @@ export default function LaunchScreen({
       <StatusBar translucent backgroundColor="transparent" />
       <Animated.Image
         source={require("../../assets/logo.png")}
-        style={[styles.logo, { opacity: fadeAnim }]}
+        style={[
+          styles.logo,
+          {
+            opacity: fadeAnim,
+            transform: [{ translateX: carAnim }],
+          },
+        ]}
         resizeMode="contain"
       />
       <Animated.Text style={[styles.text, { opacity: textAnim }]}>
