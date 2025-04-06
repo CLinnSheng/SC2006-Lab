@@ -2,21 +2,14 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import carParkUtils from "../utils/carParkUtils";
 import { FontAwesome } from "@expo/vector-icons"; // Ensure you have this installed: npm install @expo/vector-icons
-
+import formatAddressToTitleCase from "../utils/convertCase";
+import getAvailabilityColor from "../utils/getAvailabilityColor";
 interface CarParkListItemProps {
   item: any;
   onPress: () => void;
 }
 
 const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
-  const getAvailabilityColor = (available: number, total: number) => {
-    if (total === 0) return "#999";
-    const ratio = available / total;
-    if (ratio <= 0.2) return "red";
-    if (ratio <= 0.5) return "orange";
-    return "green";
-  };
-
   return (
     <TouchableOpacity
       style={[styles.itemContainer, { backgroundColor: "white" }]}
@@ -24,11 +17,11 @@ const CarParkListItem = ({ item, onPress }: CarParkListItemProps) => {
     >
       <View style={styles.infoContainer}>
         <Text style={styles.titleText} numberOfLines={1}>
-          {item.address || "N/A"}
+          {formatAddressToTitleCase(item.address) || "N/A"}
         </Text>
         <Text style={styles.secondaryInfoText}>
           {carParkUtils.getCarParkTypeLabel(item.carParkType)} ⋅{" "}
-          {item.routeInfo?.distance} km ⋅ {item.routeInfo?.duration} min
+          {item.routeInfo?.distance} km ⋅ {item.routeInfo?.duration} mins
         </Text>
 
         <View style={styles.availabilityContainer}>
@@ -143,7 +136,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   icon: {
-    marginRight: 5,
+    marginRight: 10,
   },
   availabilityCount: {
     fontSize: 14,

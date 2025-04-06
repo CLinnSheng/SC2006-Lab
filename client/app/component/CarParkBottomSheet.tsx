@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  View
+  View,
 } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import {
@@ -16,7 +16,9 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import carParkUtils from "../utils/carParkUtils";
-import { Ionicons } from "@expo/vector-icons";
+import formatAddressToTitleCase from "../utils/convertCase";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import getAvailabilityColor from "../utils/getAvailabilityColor";
 
 interface CarParkBottomSheetProps {
   selectedCarPark: any;
@@ -49,7 +51,35 @@ const CarParkBottomSheet = ({
     if (selectedCarPark.type === "CarPark") {
       return (
         <>
-         {selectedCarPark.latitude && selectedCarPark.longitude && (
+          <View style={styles.selectedCarParkTitileContainer}>
+            <Text style={styles.selectedCarParkTitle}>
+              {formatAddressToTitleCase(selectedCarPark.address)}
+            </Text>
+          </View>
+          <Text style={styles.selectedCarParkType}>
+            {formatAddressToTitleCase(selectedCarPark.carParkType)}
+          </Text>
+          <View style={styles.distanceTimeContainer}>
+            <Ionicons
+              name="location-outline"
+              size={16}
+              color="#007AFF"
+              style={{ marginRight: 5 }}
+            />
+            <Text style={styles.distanceTimeText}>
+              {selectedCarPark.routeInfo.distance} km
+            </Text>
+            <Ionicons
+              name="time-outline"
+              size={16}
+              color="#007AFF"
+              style={{ marginLeft: 10, marginRight: 5 }}
+            />
+            <Text style={styles.distanceTimeText}>
+              {Math.round(selectedCarPark.routeInfo.duration)} mins
+            </Text>
+          </View>
+          {selectedCarPark.latitude && selectedCarPark.longitude && (
             <Image
               style={styles.streetViewImage}
               source={{
@@ -59,110 +89,181 @@ const CarParkBottomSheet = ({
                 ),
               }}
             />
-          )}  
+          )}
 
-          <Text style={styles.selectedCarParkDetailsTitle}>
-            {selectedCarPark.address}
+          <Text style={styles.selectedCarParkTypeLabel}>
+            {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
           </Text>
-          <Text style={styles.selectedCarParkDetailsMin}>
-            {selectedCarPark.routeInfo.duration} Minutes From Your Location
-          </Text>
-          <Text style={styles.selectedCarParkDetails}>
-            {" "}
-            {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}{" "}
-            <Text></Text>
-            <Ionicons
-              style={styles.ioniconStyle} // Apply the style to the Ionicon
-              name={
-                selectedCarPark.carParkType === "SURFACE CAR PARK"
-                  ? "rainy"
-                  : selectedCarPark.carParkType === "MULTI-STOREY CAR PARK"
-                  ? "business-outline"
-                  : selectedCarPark.carParkType === "BASEMENT CAR PARK"
-                  ? "layers-outline"
-                  : "help-outline"
-              }
-              size={22}
-              color="black"
-            />
-          </Text>
+          <View style={styles.availabilityContainer}>
+            {selectedCarPark.lotDetails?.C && (
+              <View style={styles.lotInfo}>
+                <FontAwesome
+                  name="car"
+                  size={16}
+                  color="#777"
+                  style={styles.icon}
+                />
+                <Text
+                  style={[
+                    styles.availabilityCount,
+                    {
+                      color: getAvailabilityColor(
+                        selectedCarPark.lotDetails.C.availableLots,
+                        selectedCarPark.lotDetails.C.totalLots
+                      ),
+                    },
+                  ]}
+                >
+                  {selectedCarPark.lotDetails.C.availableLots}
+                </Text>
+                <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
+                  / {selectedCarPark.lotDetails.C.totalLots}
+                </Text>
+              </View>
+            )}
 
-          <Text style={styles.selectedCarParkDetailsLots}>
-  Lots:{" "}
-  {selectedCarPark.lotDetails?.C?.availableLots !== undefined ? (
-    <Text
-      style={[
-        styles.availableLots,
-        {
-          color: (() => {
-            // Calculate the ratio of available to total lots
-            const availableLots = selectedCarPark.lotDetails.C.availableLots;
-            const totalLots = selectedCarPark.lotDetails.C.totalLots;
+            {selectedCarPark.lotDetails?.Y && (
+              <View style={styles.lotInfo}>
+                <FontAwesome
+                  name="motorcycle"
+                  size={16}
+                  color="#777"
+                  style={styles.icon}
+                />
+                <Text
+                  style={[
+                    styles.availabilityCount,
+                    {
+                      color: getAvailabilityColor(
+                        selectedCarPark.lotDetails.Y.availableLots,
+                        selectedCarPark.lotDetails.Y.totalLots
+                      ),
+                    },
+                  ]}
+                >
+                  {selectedCarPark.lotDetails.Y.availableLots}
+                </Text>
+                <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
+                  / {selectedCarPark.lotDetails.Y.totalLots}
+                </Text>
+              </View>
+            )}
 
-            // Avoid division by zero
-            if (totalLots && availableLots) {
-              const ratio = availableLots / totalLots;
-              // Determine the color based on the ratio
-              if (ratio < 0.2) return "red"; // Less than 20% available
-              if (ratio < 0.5) return "orange"; // Less than 50% available
-              return "green"; // More than 50% available
-            }
-            return "gray"; // Default color if data is missing or invalid
-          })(),
-        },
-      ]}
-    >
-      {selectedCarPark.lotDetails.C.availableLots}
-    </Text>
-  ) : (
-    <Text style={styles.notAvailable}>Not Available</Text>
-  )}
-</Text>
-
-          <Text style={styles.selectedCarParkDetailsDist}>
-            {selectedCarPark.routeInfo.distance} KM
-          </Text>
+            {selectedCarPark.lotDetails?.H && (
+              <View style={styles.lotInfo}>
+                <FontAwesome
+                  name="truck"
+                  size={16}
+                  color="#777"
+                  style={styles.icon}
+                />
+                <Text
+                  style={[
+                    styles.availabilityCount,
+                    {
+                      color: getAvailabilityColor(
+                        selectedCarPark.lotDetails.H.availableLots,
+                        selectedCarPark.lotDetails.H.totalLots
+                      ),
+                    },
+                  ]}
+                >
+                  {selectedCarPark.lotDetails.H.availableLots}
+                </Text>
+                <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
+                  / {selectedCarPark.lotDetails.H.totalLots}
+                </Text>
+              </View>
+            )}
+          </View>
         </>
-
       );
     } else if (selectedCarPark.type === "EV") {
       return (
         <>
-         <Image
-              style={styles.streetViewImage}
-              source={require("../../assets/ev.png")}
+          <View style={styles.selectedCarParkTitileContainer}>
+            <Text style={styles.selectedCarParkTitle}>
+              {selectedCarPark.displayName}
+            </Text>
+          </View>
+          <Text style={styles.selectedCarParkType}>
+            {selectedCarPark.shortFormattedAddress}
+          </Text>
+          <View style={styles.distanceTimeContainer}>
+            <Ionicons
+              name="location-outline"
+              size={16}
+              color="#007AFF"
+              style={{ marginRight: 5 }}
             />
-          <Text style={styles.selectedCarParkDetailsTitle}>
-          {selectedCarPark.formattedAddress}
-          </Text>
-          <Text style={styles.selectedCarParkDetailsMin}>
-            {selectedCarPark.routeInfo.duration} Minutes From Your Location
-          </Text>
-          <Text style={styles.selectedCarParkDetailsDist}>
-          {selectedCarPark.displayName}
-          </Text>
-          <Text style={styles.selectedCarParkDetailsLots}>
-  Lots:{" "}
-  <Text
-    style={[
-      {
-        color:
-        selectedCarPark.chargers[0].availableCount === "N/A"
-        ? "black"
-        : selectedCarPark.chargers[0].availableCount < 2
-        ? "red"
-        : "green",
-      },
-    ]}
-  >
-    {selectedCarPark.chargers[0].availableCount}
-  </Text>
-</Text>
-
-          <Text style={styles.selectedCarParkDetails}>
-            Charge Rate: {selectedCarPark.chargers[0].maxChargeRateKW} kWh
-            
-          </Text>
+            <Text style={styles.distanceTimeText}>
+              {selectedCarPark.routeInfo.distance} km
+            </Text>
+            <Ionicons
+              name="time-outline"
+              size={16}
+              color="#007AFF"
+              style={{ marginLeft: 10, marginRight: 5 }}
+            />
+            <Text style={styles.distanceTimeText}>
+              {Math.round(selectedCarPark.routeInfo.duration)} mins
+            </Text>
+          </View>
+          <Image
+            style={styles.streetViewImage}
+            source={{
+              uri: carParkUtils.getStreetViewUrl(
+                selectedCarPark.location.latitude,
+                selectedCarPark.location.longitude
+              ),
+            }}
+          />
+          {selectedCarPark.chargers && selectedCarPark.chargers.length > 0 ? (
+            <View style={styles.evAvailabilityContainer}>
+              {selectedCarPark.chargers.map((charger: any, index: any) => (
+                <View key={index} style={styles.evChargerInfo}>
+                  <Text style={styles.evChargerType}>
+                    Type{" "}
+                    {formatAddressToTitleCase(
+                      charger.type
+                        .replace(/EV_CONNECTOR_TYPE_/g, "")
+                        .replace(/TYPE_/g, "")
+                        .replace(/Ccs/g, "")
+                        .replace(/_/g, " ")
+                    )}
+                  </Text>
+                  <Text>{" ("}</Text>
+                  <Text style={styles.evChargeRate}>
+                    {""}
+                    {charger.maxChargeRateKW} kW
+                  </Text>
+                  <Text>{"): "}</Text>
+                  <Text
+                    style={[
+                      styles.evChargerCount,
+                      {
+                        color: getAvailabilityColor(
+                          charger.availableCount,
+                          charger.count
+                        ),
+                      },
+                    ]}
+                  >
+                    {charger.availableCount === "N/A"
+                      ? "N/A"
+                      : `${charger.availableCount}`}
+                  </Text>
+                  <Text style={{ fontSize: 16 }}> / {charger.count}</Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.noInfoContainer}>
+              <Text style={styles.noInfoText}>
+                Charging information not available.
+              </Text>
+            </View>
+          )}
         </>
       );
     }
@@ -180,171 +281,155 @@ const CarParkBottomSheet = ({
       enableDynamicSizing={false}
       animatedPosition={selectedCarParkBottomSheetPosition}
     >
-      <BottomSheetView style={styles.itemDetail}>
+      <BottomSheetView>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <AntDesign name="closecircle" size={20} color="grey" />
+          <AntDesign name="closecircle" size={16} color="grey" />
         </TouchableOpacity>
 
         {renderCarParkDetails()}
 
         <TouchableOpacity
-  style={styles.navigateButton}
-  onPress={() => console.log("Navigate pressed")}
->
-  <Text style={styles.navigateButtonText}>Navigate</Text>
-  <Ionicons name="navigate-outline" size={20} color="white" style={{ marginTop: -19, marginLeft:145 }} />
-</TouchableOpacity>
+          style={styles.navigateButton}
+          onPress={() => console.log("Navigate pressed")}
+        >
+          <Text style={styles.navigateButtonText}>NAVIGATE</Text>
+          <Ionicons
+            name="navigate-outline"
+            size={20}
+            color="white"
+            style={{ marginTop: -20, marginLeft: 130 }}
+          />
+        </TouchableOpacity>
       </BottomSheetView>
     </BottomSheet>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... copy relevant styles from original file
   streetViewImage: {
-    width: Platform.OS === "ios" ? "105%" : SCREEN_DIMENSIONS.width * 0.9,
-    height: 120,
-    marginTop: 45,
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    alignContent: "center",
+    width: SCREEN_DIMENSIONS.width * 0.91,
+    height: 150,
+    marginTop: 10,
+    borderRadius: 12,
     alignSelf: "center",
+    marginBottom: 10,
   },
-  itemDetail: {
-    fontSize: 15,
-    color: "#666",
-    marginBottom: 6,
-    lineHeight: 20,
-    letterSpacing: 0.5,
-    fontFamily: "Arial",
-    textAlign: "left",
+  selectedCarParkTitileContainer: {
+    width: SCREEN_DIMENSIONS.width * 0.9,
   },
-  availableLots: {
+  selectedCarParkTitle: {
+    fontFamily: "ArialRoundedBold",
+    fontSize: 22,
     fontWeight: "bold",
-    color: "green",
-  },
-  notAvailable: {
-    color: "#888",
-    fontStyle: "italic",
-  },
-  selectedCarParkDetailsTitle: {
-    fontFamily: "SourceCodePro-BlackIt",
-    fontSize: 20,
-    fontWeight: "bold",
-    alignSelf: 'baseline',
     color: "black",
-    marginBottom: 3,
-    marginTop: 30,
     marginLeft: 20,
-    lineHeight: 40,
   },
-  selectedCarParkDetailsMin:{
-    fontSize: 15,
+  selectedCarParkType: {
+    marginLeft: 20,
+    color: "#777",
+    fontSize: 16,
+    fontFamily: "ArialRoundedBold",
+  },
+  selectedCarParkTypeLabel: {
+    fontSize: 14,
     fontFamily: "ArialRoundedBold",
     color: "rgb(35, 151, 189)",
     marginLeft: 20,
-    marginTop: 0,
-    
-
+    // marginTop: 5,
   },
-  selectedCarParkDetails: {
-    fontSize: 14,
-    fontFamily: "ArialRoundedBold",
-    color: "#FFFFF",
-    lineHeight: 25,
-    paddingHorizontal: 12,
-    paddingVertical: 13,
-    borderWidth: 0,
-    marginTop:20,
-    marginLeft: -200,
-    alignSelf: "center",
-    width: SCREEN_DIMENSIONS.width * 0.45,
-    height: SCREEN_DIMENSIONS.height * 0.06,
-    backgroundColor: "rgb(223, 224, 224)",
-    borderRadius: 12,
-    textAlign: "center", // Horizontally center the text
-    justifyContent: "center", // Vertically center the text
-    alignItems: "center", // Vertically center the text
-    flexDirection: 'row', // Ensure flexbox layout for centering
-    display: 'flex', // Enable flexbox on the container
-
-    top: SCREEN_DIMENSIONS.height * 0.015,
+  evAvailabilityContainer: {
+    marginTop: 20,
+    marginLeft: 20,
+    marginBottom: 1,
   },
-  selectedCarParkDetailsLots: {
-    fontSize: 14,
-    fontFamily: "ArialRoundedBold",
-    color: "#FFFFF",
-    lineHeight: 25,
-    paddingHorizontal: 65,
-    paddingVertical: 13,
-    width: SCREEN_DIMENSIONS.width * 0.45,
-    height: SCREEN_DIMENSIONS.height * 0.06,
-    borderWidth: 0,
-    marginTop:-56,
-    marginLeft: 200,
-    borderRadius: 12,
-
-    alignSelf: "center",
-    backgroundColor: "rgb(223, 224, 224)",
-    top: SCREEN_DIMENSIONS.height * 0.015,
+  evAvailabilityTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
-  selectedCarParkDetailsDist: {
-    fontSize: 14,
-    borderRadius: 12,
-
-    fontFamily: "ArialRoundedBold",
-    color: "#FFFFF",
-    lineHeight: 25,
-    paddingHorizontal: 35,
-    paddingVertical: 13,
-    borderWidth: 0,
-    marginTop:20,
-    marginLeft: -200,
-    alignSelf: 'center',
-    width: SCREEN_DIMENSIONS.width * 0.45,
-    height: SCREEN_DIMENSIONS.height * 0.06,
-    backgroundColor: "rgb(223, 224, 224)",
-    top: SCREEN_DIMENSIONS.height * 0.015,
-    textAlign: "center", // Horizontally center the text
-    justifyContent: "center", // Vertically center the text
-    alignItems: "center", // Vertically center the text
-    flexDirection: 'row', // Ensure flexbox layout for centering
-    display: 'flex', // Enable flexbox on the container
-  },
-  iconContainer: {
+  evChargerInfo: {
     flexDirection: "row",
-    alignItems: "center",
+    marginBottom: 4,
   },
-  ioniconStyle: {
-    marginLeft: 2, // Adjust the margin to create space
+  evChargerType: {
+    fontSize: 16,
+    color: "#333",
   },
-
+  evChargerCount: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  evChargeRate: {
+    fontSize: 16,
+    color: "#007AFF",
+    fontWeight: "bold",
+  },
   navigateButton: {
+    position: "absolute",
     backgroundColor: "#007AFF",
     paddingVertical: 13,
     borderRadius: 12,
-    width: SCREEN_DIMENSIONS.width * 0.45,
+    width: SCREEN_DIMENSIONS.width * 0.9,
     height: SCREEN_DIMENSIONS.height * 0.06,
-    marginLeft: 218,
-    marginTop:-65,
-    top: SCREEN_DIMENSIONS.height * 0.025,
+    top: SCREEN_DIMENSIONS.height * 0.43,
+    alignContent: "center",
+    alignSelf: "center",
   },
   navigateButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
     alignSelf: "center",
-    marginTop:4,
-    marginLeft: -1,
+    alignContent: "center",
+    textAlign: "center",
+    marginTop: 4,
   },
   closeButton: {
     position: "absolute",
-    bottom:
-      Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.389
-        : SCREEN_DIMENSIONS.height * 0.3234,
+    top: Platform.OS === "ios" ? 10 : 8,
+    // bottom:
+    //   Platform.OS === "ios"
+    //     ? SCREEN_DIMENSIONS.height * 0.389
+    //     : SCREEN_DIMENSIONS.height * 0.35,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,
+  },
+  availabilityContainer: {
+    flexDirection: "column", // Changed to column for row by row
+    gap: 8, // Adds spacing between each row
+    marginTop: 20,
+    marginLeft: 20,
+    marginBottom: 1,
+  },
+  lotInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: 20,
+  },
+  availabilityCount: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  distanceTimeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 19,
+    marginTop: 5,
+  },
+  distanceTimeText: {
+    fontSize: 15,
+    color: "#77",
+  },
+  noInfoContainer: {
+    marginTop: 20,
+    marginLeft: 20,
+  },
+  noInfoText: {
+    fontSize: 14,
+    color: "#888",
+    fontStyle: "italic",
   },
 });
 

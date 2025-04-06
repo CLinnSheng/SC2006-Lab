@@ -7,7 +7,7 @@ const config = {
     "Content-Type": "application/json",
     "X-Goog-Api-Key": process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
     "X-Goog-FieldMask":
-      "places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.shortFormattedAddress",
+      "places.displayName,places.evChargeOptions,places.formattedAddress,places.location,places.shortFormattedAddress,places.photos",
   },
 };
 

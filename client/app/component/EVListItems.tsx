@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import getAvailabilityColor from "../utils/getAvailabilityColor";
 
 interface EVListItemProps {
   item: any;
@@ -8,14 +9,6 @@ interface EVListItemProps {
 }
 
 const EVListItem = ({ item, onPress }: EVListItemProps) => {
-  const getAvailabilityColor = (available: number, total: number): string => {
-    if (!total || isNaN(available)) return "#999";
-    const ratio = available / total;
-    if (ratio <= 0.2) return "red";
-    if (ratio <= 0.5) return "orange";
-    return "green";
-  };
-
   const getTotalAvailableCount = (
     chargers: any[] | undefined
   ): number | null => {
@@ -69,7 +62,7 @@ const EVListItem = ({ item, onPress }: EVListItemProps) => {
         </View>
         {item.routeInfo?.duration !== undefined && (
           <Text style={styles.secondaryInfoText}>
-            {item.routeInfo.duration} min ⋅ {item.routeInfo.distance} km ⋅{" "}
+            {item.routeInfo.duration} mins ⋅ {item.routeInfo.distance} km ⋅{" "}
             {item.shortFormattedAddress}
           </Text>
         )}
@@ -138,7 +131,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   icon: {
-    marginRight: 8,
+    marginRight: 10,
     // right: 3,
   },
   availabilityCount: {

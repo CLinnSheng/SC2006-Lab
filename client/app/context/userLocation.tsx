@@ -59,7 +59,7 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     const data = {
       includedTypes: ["electric_vehicle_charging_station"],
       locationRestriction: {
-        circle: {
+        circle: { 
           center: {
             latitude: targetLocation.latitude,
             longitude: targetLocation.longitude,
