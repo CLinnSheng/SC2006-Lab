@@ -66,7 +66,7 @@ const BottomSheetContainer = ({
   const handleSelectCarPark = (carPark: any) => {
     setSelectedCarPark(carPark);
     setShowSelectedCarParkSheet(true);
-    console.log(decode(carPark.routeInfo.polyline));
+    // console.log(decode(carPark.routeInfo.polyline));
     onSelectCarPark(carPark);
   };
 

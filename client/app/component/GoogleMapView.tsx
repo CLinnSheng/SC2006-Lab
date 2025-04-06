@@ -1,5 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import MapView, { Polyline, PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapView, {
+  Polyline,
+  PROVIDER_GOOGLE,
+  Marker,
+  Callout,
+} from "react-native-maps";
 import {
   Platform,
   StatusBar,
@@ -25,7 +30,7 @@ import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
 import carParkUtils from "../utils/carParkUtils";
 
 const GoogleMapView: React.FC = () => {
-  const { carParks } = useCarParkData(() => {});
+  const { carParks, combinedListCarPark } = useCarParkData(() => {});
   const mapRef = useRef<MapView | null>(null);
   const { userLocation } = useContext(UserLocationContext);
   const bottomSheetPosition = useSharedValue<number>(0);
@@ -140,69 +145,53 @@ const GoogleMapView: React.FC = () => {
           // customMapStyle={mapViewStyle}
           // provider={PROVIDER_GOOGLE}
         >
-          {!selectedCarPark && carParks?.map((carPark, index) => (
-  <Marker
-    key={index}
-    coordinate={{
-      latitude: carPark.latitude,
-      longitude: carPark.longitude,
-    }}
-    onPress={() => {
-      console.log("Marker pressed:", carPark);
-    }}
-  >
-    <Callout tooltip>
-      <View style={{ width: 200, padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
-        <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{carPark.address}</Text>
-        <Image
-          source={{
-            uri: carParkUtils.getStreetViewUrl(
-              carPark.latitude,
-              carPark.longitude
-            ),
-          }}
-          style={{ width: '100%', height: 100, borderRadius: 5 }}
-          resizeMode="cover"
-        />
-      </View>
-    </Callout>
-  </Marker>
-))}
+          {!selectedCarPark &&
+            combinedListCarPark?.map((lot, index) => {
+              const latitude = lot.latitude ?? lot.location?.latitude ?? 0;
+              const longitude = lot.longitude ?? lot.location?.longitude ?? 0;
 
-          {/* Render markers for each car park */}
-          {selectedCarPark && (
-  <Marker
-    coordinate={{
-      latitude: selectedCarPark.latitude,
-      longitude: selectedCarPark.longitude,
-    }}
-    pinColor={selectedCarPark.type === "CarPark" ? "red" : "blue"}
-    onPress={() => handleCarParkSelection(selectedCarPark)}
-    ref={(ref) => {
-      if (ref) {
-        // Automatically show the callout when the marker is rendered
-        setTimeout(() => ref.showCallout(), 100);
-      }
-    }}
-  >
-    <Callout tooltip>
-      <View style={{ width: 200, padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
-        <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{selectedCarPark.address}</Text>
-        <Text style={{ marginBottom: 5 }}>{`Type: ${selectedCarPark.carParkType || "Unknown"}`}</Text>
-        <Image
-          source={{
-            uri: carParkUtils.getStreetViewUrl(
-              selectedCarPark.latitude,
-              selectedCarPark.longitude
-            ),
-          }}
-          style={{ width: '100%', height: 100, borderRadius: 5 }}
-          resizeMode="cover"
-        />
-      </View>
-    </Callout>
-  </Marker>
-)}
+              return (
+                <Marker
+                  key={index}
+                  coordinate={{ latitude, longitude }}
+                  pinColor={lot.type === "EV" ? "green" : "red"} // color-coded
+                  onPress={() => {
+                    // console.log("Marker pressed:", lot);
+                  }}
+                >
+                  <Callout tooltip>
+                    <View
+                      style={{
+                        width: 200,
+                        padding: 10,
+                        backgroundColor: "white",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text
+                        style={{ fontWeight: "bold", marginBottom: 5 }}
+                        numberOfLines={1}
+                      >
+                        {lot.displayName ??
+                          lot.address ??
+                          lot.shortFormattedAddress}
+                      </Text>
+                      <Image
+                        source={{
+                          uri: carParkUtils.getStreetViewUrl(
+                            latitude,
+                            longitude
+                          ),
+                        }}
+                        style={{ width: "100%", height: 100, borderRadius: 5 }}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  </Callout>
+                </Marker>
+              );
+            })}
+
           {selectedCarPark && selectedCarPark.routeInfo.polyline && (
             <>
               {/* Polyline to show the route */}
@@ -216,24 +205,24 @@ const GoogleMapView: React.FC = () => {
                 strokeWidth={6}
                 strokeColor="#007AFF"
               />
-
-              {/* Marker at the end of the polyline, only if type is NOT "CarPark" */}
-              {selectedCarPark.type !== "CarPark" &&
-                decode(selectedCarPark.routeInfo.polyline).length > 0 && (
-                  <Marker
-                    coordinate={{
-                      latitude: decode(
-                        selectedCarPark.routeInfo.polyline
-                      ).slice(-1)[0][0],
-                      longitude: decode(
-                        selectedCarPark.routeInfo.polyline
-                      ).slice(-1)[0][1],
-                    }}
-                    title="Destination"
-                    description="End of the route"
-                    pinColor="blue" // Green marker for non-CarPark destinations
-                  />
-                )}
+              <Marker
+                coordinate={{
+                  latitude:
+                    selectedCarPark.latitude ??
+                    selectedCarPark.location?.latitude,
+                  longitude:
+                    selectedCarPark.longitude ??
+                    selectedCarPark.location?.longitude,
+                }}
+                pinColor={selectedCarPark.type === "CarPark" ? "red" : "green"}
+                onPress={() => {}}
+                ref={(ref) => {
+                  if (ref) {
+                    // Automatically show the callout when the marker is rendered
+                    setTimeout(() => ref.showCallout(), 100);
+                  }
+                }}
+              ></Marker>
             </>
           )}
         </MapView>
