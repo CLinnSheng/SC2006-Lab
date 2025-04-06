@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import MapView, { Polyline, PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { Polyline, PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
 import {
   Platform,
   StatusBar,
   StyleSheet,
   View,
   TouchableOpacity,
+  Image,
+  Text,
 } from "react-native";
 import BottomSheetContainer from "./BottomSheetContainer";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +22,7 @@ import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
 import { decode } from "@googlemaps/polyline-codec";
 import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
+import carParkUtils from "../utils/carParkUtils";
 
 const GoogleMapView: React.FC = () => {
   const { carParks } = useCarParkData(() => {});
@@ -138,33 +141,68 @@ const GoogleMapView: React.FC = () => {
           // provider={PROVIDER_GOOGLE}
         >
           {!selectedCarPark && carParks?.map((carPark, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: carPark.latitude,
-                longitude: carPark.longitude,
-              }}
-              title={carPark.address}
-              onPress={() => {
-                console.log("Marker pressed:", carPark);
-              }}
-            />
-          ))}
+  <Marker
+    key={index}
+    coordinate={{
+      latitude: carPark.latitude,
+      longitude: carPark.longitude,
+    }}
+    onPress={() => {
+      console.log("Marker pressed:", carPark);
+    }}
+  >
+    <Callout tooltip>
+      <View style={{ width: 200, padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
+        <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{carPark.address}</Text>
+        <Image
+          source={{
+            uri: carParkUtils.getStreetViewUrl(
+              carPark.latitude,
+              carPark.longitude
+            ),
+          }}
+          style={{ width: '100%', height: 100, borderRadius: 5 }}
+          resizeMode="cover"
+        />
+      </View>
+    </Callout>
+  </Marker>
+))}
 
           {/* Render markers for each car park */}
           {selectedCarPark && (
-            <Marker
-              coordinate={{
-                latitude: selectedCarPark.latitude,
-                longitude: selectedCarPark.longitude,
-              }}
-              title={selectedCarPark.address}
-              description={`Type: ${selectedCarPark.carParkType || "Unknown"}`}
-              pinColor={selectedCarPark.type === "CarPark" ? "red" : "blue"}
-              onPress={() => handleCarParkSelection(selectedCarPark)}
-            />
-          )}
-
+  <Marker
+    coordinate={{
+      latitude: selectedCarPark.latitude,
+      longitude: selectedCarPark.longitude,
+    }}
+    pinColor={selectedCarPark.type === "CarPark" ? "red" : "blue"}
+    onPress={() => handleCarParkSelection(selectedCarPark)}
+    ref={(ref) => {
+      if (ref) {
+        // Automatically show the callout when the marker is rendered
+        setTimeout(() => ref.showCallout(), 100);
+      }
+    }}
+  >
+    <Callout tooltip>
+      <View style={{ width: 200, padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
+        <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{selectedCarPark.address}</Text>
+        <Text style={{ marginBottom: 5 }}>{`Type: ${selectedCarPark.carParkType || "Unknown"}`}</Text>
+        <Image
+          source={{
+            uri: carParkUtils.getStreetViewUrl(
+              selectedCarPark.latitude,
+              selectedCarPark.longitude
+            ),
+          }}
+          style={{ width: '100%', height: 100, borderRadius: 5 }}
+          resizeMode="cover"
+        />
+      </View>
+    </Callout>
+  </Marker>
+)}
           {selectedCarPark && selectedCarPark.routeInfo.polyline && (
             <>
               {/* Polyline to show the route */}
