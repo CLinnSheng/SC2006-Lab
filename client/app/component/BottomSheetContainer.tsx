@@ -8,6 +8,7 @@ import CarParkList from "./CarParkList";
 import CarParkBottomSheet from "./CarParkBottomSheet";
 import useCarParkData from "./hooks/useCarParkData";
 import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
+import FilterButton from "./FilterButton";
 import { decode } from "@googlemaps/polyline-codec";
 
 const BottomSheetContainer = ({
@@ -104,6 +105,11 @@ const BottomSheetContainer = ({
           </View>
 
           <View style={styles.spacer} />
+          
+          {/* Add the Filter Button */}
+          <View style={styles.filterButtonContainer}>
+            <FilterButton />
+          </View>
 
           {/* Only render the carpark list when the search bar is not focus */}
           {!isSearchFocused && (
@@ -133,6 +139,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
+
+  filterButtonContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+
   spacer: {
     height: 40,
   },
