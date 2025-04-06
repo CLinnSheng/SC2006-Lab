@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	_"fmt"
 	"log"
 	"strconv"
 	"sync"
@@ -81,7 +81,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 
 	for _, EVLot := range evLots {
 		wg.Add(1)
-		fmt.Print(EVLot)
+		// fmt.Print(EVLot)
 		go func(evLot *model.EVLot) {
 			defer wg.Done()
 
