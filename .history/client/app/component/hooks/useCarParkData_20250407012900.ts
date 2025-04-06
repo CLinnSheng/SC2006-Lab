@@ -10,7 +10,8 @@ import axios from "axios";
 import { UserLocationContext } from "../../context/userLocation";
 
 const useCarParkData = (
-  setSearchedLocationFromMap: (location: any) => void
+  setSearchedLocationFromMap: (location: any) => void,
+  filters?: { evChargingAvailable: boolean }
 ) => {
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
   const [carParks, setCarParks] = useState<any[]>([]);

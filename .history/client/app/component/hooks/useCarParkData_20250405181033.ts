@@ -30,8 +30,6 @@ const useCarParkData = (
   const combinedListCarPark = useMemo(() => {
     return [
       ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
-      // Always include EV lots in the combined list
-      // The useCarParkFilters hook will handle EV filtering
       ...(EVLots ?? []).map((item) => ({ ...item, type: "EV" })),
     ];
   }, [carParks, EVLots]);
@@ -102,7 +100,7 @@ const useCarParkData = (
         setIsLoading(false);
         fetchTimeoutRef.current = null;
       }
-    }, 150); // 150ms debounce
+    }, 150); // 300ms debounce
   }, []);
 
   // Single effect to handle all fetch triggers

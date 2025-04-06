@@ -10,7 +10,8 @@ import axios from "axios";
 import { UserLocationContext } from "../../context/userLocation";
 
 const useCarParkData = (
-  setSearchedLocationFromMap: (location: any) => void
+  setSearchedLocationFromMap: (location: any) => void,
+  filters?: { evChargingAvailable: boolean }
 ) => {
   const [searchedLocation, setSearchedLocation] = useState<any>(null);
   const [carParks, setCarParks] = useState<any[]>([]);
@@ -30,11 +31,10 @@ const useCarParkData = (
   const combinedListCarPark = useMemo(() => {
     return [
       ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
-      // Always include EV lots in the combined list
-      // The useCarParkFilters hook will handle EV filtering
-      ...(EVLots ?? []).map((item) => ({ ...item, type: "EV" })),
+      // Only include EV lots if the EV filter is enabled
+      ...(filters?.evChargingAvailable ? (EVLots ?? []).map((item) => ({ ...item, type: "EV" })) : []),
     ];
-  }, [carParks, EVLots]);
+  }, [carParks, EVLots, filters?.evChargingAvailable]);
 
   const currentPayload = useMemo(() => {
     return isShowingSearchedLocation

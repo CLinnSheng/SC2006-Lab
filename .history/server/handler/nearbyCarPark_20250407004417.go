@@ -42,7 +42,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 	// 2 go routine to process the evlots and carpark concurrently
 	go func() {
 		defer wg.Done()
-		ProcessedEVLots, evLotsErr = processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation, reqPayload.SearchedLocation, apiData)
+		ProcessedEVLots, evLotsErr = processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation, apiData)
 	}()
 
 	go func() {
@@ -67,7 +67,7 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 	return c.JSON(response)
 }
 
-func processEVLots(evLots []*model.EVLot, currentUserLocation, searchedLocation struct {
+func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
 }, apiData *data.ApiData) ([]map[string]interface{}, error) {
@@ -100,8 +100,7 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation, searchedLocation 
 				})
 			}
 
-			// We need to modify this to use the search location instead of current user location
-			routeInfo, _ := external_services.ComputeRoute(searchedLocation.Latitude, searchedLocation.Longitude, evLot.Location.Latitude, evLot.Location.Longitude, *apiData.OneMapToken)
+			routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, evLot.Location.Latitude, evLot.Location.Longitude, *apiData.OneMapToken)
 
 			processedEVLot := map[string]interface{}{
 				"formattedAddress": evLot.FormattedAddress,
