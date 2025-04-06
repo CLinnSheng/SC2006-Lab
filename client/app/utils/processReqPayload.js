@@ -33,8 +33,13 @@ const processNearbyReqPayload = (
 
   return {
     EVLot: EVLot,
-    // latitude: userLocation.latitude,
-    // longitude: userLocation.longitude,
+    // For distance calculations, always reference from the search location
+    // This is the important part for sorting carparks by distance
+    referenceLocation: {
+      latitude: searchLocation.latitude,
+      longitude: searchLocation.longitude,
+    },
+    // Keep both locations for other uses if needed
     SearchLocation: {
       latitude: searchLocation.latitude,
       longitude: searchLocation.longitude,

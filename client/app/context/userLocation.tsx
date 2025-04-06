@@ -74,15 +74,12 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
       const resp = await NearByEVCarPark(data);
       const places = resp.data?.places || [];
 
-      // const processedPayload = processNearbyEVReqPayload(
-      //   places,
-      //   targetLocation
-      // );
-
+      // When searching for a location, calculate distances from the search location
+      // Not from the user's current location
       const processedPayload = processNearbyEVReqPayload(
         places,
         targetLocation,
-        userLocation
+        location ? targetLocation : userLocation // If location is provided, use it as reference point
       );
       
       if (location) {

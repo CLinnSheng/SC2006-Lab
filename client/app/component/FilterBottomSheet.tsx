@@ -161,15 +161,21 @@ const FilterBottomSheet = ({
 
         {/* EV Charging Filter */}
         <View style={styles.filterSection}>
-          <View style={styles.switchRow}>
+          <TouchableOpacity 
+            style={styles.switchRow}
+            activeOpacity={0.7}
+            onPress={() => setEvChargingAvailable(!evChargingAvailable)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Text style={styles.filterTitle}>EV Charging Available</Text>
             <Switch
               value={evChargingAvailable}
               onValueChange={setEvChargingAvailable}
               trackColor={{ false: "#D3D3D3", true: "#81b0ff" }}
               thumbColor={evChargingAvailable ? "#007AFF" : "#f4f3f4"}
+              ios_backgroundColor="#D3D3D3"
             />
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Sheltered Filter */}
@@ -277,6 +283,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   shelteredContainer: {
     flexDirection: 'row',

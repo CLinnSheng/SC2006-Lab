@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useState, useRef } from "react";
-import { StyleSheet, Keyboard, View, Text } from "react-native";
+import React, { useCallback, useContext, useState, useRef, useEffect } from "react";
+import { StyleSheet, Keyboard, View, Text, Platform } from "react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { SharedValue } from "react-native-reanimated";
 import GoogleSearchBar from "./SearchBar";
@@ -10,7 +10,9 @@ import FilterBottomSheet, { FilterOptions } from "./FilterBottomSheet";
 import useCarParkData from "./hooks/useCarParkData";
 import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
 import { useCarParkFilters } from "./hooks/useCarParkFilters";
+import useCarParkSorting from "./hooks/useCarParkSorting";
 import Filter from "./Filter";
+import Sort, { SortOptions } from "./Sort";
 import { decode } from "@googlemaps/polyline-codec";
 
 const DEFAULT_FILTERS: FilterOptions = {
@@ -18,6 +20,12 @@ const DEFAULT_FILTERS: FilterOptions = {
   vehicleType: "Car",
   evChargingAvailable: false,
   sheltered: null,
+};
+
+const DEFAULT_SORT: SortOptions = {
+  sortBy: 'distance',
+  direction: 'asc',
+  active: true // Default sorting is active (nearest distance)
 };
 
 const BottomSheetContainer = ({
@@ -42,6 +50,9 @@ const BottomSheetContainer = ({
   const [filters, setFilters] = useState<FilterOptions>(DEFAULT_FILTERS);
   const [hasAppliedFilters, setHasAppliedFilters] = useState(false);
   const [filterWarning, setFilterWarning] = useState<string | null>(null);
+  const [sortSettings, setSortSettings] = useState<SortOptions>(DEFAULT_SORT);
+  const [hasAppliedSort, setHasAppliedSort] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   // Context
   const { resetToUserLocation } = useContext(UserLocationContext);
@@ -62,6 +73,32 @@ const BottomSheetContainer = ({
     noMatchingCarParks 
   } = useCarParkFilters(combinedListCarPark, filters);
 
+  const {
+    sortedCarParks,
+    applySorting
+  } = useCarParkSorting(filteredCarParks);
+
+  // Keyboard event listeners to improve responsiveness
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   // Sheet navigation and management
   const handleSheetChanges = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -70,47 +107,64 @@ const BottomSheetContainer = ({
     }
   }, []);
 
-  const expandBottomSheet = () => bottomSheetRef.current?.snapToIndex(2);
-  const collapseBottomSheet = () => bottomSheetRef.current?.snapToIndex(1);
+  // Use requestAnimationFrame for smoother transitions
+  const expandBottomSheet = useCallback(() => {
+    requestAnimationFrame(() => {
+      bottomSheetRef.current?.snapToIndex(2);
+    });
+  }, []);
+  
+  const collapseBottomSheet = useCallback(() => {
+    requestAnimationFrame(() => {
+      bottomSheetRef.current?.snapToIndex(1);
+    });
+  }, []);
 
-  // Search handlers
-  const handleFocus = () => setIsSearchFocused(true);
-  const handleBlur = () => setIsSearchFocused(false);
+  // Search handlers with improved feedback
+  const handleFocus = useCallback(() => {
+    setIsSearchFocused(true);
+  }, []);
+  
+  const handleBlur = useCallback(() => {
+    setIsSearchFocused(false);
+  }, []);
 
-  const handleExitSearch = () => {
+  const handleExitSearch = useCallback(() => {
     resetToUserLocation();
     searchBarRef.current?.clearInput();
     collapseBottomSheet();
-  };
+  }, [resetToUserLocation]);
 
   // Car park selection handlers
-  const handleSelectCarPark = (carPark: any) => {
+  const handleSelectCarPark = useCallback((carPark: any) => {
     setSelectedCarPark(carPark);
     setShowSelectedCarParkSheet(true);
-    console.log(decode(carPark.routeInfo.polyline));
+    if (carPark.routeInfo?.polyline) {
+      console.log(decode(carPark.routeInfo.polyline));
+    }
     onSelectCarPark(carPark);
-  };
+  }, [onSelectCarPark]);
 
-  const handleCloseCarParkSheet = () => {
+  const handleCloseCarParkSheet = useCallback(() => {
     setShowSelectedCarParkSheet(false);
     setSelectedCarPark(null);
     onSelectCarPark(null);
-  };
+  }, [onSelectCarPark]);
 
   // Filter handlers
-  const handleFilterButtonPress = () => {
+  const handleFilterButtonPress = useCallback(() => {
     console.log("Opening filter bottom sheet");
     setFilterWarning(null);
     setShowFilterSheet(true);
-  };
+  }, []);
 
-  const handleFilterClose = () => {
+  const handleFilterClose = useCallback(() => {
     console.log("Closing filter bottom sheet");
     setFilterWarning(null);
     setShowFilterSheet(false);
-  };
+  }, []);
 
-  const handleApplyFilters = (newFilters: FilterOptions) => {
+  const handleApplyFilters = useCallback((newFilters: FilterOptions) => {
     console.log("Applied filters:", newFilters);
 
     // Check if these filters would yield any results
@@ -126,13 +180,24 @@ const BottomSheetContainer = ({
     setFilters(newFilters);
     setHasAppliedFilters(true);
     setShowFilterSheet(false);
-  };
+  }, [wouldHaveResults]);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
     setHasAppliedFilters(false);
     setFilterWarning(null);
-  };
+  }, []);
+
+  // Sort handlers
+  const handleApplySort = useCallback((newSortSettings: SortOptions) => {
+    console.log("Applied sort:", newSortSettings);
+    setSortSettings(newSortSettings);
+    applySorting(newSortSettings); // Apply the sort settings to the sorting hook
+    setHasAppliedSort(true);
+  }, [applySorting]);
+
+  // Update text display for sorting status
+  const isActiveSorting = sortSettings.active;
 
   // Determine if we should show "no results" message
   const showNoResultsMessage = hasAppliedFilters && noMatchingCarParks;
@@ -150,6 +215,8 @@ const BottomSheetContainer = ({
           enablePanDownToClose={false}
           enableDynamicSizing={false}
           animatedPosition={bottomSheetPosition}
+          keyboardBehavior={Platform.OS === 'ios' ? 'interactive' : 'extend'}
+          keyboardBlurBehavior="restore"
         >
           <View style={styles.searchBarContainer}>
             <GoogleSearchBar
@@ -163,14 +230,28 @@ const BottomSheetContainer = ({
             />
           </View>
 
-          <View style={styles.spacer} />
+          <View style={[styles.spacer, isSearchFocused && keyboardVisible && styles.reducedSpacer]} />
 
           {!isSearchFocused && combinedListCarPark.length > 0 && (
-            <View style={styles.filterButtonContainer}>
-              <Filter onPress={handleFilterButtonPress} />
-              {hasAppliedFilters && (
-                <Text style={styles.activeFiltersText}>Filters applied</Text>
-              )}
+            <View style={styles.actionButtonsContainer}>
+              <View style={styles.buttonsGroup}>
+                <Filter onPress={handleFilterButtonPress} />
+                <Sort 
+                  onApplySort={handleApplySort} 
+                  currentSort={sortSettings} 
+                />
+              </View>
+              <View>
+                {(hasAppliedFilters || isActiveSorting) && (
+                  <Text style={styles.activeStatusText}>
+                    {hasAppliedFilters && isActiveSorting 
+                      ? "Filters & sorting applied" 
+                      : hasAppliedFilters 
+                        ? "Filters applied" 
+                        : "Sorting applied"}
+                  </Text>
+                )}
+              </View>
             </View>
           )}
 
@@ -190,7 +271,7 @@ const BottomSheetContainer = ({
           {/* Only render the carpark list when the search bar is not focused and we have results */}
           {!isSearchFocused && !showNoResultsMessage && (
             <CarParkList
-              data={filteredCarParks}
+              data={sortedCarParks}
               bottomSheetPosition={bottomSheetPosition}
               onSelectCarPark={handleSelectCarPark}
             />
@@ -225,22 +306,29 @@ const BottomSheetContainer = ({
 const styles = StyleSheet.create({
   searchBarContainer: {
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 10,
   },
-  filterButtonContainer: {
+  actionButtonsContainer: {
     paddingHorizontal: 10,
     paddingVertical: 8,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  activeFiltersText: {
+  buttonsGroup: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  activeStatusText: {
     fontSize: 12,
     color: "#007AFF",
     fontWeight: "500",
   },
   spacer: {
     height: 40,
+  },
+  reducedSpacer: {
+    height: 20, 
   },
   noResultsContainer: {
     flex: 1,

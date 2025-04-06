@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useMemo, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import {
   SharedValue,
@@ -21,6 +21,17 @@ const CarParkList = ({
   bottomSheetPosition,
   onSelectCarPark,
 }: CarParkListProps) => {
+  // Initial number of items to show
+  const INITIAL_ITEMS_COUNT = 10;
+  const [itemsToShow, setItemsToShow] = useState(INITIAL_ITEMS_COUNT);
+
+  // Process data - limit number of items rendered without re-sorting
+  // The data is already sorted by the parent component based on user preference
+  const processedData = useMemo(() => {
+    // Simply limit to itemsToShow without changing the order
+    return data.slice(0, itemsToShow);
+  }, [data, itemsToShow]);
+
   const flatListAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
@@ -43,14 +54,30 @@ const CarParkList = ({
     return null;
   };
 
+  const loadMore = () => {
+    setItemsToShow(prevCount => prevCount + 10);
+  };
+
   return (
-    <BottomSheetFlatList
-      data={data}
-      renderItem={renderItem}
-      contentContainerStyle={styles.contentContainer}
-      keyboardShouldPersistTaps="handled"
-      style={[styles.flatList, flatListAnimatedStyle]}
-    />
+    <>
+      <BottomSheetFlatList
+        data={processedData}
+        renderItem={renderItem}
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+        style={[styles.flatList, flatListAnimatedStyle]}
+        initialNumToRender={5} // Performance optimization
+        maxToRenderPerBatch={5} // Performance optimization
+        windowSize={5} // Performance optimization
+        ListFooterComponent={
+          data.length > itemsToShow ? (
+            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMore}>
+              <Text style={styles.loadMoreText}>Load More</Text>
+            </TouchableOpacity>
+          ) : null
+        }
+      />
+    </>
   );
 };
 
@@ -62,6 +89,17 @@ const styles = StyleSheet.create({
   flatList: {
     flex: 1,
   },
+  loadMoreButton: {
+    padding: 12,
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    marginVertical: 10,
+    borderRadius: 8,
+  },
+  loadMoreText: {
+    color: '#333',
+    fontWeight: '600',
+  }
 });
 
 export default CarParkList;

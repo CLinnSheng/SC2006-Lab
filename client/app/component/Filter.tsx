@@ -18,7 +18,7 @@ const Filter = ({ onPress }: FilterProps) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#007AFF',
-    padding: 10,
+    padding: 5,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 13,
     marginLeft: 5,
   }
 });
