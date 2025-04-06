@@ -6,9 +6,10 @@ import GoogleSearchBar from "./SearchBar";
 import { UserLocationContext } from "../context/userLocation";
 import CarParkList from "./CarParkList";
 import CarParkBottomSheet from "./CarParkBottomSheet";
+import FilterBottomSheet from "./FilterBottomSheet";
 import useCarParkData from "./hooks/useCarParkData";
 import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
-import FilterButton from "./FilterButton";
+import Filter from "./Filter";
 import { decode } from "@googlemaps/polyline-codec";
 
 const BottomSheetContainer = ({
@@ -28,8 +29,8 @@ const BottomSheetContainer = ({
   const [currentIndex, setCurrentIndex] = useState(1);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
-  const [showSelectedCarParkSheet, setShowSelectedCarParkSheet] =
-    useState(false);
+  const [showSelectedCarParkSheet, setShowSelectedCarParkSheet] = useState(false);
+  const [showFilterSheet, setShowFilterSheet] = useState(false);
 
   // Context
   const { resetToUserLocation } = useContext(UserLocationContext);
@@ -78,9 +79,20 @@ const BottomSheetContainer = ({
     onSelectCarPark(null);
   };
 
+  // Filter handlers
+  const handleFilterButtonPress = () => {
+    console.log("Opening filter bottom sheet");
+    setShowFilterSheet(true);
+  };
+
+  const handleFilterClose = () => {
+    console.log("Closing filter bottom sheet");
+    setShowFilterSheet(false);
+  };
+
   return (
     <>
-      {!showSelectedCarParkSheet && (
+      {!showSelectedCarParkSheet && !showFilterSheet && (
         <BottomSheet
           ref={bottomSheetRef}
           index={1}
@@ -89,8 +101,8 @@ const BottomSheetContainer = ({
           backgroundStyle={{ backgroundColor: "white" }}
           onAnimate={handleAnimate}
           enablePanDownToClose={false}
-          animatedPosition={bottomSheetPosition}
           enableDynamicSizing={false}
+          animatedPosition={bottomSheetPosition}
         >
           <View style={styles.searchBarContainer}>
             <GoogleSearchBar
@@ -105,11 +117,12 @@ const BottomSheetContainer = ({
           </View>
 
           <View style={styles.spacer} />
-          
-          {/* Add the Filter Button */}
-          <View style={styles.filterButtonContainer}>
-            <FilterButton />
-          </View>
+
+          {!isSearchFocused && combinedListCarPark.length > 0 && (
+            <View style={styles.filterButtonContainer}>
+              <Filter onPress={handleFilterButtonPress} />
+            </View>
+          )}
 
           {/* Only render the carpark list when the search bar is not focus */}
           {!isSearchFocused && (
@@ -130,6 +143,14 @@ const BottomSheetContainer = ({
           bottomSheetPosition={bottomSheetPosition}
         />
       )}
+
+      {/* Show filter bottom sheet */}
+      {showFilterSheet && (
+        <FilterBottomSheet
+          onClose={handleFilterClose}
+          bottomSheetPosition={bottomSheetPosition}
+        />
+      )}
     </>
   );
 };
@@ -141,10 +162,9 @@ const styles = StyleSheet.create({
   },
 
   filterButtonContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 8,
   },
-
   spacer: {
     height: 40,
   },
