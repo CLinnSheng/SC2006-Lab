@@ -4,57 +4,103 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	_"log"
 	"net/http"
 	"net/url"
 
 	"github.com/SC2006-Lab/MobileAppProject/model"
 )
 
-func ComputeRoute(originLat, originLng, destLat, destLng float64, oneMapToken string) (*model.RouteInfo, error) {
-	baseURL := "https://www.onemap.gov.sg/api/public/routingsvc/route"
+// func ComputeRoute(originLat, originLng, destLat, destLng float64, oneMapToken string) (*model.RouteInfo, error) {
+// 	baseURL := "https://www.onemap.gov.sg/api/public/routingsvc/route"
 
+// 	uObj, err := url.Parse(baseURL)
+// 	if err != nil {
+// 		log.Fatalf("Failed to parse URL: %v", err)
+// 		return nil, err
+// 	}
+
+// 	query := uObj.Query()
+// 	query.Add("start", fmt.Sprintf("%f,%f", originLat, originLng))
+// 	query.Add("end", fmt.Sprintf("%f,%f", destLat, destLng))
+// 	query.Add("routeType", "drive")
+
+// 	uObj.RawQuery = query.Encode()
+
+// 	client := &http.Client{}
+
+// 	req, err := http.NewRequest("GET", uObj.String(), nil)
+// 	if err != nil {
+// 		log.Fatalf("Failed to create request: %v", err)
+// 		return nil, err
+// 	}
+
+// 	req.Header.Add("Authorization", oneMapToken)
+
+// 	resp, err := client.Do(req)
+// 	if err != nil {
+// 		log.Fatalf("Failed to send request: %v", err)
+// 		return nil, err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		log.Fatalf("Failed to read response body: %v", err)
+// 		return nil, err
+// 	}
+
+// 	var OneMap_Resp model.OneMapRoute_Resp
+// 	err = json.Unmarshal(body, &OneMap_Resp)
+// 	if err != nil {
+// 		log.Fatalf("Failed to unmarshal JSON: %v", err)
+// 		return nil, err
+// 	}
+
+// 	routeInfo := &model.RouteInfo{
+// 		Distance: OneMap_Resp.RouteSummary.TotalDistance,
+// 		Duration: OneMap_Resp.RouteSummary.TotalTime,
+// 		Polyline: OneMap_Resp.RouteGeometry,
+// 	}
+
+//		return routeInfo, nil
+//	}
+
+func ComputeRoute(originLat, originLng, destLat, destLng float64, oneMapToken string, client *http.Client) (*model.RouteInfo, error) {
+	baseURL := "https://www.onemap.gov.sg/api/public/routingsvc/route"
 	uObj, err := url.Parse(baseURL)
 	if err != nil {
-		log.Fatalf("Failed to parse URL: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to parse URL: %v", err)
 	}
 
 	query := uObj.Query()
 	query.Add("start", fmt.Sprintf("%f,%f", originLat, originLng))
 	query.Add("end", fmt.Sprintf("%f,%f", destLat, destLng))
 	query.Add("routeType", "drive")
-
 	uObj.RawQuery = query.Encode()
-
-	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", uObj.String(), nil)
 	if err != nil {
-		log.Fatalf("Failed to create request: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to create request: %v", err)
 	}
 
 	req.Header.Add("Authorization", oneMapToken)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("Failed to send request: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to send request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
 	var OneMap_Resp model.OneMapRoute_Resp
 	err = json.Unmarshal(body, &OneMap_Resp)
 	if err != nil {
-		log.Fatalf("Failed to unmarshal JSON: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
 	}
 
 	routeInfo := &model.RouteInfo{

@@ -19,6 +19,9 @@ const useCarParkData = (
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const fetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const apiBaseUrl = useMemo(() => {
+    return `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}`;
+  }, []);
 
   const {
     initialProcessedPayload,
@@ -28,6 +31,9 @@ const useCarParkData = (
   } = useContext(UserLocationContext);
 
   const combinedListCarPark = useMemo(() => {
+    if (!carParks.length && !EVLots.length) return [];
+
+    console.log("Fetched car parks and EV lots");
     return [
       ...(carParks ?? []).map((item) => ({ ...item, type: "CarPark" })),
       ...(EVLots ?? []).map((item) => ({ ...item, type: "EV" })),
@@ -54,60 +60,62 @@ const useCarParkData = (
     [getNearbyCarParks, setSearchedLocationFromMap]
   );
 
-  const fetchNearByCarParks = useCallback(async (payload: any) => {
-    if (!payload) {
-      console.log(
-        "No payload available for fetching nearby car parks, skipping request"
-      );
-      return;
-    }
-
-    // Cancel any previous requests or timeouts
+  const api = useMemo(() => {
+    return axios.create({
+      baseURL: apiBaseUrl,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }, [apiBaseUrl]);
+  const cancelPreviousRequest = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
-      console.log("Aborted previous request");
     }
 
     if (fetchTimeoutRef.current) {
       clearTimeout(fetchTimeoutRef.current);
       fetchTimeoutRef.current = null;
     }
-
-    // Set up debounced fetch with timeout
-    fetchTimeoutRef.current = setTimeout(async () => {
-      try {
-        setIsLoading(true);
-
-        // Create new AbortController for this request
-        abortControllerRef.current = new AbortController();
-        console.log("Fetching nearby car parks from /api/carpark/nearby/");
-
-        const resp = await axios.post(
-          `http://${process.env.EXPO_PUBLIC_SERVER_IP_ADDRESS}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api/carpark/nearby/`,
-          payload,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            signal: abortControllerRef.current.signal,
-          }
-        );
-
-        console.log("Fetched nearby car parks from /api/carpark/nearby/");
-        setCarParks(resp.data.CarPark);
-        setEVLots(resp.data.EV);
-      } catch (error: any) {
-        if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
-        } else {
-          console.log("Error fetching car parks:", error.message);
-        }
-      } finally {
-        setIsLoading(false);
-        fetchTimeoutRef.current = null;
-      }
-    }, 150); // 300ms debounce
   }, []);
+  const fetchNearByCarParks = useCallback(
+    async (payload: any) => {
+      if (!payload) {
+        return;
+      }
+
+      // Cancel any previous requests or timeouts
+      cancelPreviousRequest();
+
+      // Set up debounced fetch with timeout - use a shorter timeout for better responsiveness
+      fetchTimeoutRef.current = setTimeout(async () => {
+        try {
+          setIsLoading(true);
+
+          abortControllerRef.current = new AbortController();
+
+          const resp = await api.post("/api/carpark/nearby/", payload, {
+            signal: abortControllerRef.current.signal,
+          });
+
+          // Only update state if we have valid data
+          if (resp.data && resp.status === 200) {
+            setCarParks(resp.data.CarPark || []);
+            setEVLots(resp.data.EV || []);
+          }
+        } catch (error: any) {
+          if (axios.isCancel(error)) {
+          } else {
+            console.error("Error fetching car parks:", error);
+          }
+        } finally {
+          setIsLoading(false);
+          fetchTimeoutRef.current = null;
+        }
+      }, 100);
+    },
+    [api, cancelPreviousRequest]
+  );
 
   // Single effect to handle all fetch triggers
   useEffect(() => {
@@ -118,20 +126,7 @@ const useCarParkData = (
     console.log("Payload changed, fetching car parks");
     fetchNearByCarParks(currentPayload);
 
-    // Cleanup function
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-        console.log(
-          "Aborted fetch request due to unmount or dependency change"
-        );
-      }
-
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = null;
-      }
-    };
+    return cancelPreviousRequest;
   }, [currentPayload, fetchNearByCarParks]);
 
   return {
