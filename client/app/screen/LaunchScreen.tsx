@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, Animated, StatusBar, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-const screenWidth = Dimensions.get("window").width;
-
 export default function LaunchScreen({
   onAnimationComplete,
 }: {
@@ -42,7 +40,7 @@ export default function LaunchScreen({
     <LinearGradient colors={["#40E0D0", "#000000"]} style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" />
       <Animated.Image
-        source={require("../../assets/logo.png")}
+        source={require("../../assets/images/logo.png")}
         style={[
           styles.logo,
           {
