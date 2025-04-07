@@ -25,6 +25,10 @@ const GoogleSearchBar = forwardRef(
       onBlur,
       searchedLocation,
       onExitSearch,
+      setSelectFilter,
+      setSelectSort,
+      searchedCarpark,
+      setSearchedCarpark,
     }: {
       onFocusExpand: () => void;
       onCancelPress: () => void;
@@ -32,12 +36,17 @@ const GoogleSearchBar = forwardRef(
       onBlur: () => void;
       searchedLocation: (location: any) => void;
       onExitSearch: () => void;
+      setSelectFilter: (filter: string) => void;
+      setSelectSort: (sort: string) => void;
+      searchedCarpark: boolean;
+      setSearchedCarpark: (searched: boolean) => void;
     },
     ref
   ) => {
     const [inputValue, setInputValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const autoCompleteRef = useRef<any>(null);
+    // const [searchedCarpark, setSearchedCarpark] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
       clearInput: () => {
@@ -95,6 +104,9 @@ const GoogleSearchBar = forwardRef(
           onPress={(data, details = null) => {
             searchedLocation(details?.geometry.location);
             onCancelPress();
+            setSelectFilter("All");
+            setSelectSort("Distance");
+            setSearchedCarpark(true);
           }}
           textInputProps={{
             onFocus: handleFocus,
@@ -114,7 +126,7 @@ const GoogleSearchBar = forwardRef(
           styles={{
             textInput: styles.searchInput,
             listView: styles.listView,
-            row: styles.row, // Customize each dropdown item
+            row: styles.row,
             separator: styles.separator,
           }}
         />
@@ -122,7 +134,10 @@ const GoogleSearchBar = forwardRef(
         {/*Clear button*/}
         {isFocused && (
           <TouchableOpacity
-            onPress={handleCancelPress}
+            onPress={() => {
+              handleCancelPress();
+              setSearchedCarpark(false);
+            }}
             style={styles.cancelButton}
           >
             <Text style={styles.cancelText}>Cancel</Text>
@@ -140,8 +155,14 @@ const GoogleSearchBar = forwardRef(
         )}
 
         {/* Exit Button */}
-        {inputValue.length > 0 && !isFocused && (
-          <TouchableOpacity onPress={onExitSearch} style={styles.exitButton}>
+        {(inputValue.length > 0 || searchedCarpark) && !isFocused && (
+          <TouchableOpacity
+            onPress={() => {
+              onExitSearch();
+              setSearchedCarpark(false);
+            }}
+            style={styles.exitButton}
+          >
             <Ionicons name="close-circle" size={20} color="#A0A0A0" />
           </TouchableOpacity>
         )}
@@ -163,7 +184,7 @@ const styles = StyleSheet.create({
     left: 8,
     top: 30,
     zIndex: 5,
-    pointerEvents: "none", // Allow touches to pass through
+    pointerEvents: "none",
   },
   searchInput: {
     flex: 1,
@@ -199,7 +220,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   row: {
-    backgroundColor: "transparent", // Remove white background for each row
+    backgroundColor: "transparent",
     paddingHorizontal: 7,
   },
   separator: {

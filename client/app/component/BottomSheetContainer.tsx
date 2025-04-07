@@ -8,8 +8,9 @@ import CarParkList from "./CarParkList";
 import CarParkBottomSheet from "./CarParkBottomSheet";
 import useCarParkData from "./hooks/useCarParkData";
 import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
-import { decode } from "@googlemaps/polyline-codec";
-
+import filterUtils from "../utils/filterUtils";
+import FilterDropdown from "./FilterDropDown";
+import EmptyList from "./EmptyList";
 const BottomSheetContainer = ({
   bottomSheetPosition,
   searchedLocation: setSearchedLocationFromMap,
@@ -22,6 +23,14 @@ const BottomSheetContainer = ({
   // Refs
   const bottomSheetRef = useRef<BottomSheet>(null);
   const searchBarRef = useRef<{ clearInput: () => void }>(null);
+
+  // Filter and sort states
+  const [selectedFilter, setSelectedFilter] = useState(
+    filterUtils.FILTER_TYPES.ALL
+  );
+  const [selectedSort, setSelectedSort] = useState(
+    filterUtils.SORT_BY.DISTANCE
+  );
 
   // State
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -42,6 +51,8 @@ const BottomSheetContainer = ({
     handleSearchedLocation,
   } = useCarParkData(setSearchedLocationFromMap);
 
+  const [searchedCarpark, setSearchedCarpark] = useState<boolean>(false);
+
   // Handlers
   const handleSheetChanges = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -61,6 +72,8 @@ const BottomSheetContainer = ({
     resetToUserLocation();
     searchBarRef.current?.clearInput();
     collapseBottomSheet();
+    setSelectedFilter(filterUtils.FILTER_TYPES.ALL);
+    setSelectedSort(filterUtils.SORT_BY.DISTANCE);
   };
 
   const handleSelectCarPark = (carPark: any) => {
@@ -75,6 +88,98 @@ const BottomSheetContainer = ({
     setShowSelectedCarParkSheet(false);
     setSelectedCarPark(null);
     onSelectCarPark(null);
+    // onSelectCarPark({ action: 'closeSheet', carPark: null });
+  };
+
+  const filteredCarParks = React.useMemo(() => {
+    let filtered = [...combinedListCarPark];
+
+    // Apply filter
+    if (selectedFilter !== filterUtils.FILTER_TYPES.ALL) {
+      filtered = filtered.filter((carPark) => {
+        // EV
+        if (selectedFilter === filterUtils.FILTER_TYPES.EV) {
+          return carPark.type === "EV";
+        }
+
+        // For CarPark
+        if (carPark.type === "CarPark") {
+          if (selectedFilter === filterUtils.FILTER_TYPES.CAR) {
+            return (
+              carPark.lotDetails?.C &&
+              carPark.lotDetails.C.availableLots !== undefined
+            );
+          } else if (selectedFilter === filterUtils.FILTER_TYPES.MOTORCYCLE) {
+            return (
+              carPark.lotDetails?.Y &&
+              carPark.lotDetails.Y.availableLots !== undefined
+            );
+          } else if (selectedFilter === filterUtils.FILTER_TYPES.HEAVY) {
+            return (
+              carPark.lotDetails?.H &&
+              carPark.lotDetails.H.availableLots !== undefined
+            );
+          }
+        }
+        return false;
+      });
+    }
+
+    filtered.sort((a, b) => {
+      if (selectedSort === filterUtils.SORT_BY.DISTANCE) {
+        const distanceA = a.routeInfo?.distance || 0;
+        const distanceB = b.routeInfo?.distance || 0;
+        return distanceA - distanceB;
+      } else if (selectedSort === filterUtils.SORT_BY.AVAILABLITY) {
+        if (a.type === "EV" && b.type === "EV") {
+          const getTotalAvailable = (item: any) => {
+            if (!item.chargers || item.chargers.length === 0) return 0;
+
+            let total = 0;
+            for (const charger of item.chargers) {
+              const available = parseInt(charger.availableCount, 10);
+              if (!isNaN(available)) total += available;
+            }
+            return total;
+          };
+          const totalA = getTotalAvailable(a);
+          const totalB = getTotalAvailable(b);
+          return totalB - totalA;
+        }
+
+        if (a.type === "CarPark" && b.type === "CarPark") {
+          let availableA = 0;
+          let availableB = 0;
+
+          if (
+            selectedFilter === filterUtils.FILTER_TYPES.CAR ||
+            selectedFilter === filterUtils.FILTER_TYPES.ALL
+          ) {
+            availableA = a.lotDetails?.C?.availableLots || 0;
+            availableB = b.lotDetails?.C?.availableLots || 0;
+          } else if (selectedFilter === filterUtils.FILTER_TYPES.MOTORCYCLE) {
+            availableA = a.lotDetails?.Y?.availableLots || 0;
+            availableB = b.lotDetails?.Y?.availableLots || 0;
+          } else if (selectedFilter === filterUtils.FILTER_TYPES.HEAVY) {
+            availableA = a.lotDetails?.H?.availableLots || 0;
+            availableB = b.lotDetails?.H?.availableLots || 0;
+          }
+          return availableB - availableA;
+        }
+        return 0;
+      }
+      return 0;
+    });
+    return filtered;
+  }, [combinedListCarPark, selectedFilter, selectedSort]);
+
+  // Handle filter and sort changes
+  const handleFilterChange = (filterType: any) => {
+    setSelectedFilter(filterType);
+  };
+
+  const handleSortChange = (sortType: any) => {
+    setSelectedSort(sortType);
   };
 
   return (
@@ -100,18 +205,33 @@ const BottomSheetContainer = ({
               onBlur={handleBlur}
               searchedLocation={handleSearchedLocation}
               onExitSearch={handleExitSearch}
+              setSelectFilter={setSelectedFilter}
+              setSelectSort={setSelectedSort}
+              searchedCarpark={searchedCarpark}
+              setSearchedCarpark={setSearchedCarpark}
             />
           </View>
+
+          {!isSearchFocused && (
+            <FilterDropdown
+              onFilterChange={handleFilterChange}
+              onSortChange={handleSortChange}
+              selectedFilter={selectedFilter}
+              selectedSort={selectedSort}
+            />
+          )}
 
           <View style={styles.spacer} />
 
           {/* Only render the carpark list when the search bar is not focus */}
-          {!isSearchFocused && (
+          {!isSearchFocused && filteredCarParks.length > 0 ? (
             <CarParkList
-              data={combinedListCarPark}
+              data={filteredCarParks}
               bottomSheetPosition={bottomSheetPosition}
               onSelectCarPark={handleSelectCarPark}
             />
+          ) : (
+            !isSearchFocused && <EmptyList selectedFilter={selectedFilter} />
           )}
         </BottomSheet>
       )}
@@ -134,7 +254,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   spacer: {
-    height: 40,
+    height: 30,
   },
 });
 
