@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   filterContainer: {
     position: "relative",
     top: 30,
-    width: "60%",
+    width: "45%",
     alignSelf: "flex-end",
     right: 5,
   },
