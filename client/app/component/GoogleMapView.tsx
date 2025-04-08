@@ -21,6 +21,9 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
+  withTiming,
+  withSpring,
+  runOnJS,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
@@ -28,6 +31,7 @@ import DEFAULT_LOCATION from "../constants/defaultLocation";
 import { decode } from "@googlemaps/polyline-codec";
 import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
 import carParkUtils from "../utils/carParkUtils";
+import WeatherButton from "./WeatherButton"; // Import the InfoButton component
 
 const GoogleMapView: React.FC = () => {
   const { carParks, combinedListCarPark } = useCarParkData(() => {});
@@ -40,7 +44,6 @@ const GoogleMapView: React.FC = () => {
       : (0.536 * SCREEN_DIMENSIONS.height).toFixed(1)
   );
   const [searchedLocation, setSearchedLocation] = useState<any>(null); // State for searched location
-
   const [selectedCarPark, setSelectedCarPark] = useState<any | null>(null);
 
   const handleCarParkSelection = (carPark: any) => {
@@ -154,7 +157,7 @@ const GoogleMapView: React.FC = () => {
                 <Marker
                   key={index}
                   coordinate={{ latitude, longitude }}
-                  pinColor={lot.type === "EV" ? "green" : "red"} // color-coded
+                  pinColor={lot.type === "EV" ? "blue" : "red"} // color-coded
                   onPress={() => {
                     // console.log("Marker pressed:", lot);
                   }}
@@ -214,7 +217,7 @@ const GoogleMapView: React.FC = () => {
                     selectedCarPark.longitude ??
                     selectedCarPark.location?.longitude,
                 }}
-                pinColor={selectedCarPark.type === "CarPark" ? "red" : "green"}
+                pinColor={selectedCarPark.type === "CarPark" ? "red" : "blue"}
                 onPress={() => {}}
                 ref={(ref) => {
                   if (ref) {
@@ -226,6 +229,10 @@ const GoogleMapView: React.FC = () => {
             </>
           )}
         </MapView>
+        
+        {/* Info Button Component - all configuration is in InfoButton.tsx */}
+        <WeatherButton />
+        
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>
             <Ionicons name="locate" size={24} color="#007AFF" />
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
       Platform.OS === "ios"
         ? SCREEN_DIMENSIONS.height * 0.462
         : SCREEN_DIMENSIONS.height * 0.445,
-  },
+  }
 });
 
 export default GoogleMapView;

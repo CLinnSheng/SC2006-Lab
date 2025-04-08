@@ -20,7 +20,7 @@ const EmptyList = (selectedFilter: any) => {
   return (
     <View style={styles.emptyStateContainer}>
       <Image
-        source={require("../../assets/iamges/no-results.png")}
+        source={require("../../assets/images/no-results.png")}
         style={styles.emptyStateImage}
         resizeMode="contain"
       />

@@ -56,9 +56,12 @@ const CarParkBottomSheet = ({
               {formatAddressToTitleCase(selectedCarPark.address)}
             </Text>
           </View>
-          <Text style={styles.selectedCarParkType}>
-            {formatAddressToTitleCase(selectedCarPark.carParkType)}
-          </Text>
+          <View style={{ flexDirection: 'row' }}>
+  <Text style={styles.selectedCarParkType}>
+    {formatAddressToTitleCase(selectedCarPark.carParkType)} ⋅ {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
+  </Text>
+</View>
+
           <View style={styles.distanceTimeContainer}>
             <Ionicons
               name="location-outline"
@@ -91,9 +94,7 @@ const CarParkBottomSheet = ({
             />
           )}
 
-          <Text style={styles.selectedCarParkTypeLabel}>
-            {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
-          </Text>
+          
           <View style={styles.availabilityContainer}>
             {selectedCarPark.lotDetails?.C && (
               <View style={styles.lotInfo}>
@@ -183,11 +184,11 @@ const CarParkBottomSheet = ({
         <>
           <View style={styles.selectedCarParkTitileContainer}>
             <Text style={styles.selectedCarParkTitle}>
-              {selectedCarPark.displayName}
+            {selectedCarPark.shortFormattedAddress}
             </Text>
           </View>
           <Text style={styles.selectedCarParkType}>
-            {selectedCarPark.shortFormattedAddress}
+          {selectedCarPark.displayName}
           </Text>
           <View style={styles.distanceTimeContainer}>
             <Ionicons
@@ -318,23 +319,24 @@ const styles = StyleSheet.create({
     width: SCREEN_DIMENSIONS.width * 0.9,
   },
   selectedCarParkTitle: {
-    fontFamily: "ArialRoundedBold",
-    fontSize: 22,
+    fontFamily: "Futura",
+    fontSize: 23,
     fontWeight: "bold",
     color: "black",
-    marginLeft: 20,
+    marginLeft: 10,
+    padding:12,
   },
   selectedCarParkType: {
     marginLeft: 20,
     color: "#777",
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: "ArialRoundedBold",
   },
   selectedCarParkTypeLabel: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "ArialRoundedBold",
-    color: "rgb(35, 151, 189)",
-    marginLeft: 20,
+    color: "#777",
+    marginLeft: 10,
     // marginTop: 5,
   },
   evAvailabilityContainer: {
