@@ -45,13 +45,8 @@ const BottomSheetContainer = ({
 
   // Custom hooks
   const { snapPoints, handleAnimate } = useBottomSheetAnimation();
-  const {
-    combinedListCarPark,
-    searchedLocation,
-    setSearchedLocation,
-    handleSearchedLocation,
-    isLoading,
-  } = useCarParkData(setSearchedLocationFromMap);
+  const { combinedListCarPark, handleSearchedLocation, isLoading } =
+    useCarParkData(setSearchedLocationFromMap);
 
   const [searchedCarpark, setSearchedCarpark] = useState<boolean>(false);
 
@@ -219,6 +214,7 @@ const BottomSheetContainer = ({
               onSortChange={handleSortChange}
               selectedFilter={selectedFilter}
               selectedSort={selectedSort}
+              bottomSheetPosition={bottomSheetPosition}
             />
           )}
 

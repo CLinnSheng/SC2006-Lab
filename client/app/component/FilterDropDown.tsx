@@ -2,12 +2,17 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import filterUtils from "../utils/filterUtils";
-
+import SCREEN_DIMENSIONS from "../constants/screenDimension";
+import Animated, {
+  useAnimatedStyle,
+  interpolate,
+} from "react-native-reanimated";
 interface FilterDropdownProps {
   selectedFilter: string;
   selectedSort: string;
   onFilterChange: (filter: string) => void;
   onSortChange: (sort: string) => void;
+  bottomSheetPosition: Animated.SharedValue<number>;
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -15,11 +20,22 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   selectedSort,
   onFilterChange,
   onSortChange,
+  bottomSheetPosition,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
 
+  const FilterAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        bottomSheetPosition.value,
+        [SCREEN_DIMENSIONS.height * 0.88, SCREEN_DIMENSIONS.height * 0.7],
+        [0, 1],
+        { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+      ),
+    };
+  });
   return (
-    <View style={styles.filterContainer}>
+    <Animated.View style={[styles.filterContainer, FilterAnimatedStyle]}>
       {/* Combined Filter/Sort Button */}
       <TouchableOpacity
         style={styles.filterButton}
@@ -52,7 +68,6 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
               ]}
               onPress={() => {
                 onFilterChange(type);
-                // Keep dropdown open to allow sort selection
               }}
             >
               <Text
@@ -111,7 +126,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 };
 
@@ -122,6 +137,7 @@ const styles = StyleSheet.create({
     width: "45%",
     alignSelf: "flex-end",
     right: 5,
+    zIndex: 100,
   },
   filterButton: {
     backgroundColor: "#007AFF",

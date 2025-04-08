@@ -90,7 +90,6 @@ const WeatherButton: React.FC<InfoButtonProps> = ({ bottomSheetPosition }) => {
       )}
 
       {/* Info Button Container */}
-      {/* <View style={styles.infoButtonContainer}> */}
       <Animated.View style={[styles.infoButtonContainer, animatedButtonStyle]}>
         <TouchableOpacity
           style={styles.infoButton}
@@ -114,7 +113,6 @@ const WeatherButton: React.FC<InfoButtonProps> = ({ bottomSheetPosition }) => {
             </View>
           </Animated.View>
         )}
-        {/* </View> */}
       </Animated.View>
     </>
   );
