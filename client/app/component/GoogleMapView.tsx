@@ -21,9 +21,6 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
-  withSpring,
-  runOnJS,
 } from "react-native-reanimated";
 import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
@@ -157,7 +154,7 @@ const GoogleMapView: React.FC = () => {
                 <Marker
                   key={index}
                   coordinate={{ latitude, longitude }}
-                  pinColor={lot.type === "EV" ? "blue" : "red"} // color-coded
+                  pinColor={lot.type === "EV" ? "green" : "red"} // color-coded
                   onPress={() => {
                     // console.log("Marker pressed:", lot);
                   }}
@@ -229,10 +226,10 @@ const GoogleMapView: React.FC = () => {
             </>
           )}
         </MapView>
-        
+
         {/* Info Button Component - all configuration is in InfoButton.tsx */}
-        <WeatherButton />
-        
+        <WeatherButton bottomSheetPosition={bottomSheetPosition}/>
+
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>
             <Ionicons name="locate" size={24} color="#007AFF" />
@@ -276,7 +273,7 @@ const styles = StyleSheet.create({
       Platform.OS === "ios"
         ? SCREEN_DIMENSIONS.height * 0.462
         : SCREEN_DIMENSIONS.height * 0.445,
-  }
+  },
 });
 
 export default GoogleMapView;

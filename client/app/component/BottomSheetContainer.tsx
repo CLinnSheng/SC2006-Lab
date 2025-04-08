@@ -88,7 +88,6 @@ const BottomSheetContainer = ({
     setShowSelectedCarParkSheet(false);
     setSelectedCarPark(null);
     onSelectCarPark(null);
-    // onSelectCarPark({ action: 'closeSheet', carPark: null });
   };
 
   const filteredCarParks = React.useMemo(() => {

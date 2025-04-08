@@ -13,20 +13,26 @@ import Animated, {
   withTiming,
   withSpring,
   runOnJS,
+  Extrapolate,
+  interpolate,
 } from "react-native-reanimated";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 
 interface InfoButtonProps {
-  // Optional props with default values i
+  bottomSheetPosition: Animated.SharedValue<number>;
 }
 
-const WeatherButton: React.FC<InfoButtonProps> = ({ 
-}) => {
+const WeatherButton: React.FC<InfoButtonProps> = ({ bottomSheetPosition }) => {
   // Popup animation values
   const [popupVisible, setPopupVisible] = useState(false);
   const popupScale = useSharedValue(0);
   const popupOpacity = useSharedValue(0);
   const overlayOpacity = useSharedValue(0);
+  const maxBottomSheetHeight = parseFloat(
+    Platform.OS === "ios"
+      ? (0.55 * SCREEN_DIMENSIONS.height).toFixed(1)
+      : (0.536 * SCREEN_DIMENSIONS.height).toFixed(1)
+  );
 
   const toggleInfoPopup = () => {
     if (!popupVisible) {
@@ -49,9 +55,7 @@ const WeatherButton: React.FC<InfoButtonProps> = ({
   const animatedPopupStyle = useAnimatedStyle(() => {
     return {
       opacity: popupOpacity.value,
-      transform: [
-        { scale: popupScale.value },
-      ],
+      transform: [{ scale: popupScale.value }],
     };
   });
 
@@ -61,20 +65,34 @@ const WeatherButton: React.FC<InfoButtonProps> = ({
     };
   });
 
+  const animatedButtonStyle = useAnimatedStyle(() => {
+    // Fade out when above 40%
+    const opacity = interpolate(
+      bottomSheetPosition.value,
+      [maxBottomSheetHeight, maxBottomSheetHeight - 420], // Adjust range to smooth transition
+      [1, 0],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      opacity,
+    };
+  });
   return (
     <>
       {/* Animated overlay */}
       {popupVisible && (
-        <Animated.View 
-          style={[styles.overlay, animatedOverlayStyle]} 
+        <Animated.View
+          style={[styles.overlay, animatedOverlayStyle]}
           pointerEvents={popupVisible ? "auto" : "none"}
           onTouchStart={toggleInfoPopup}
         />
       )}
-      
+
       {/* Info Button Container */}
-      <View style={styles.infoButtonContainer}>
-        <TouchableOpacity 
+      {/* <View style={styles.infoButtonContainer}> */}
+      <Animated.View style={[styles.infoButtonContainer, animatedButtonStyle]}>
+        <TouchableOpacity
           style={styles.infoButton}
           onPress={toggleInfoPopup}
           accessibilityLabel="Information button"
@@ -82,19 +100,22 @@ const WeatherButton: React.FC<InfoButtonProps> = ({
         >
           <Ionicons name="cloud-outline" size={24} color="#000" />
         </TouchableOpacity>
-        
+
         {/* Popup that animates from the info button */}
         {popupVisible && (
           <Animated.View style={[styles.popupContainer, animatedPopupStyle]}>
             <Text style={styles.popupTitle}>Current Weather Forecast</Text>
             <View style={styles.popupContent}>
-  <Ionicons name="rainy-outline" size={80} color="blue" />
-  <Text style={styles.popupText}>Showers</Text>
-  <Text style={styles.advisory}>It's about to rain...{'\n'}Please Drive Safely.</Text>
-  </View>
+              <Ionicons name="rainy-outline" size={80} color="blue" />
+              <Text style={styles.popupText}>Showers</Text>
+              <Text style={styles.advisory}>
+                It's about to rain...{"\n"}Please Drive Safely.
+              </Text>
+            </View>
           </Animated.View>
         )}
-      </View>
+        {/* </View> */}
+      </Animated.View>
     </>
   );
 };
@@ -103,9 +124,22 @@ const styles = StyleSheet.create({
   // Info Button and container
   infoButtonContainer: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 70 : 40, // Account for status bar
+    top:
+      Platform.OS === "ios"
+        ? SCREEN_DIMENSIONS.height * 0.06
+        : SCREEN_DIMENSIONS.height * 0.05, // Account for status bar
+    backgroundColor: "#FFFFFF",
+    borderRadius: 30,
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
     right: 15,
-    alignItems: "flex-end",
     zIndex: 1000,
   },
   infoButton: {
@@ -149,7 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "#333",
     alignSelf: "center",
-    marginLeft:10,
+    marginLeft: 10,
   },
   popupText: {
     fontSize: 16,
@@ -166,9 +200,8 @@ const styles = StyleSheet.create({
     alignSelf: "auto",
   },
   popupContent: {
-    flexDirection: 'column', // stack vertically
-    alignItems: 'center', // center both icon and text horizontally
-    justifyContent: 'center',
+    flexDirection: "column", // stack vertically
+    alignItems: "center", // center both icon and text horizontally
   },
   closeButton: {
     backgroundColor: "#007AFF",
