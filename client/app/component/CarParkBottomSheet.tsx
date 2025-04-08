@@ -15,11 +15,11 @@ import {
 } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
-import carParkUtils from "../utils/carParkUtils";
+import getStreetViewUrl from "./hooks/getStreetViewImage";
 import formatAddressToTitleCase from "../utils/convertCase";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import getAvailabilityColor from "../utils/getAvailabilityColor";
-
+import carParkUtils from "../utils/carParkUtils";
 interface CarParkBottomSheetProps {
   selectedCarPark: any;
   onClose: () => void;
@@ -56,11 +56,12 @@ const CarParkBottomSheet = ({
               {formatAddressToTitleCase(selectedCarPark.address)}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row' }}>
-  <Text style={styles.selectedCarParkType}>
-    {formatAddressToTitleCase(selectedCarPark.carParkType)} ⋅ {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
-  </Text>
-</View>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.selectedCarParkType}>
+              {formatAddressToTitleCase(selectedCarPark.carParkType)} ⋅{" "}
+              {carParkUtils.getCarParkTypeLabel(selectedCarPark.carParkType)}
+            </Text>
+          </View>
 
           <View style={styles.distanceTimeContainer}>
             <Ionicons
@@ -86,7 +87,7 @@ const CarParkBottomSheet = ({
             <Image
               style={styles.streetViewImage}
               source={{
-                uri: carParkUtils.getStreetViewUrl(
+                uri: getStreetViewUrl(
                   selectedCarPark.latitude,
                   selectedCarPark.longitude
                 ),
@@ -94,7 +95,6 @@ const CarParkBottomSheet = ({
             />
           )}
 
-          
           <View style={styles.availabilityContainer}>
             {selectedCarPark.lotDetails?.C && (
               <View style={styles.lotInfo}>
@@ -184,11 +184,11 @@ const CarParkBottomSheet = ({
         <>
           <View style={styles.selectedCarParkTitileContainer}>
             <Text style={styles.selectedCarParkTitle}>
-            {selectedCarPark.shortFormattedAddress}
+              {selectedCarPark.shortFormattedAddress}
             </Text>
           </View>
           <Text style={styles.selectedCarParkType}>
-          {selectedCarPark.displayName}
+            {selectedCarPark.displayName}
           </Text>
           <View style={styles.distanceTimeContainer}>
             <Ionicons
@@ -213,7 +213,7 @@ const CarParkBottomSheet = ({
           <Image
             style={styles.streetViewImage}
             source={{
-              uri: carParkUtils.getStreetViewUrl(
+              uri: getStreetViewUrl(
                 selectedCarPark.location.latitude,
                 selectedCarPark.location.longitude
               ),
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     marginLeft: 10,
-    padding:12,
+    padding: 12,
   },
   selectedCarParkType: {
     marginLeft: 20,

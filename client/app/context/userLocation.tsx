@@ -26,8 +26,6 @@ export const UserLocationContext = createContext<UserLocationContextValue>({
   userLocation: null,
   setUserLocation: () => {},
   getNearbyCarParks: async () => {},
-  // getUserLocation: async () => {},
-  // recenterRefreshLocation: async () => {},
   initialProcessedPayload: null,
   searchedLocationPayload: null,
   isShowingSearchedLocation: false,
@@ -59,7 +57,7 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
     const data = {
       includedTypes: ["electric_vehicle_charging_station"],
       locationRestriction: {
-        circle: { 
+        circle: {
           center: {
             latitude: targetLocation.latitude,
             longitude: targetLocation.longitude,
@@ -145,8 +143,6 @@ const UserLocationProvider = ({ children }: { children: ReactNode }) => {
         userLocation,
         setUserLocation,
         getNearbyCarParks,
-        // getUserLocation,
-        // recenterRefreshLocation,
         initialProcessedPayload,
         initializeAfterLaunch,
         searchedLocationPayload,

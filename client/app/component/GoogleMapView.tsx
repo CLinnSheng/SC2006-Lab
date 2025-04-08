@@ -29,6 +29,7 @@ import { decode } from "@googlemaps/polyline-codec";
 import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
 import carParkUtils from "../utils/carParkUtils";
 import WeatherButton from "./WeatherButton"; // Import the InfoButton component
+import getStreetViewUrl from "./hooks/getStreetViewImage";
 
 const GoogleMapView: React.FC = () => {
   const { carParks, combinedListCarPark } = useCarParkData(() => {});
@@ -178,10 +179,7 @@ const GoogleMapView: React.FC = () => {
                       </Text>
                       <Image
                         source={{
-                          uri: carParkUtils.getStreetViewUrl(
-                            latitude,
-                            longitude
-                          ),
+                          uri: getStreetViewUrl(latitude, longitude),
                         }}
                         style={{ width: "100%", height: 100, borderRadius: 5 }}
                         resizeMode="cover"
@@ -228,7 +226,7 @@ const GoogleMapView: React.FC = () => {
         </MapView>
 
         {/* Info Button Component - all configuration is in InfoButton.tsx */}
-        <WeatherButton bottomSheetPosition={bottomSheetPosition}/>
+        <WeatherButton bottomSheetPosition={bottomSheetPosition} />
 
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
           <TouchableOpacity onPress={handleRecenterMap}>
