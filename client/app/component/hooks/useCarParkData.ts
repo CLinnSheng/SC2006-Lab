@@ -56,6 +56,9 @@ const useCarParkData = (
       setSearchedLocation(location);
       setSearchedLocationFromMap(location);
       getNearbyCarParks({ latitude: location.lat, longitude: location.lng });
+      setIsLoading(true);
+      setCarParks([]);
+      setEVLots([]);
     },
     [getNearbyCarParks, setSearchedLocationFromMap]
   );

@@ -1,7 +1,13 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import filterUtils from "../utils/filterUtils";
 
-const EmptyList = (selectedFilter: any) => {
+const EmptyList = ({
+  selectedFilter,
+  isLoading,
+}: {
+  selectedFilter: any;
+  isLoading: boolean;
+}) => {
   const getEmptyStateMessage = () => {
     switch (selectedFilter) {
       case filterUtils.FILTER_TYPES.EV:
@@ -16,6 +22,15 @@ const EmptyList = (selectedFilter: any) => {
         return "No parking spots found with current filters";
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingStateContainer}>
+        <ActivityIndicator size="large" color="#0066cc" />
+        <Text style={styles.loadingText}>Searching for parking spots...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.emptyStateContainer}>
@@ -39,6 +54,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
+  loadingStateContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 80,
+  },
   emptyStateImage: {
     width: 150,
     height: 150,
@@ -55,6 +76,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     color: "#666",
+  },
+  loadingText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#333",
+    marginTop: 16,
   },
 });
 

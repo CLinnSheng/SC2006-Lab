@@ -11,6 +11,7 @@ import useBottomSheetAnimation from "./hooks/useBottomSheetAnimation";
 import filterUtils from "../utils/filterUtils";
 import FilterDropdown from "./FilterDropDown";
 import EmptyList from "./EmptyList";
+
 const BottomSheetContainer = ({
   bottomSheetPosition,
   searchedLocation: setSearchedLocationFromMap,
@@ -49,6 +50,7 @@ const BottomSheetContainer = ({
     searchedLocation,
     setSearchedLocation,
     handleSearchedLocation,
+    isLoading,
   } = useCarParkData(setSearchedLocationFromMap);
 
   const [searchedCarpark, setSearchedCarpark] = useState<boolean>(false);
@@ -223,14 +225,19 @@ const BottomSheetContainer = ({
           <View style={styles.spacer} />
 
           {/* Only render the carpark list when the search bar is not focus */}
-          {!isSearchFocused && filteredCarParks.length > 0 ? (
+          {!isSearchFocused && filteredCarParks.length > 0 && !isLoading ? (
             <CarParkList
               data={filteredCarParks}
               bottomSheetPosition={bottomSheetPosition}
               onSelectCarPark={handleSelectCarPark}
             />
           ) : (
-            !isSearchFocused && <EmptyList selectedFilter={selectedFilter} />
+            !isSearchFocused && (
+              <EmptyList
+                selectedFilter={selectedFilter}
+                isLoading={isLoading}
+              />
+            )
           )}
         </BottomSheet>
       )}
