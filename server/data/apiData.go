@@ -6,17 +6,17 @@ import (
 )
 
 type ApiData struct {
-	CarPark map[string]*model.CarPark
-	Weather map[string]*model.WeatherAreaInfo
-	URAToken *string
+	CarPark     map[string]*model.CarPark
+	Weather     map[string]*model.WeatherAreaInfo
+	URAToken    *string
 	OneMapToken *string
 }
 
 func NewApiData() *ApiData {
 	return &ApiData{
-		CarPark: model.NewCarPark(),
-		Weather: model.NewWeatherAreaInfo(),
-		URAToken: new(string),
+		CarPark:     model.NewCarPark(),
+		Weather:     model.NewWeatherAreaInfo(),
+		URAToken:    new(string),
 		OneMapToken: new(string),
 	}
 }

@@ -12,10 +12,11 @@ import (
 )
 
 func OneMapInit(token *string) {
+	envConfig := utils.GetEnvConfig()
 	log.Println("Getting OneMap Token")
 	reqPayload := map[string]string{
-		"email": utils.GetOneMap_Email(),
-		"password": utils.GetOneMap_Password(),
+		"email":    envConfig.ONEMAP_EMAIL,
+		"password": envConfig.ONEMAP_PASSWORD,
 	}
 
 	// Marshall the request payload to JSON

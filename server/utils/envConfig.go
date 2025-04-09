@@ -9,17 +9,15 @@ import (
 )
 
 type EnvConfig struct {
-	PORT string `env:"PORT,required"`
-	// DBHost     string `env:"DB_HOST,required"`
-	// DBName     string `env:"DB_NAME,required"`
-	// DBUser     string `env:"DB_USER,required"`
-	// DBPassword string `env:"DB_PASSWORD,required"`
-	// DBSSLMode  string `env:"DB_SSL_MODE,required"`
+	PORT            string `env:"PORT,required"`
 	LTA_ACCOUNT_KEY string `env:"LTA_ACCOUNT_KEY,required"`
-	// GOOGLE_API_KEY string `env:"GOOGLE_API_KEY,required"`
-	URA_ACCESS_KEY string `env:"URA_ACCESS_KEY,required"`
-	ONEMAP_EMAIL string `env:"ONEMAP_EMAIL,required"`
+	URA_ACCESS_KEY  string `env:"URA_ACCESS_KEY,required"`
+	ONEMAP_EMAIL    string `env:"ONEMAP_EMAIL,required"`
 	ONEMAP_PASSWORD string `env:"ONEMAP_PASSWORD,required"`
+	REDIS_ADDRESS   string `env:"REDIS_ADDRESS,required"`
+	REDIS_PASSWORD  string `env:"REDIS_PASSWORD,required"`
+	REDIS_DB        int    `env:"REDIS_DB,required"`
+	REDIS_PORT      string `env:"REDIS_PORT,required"`
 }
 
 var (
@@ -41,35 +39,4 @@ func GetEnvConfig() *EnvConfig {
 		log.Println("Environment configuration loaded.")
 	})
 	return envConfig
-}
-
-// Optional: Function to access specific config values without calling GetEnvConfig() repeatedly
-func GetPort() string {
-	cfg := GetEnvConfig()
-	return cfg.PORT
-}
-
-func GetLTA_AccountKey() string {
-	cfg := GetEnvConfig()
-	return cfg.LTA_ACCOUNT_KEY
-}
-
-// func GetGoogle_ApiKey() string {
-// 	cfg := GetEnvConfig()
-// 	return cfg.GOOGLE_API_KEY
-// }
-
-func GetURA_AccessKey() string {
-	cfg := GetEnvConfig()
-	return cfg.URA_ACCESS_KEY
-}
-
-func GetOneMap_Email() string {
-	cfg := GetEnvConfig()
-	return cfg.ONEMAP_EMAIL
-}
-
-func GetOneMap_Password() string {
-	cfg := GetEnvConfig()
-	return cfg.ONEMAP_PASSWORD
 }

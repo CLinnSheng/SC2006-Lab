@@ -10,7 +10,7 @@ import (
 
 func SetupCarParkRoutes(router fiber.Router, apiData *data.ApiData) {
 	carParkGroup := router.Group("/carpark")
-	
+
 	// should be get but the payload req is too large
 	carParkGroup.Post("/nearby", func(c *fiber.Ctx) error {
 		log.Println("POST /api/carpark/nearby")

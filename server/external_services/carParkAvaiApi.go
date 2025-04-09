@@ -15,7 +15,7 @@ import (
 	"github.com/SC2006-Lab/MobileAppProject/utils"
 )
 
-func InitCarParkInformation(carPark map[string]*model.CarPark)  {
+func InitCarParkInformation(carPark map[string]*model.CarPark) {
 	envConfig := utils.GetEnvConfig()
 	client := &http.Client{}
 
@@ -126,7 +126,7 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 	// process DataGov api for carpark availability
 	log.Println("Processing DataGov Car Park Information (Car Park Availability)")
 	for _, carpark_data := range DataGovCarParkAvaiResp_Unmarshal.Items[0].CarparkData {
-		
+
 		dataYear, _ := strconv.Atoi(carpark_data.UpdateDatetime[:4])
 		if dataYear != time.Now().Year() {
 			continue
@@ -134,13 +134,13 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 
 		if _, ok := carPark[carpark_data.CarparkNumber]; !ok {
 			carPark[carpark_data.CarparkNumber] = &model.CarPark{
-				CarParkID:     carpark_data.CarparkNumber,
-				LotDetails:   make(map[string]*model.Lot),
+				CarParkID:  carpark_data.CarparkNumber,
+				LotDetails: make(map[string]*model.Lot),
 			}
 		}
 
 		temp_carpark := carPark[carpark_data.CarparkNumber]
-		
+
 		for _, carpark_info := range carpark_data.CarparkInfo {
 			existsLot, ok := temp_carpark.LotDetails[carpark_info.LotType]
 			if !ok {
@@ -188,7 +188,6 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 		}
 	}
 
-
 	log.Println("Car Park Information Processed")
 
 	defer func() {
@@ -215,7 +214,7 @@ func InitCarParkInformation(carPark map[string]*model.CarPark)  {
 	// }
 }
 
-func CleanCarParkInfo (carPark map[string]*model.CarPark) {
+func CleanCarParkInfo(carPark map[string]*model.CarPark) {
 	log.Println("Cleaning Car Park Information")
 	for _, carParkInfo := range carPark {
 		if carParkInfo.Latitude == 0 && carParkInfo.Longitude == 0 {

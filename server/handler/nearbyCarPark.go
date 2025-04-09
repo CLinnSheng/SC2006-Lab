@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	_ "fmt"
 	"log"
 	_ "log"
@@ -10,10 +12,17 @@ import (
 	"time"
 
 	"github.com/SC2006-Lab/MobileAppProject/data"
+	"github.com/SC2006-Lab/MobileAppProject/database"
 	"github.com/SC2006-Lab/MobileAppProject/external_services"
 	"github.com/SC2006-Lab/MobileAppProject/model"
 	"github.com/SC2006-Lab/MobileAppProject/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
+)
+
+const (
+	nearbyCarParksCacheKeyPrefix = "nearby_carparks:"
+	cacheExpirationTime          = 2 * time.Minute
 )
 
 // First Method that just keep spawning goroutines/thread to handle each carpark
@@ -184,6 +193,48 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 		})
 	}
 
+	redisClient := database.GetRedisClient()
+	redisCtx := database.GetRedisContext()
+
+	// Cache Key
+	carParkCacheKey := fmt.Sprintf("%s%.6f_%.6f", nearbyCarParksCacheKeyPrefix, reqPayload.SearchedLocation.Latitude, reqPayload.SearchedLocation.Longitude)
+
+	cachedCarParkJSON, err := redisClient.Get(redisCtx, carParkCacheKey).Result()
+	if err == nil {
+		log.Println("Found CarParks in Redis")
+		var cachedCarPark []map[string]interface{}
+
+		if err := json.Unmarshal([]byte(cachedCarParkJSON), &cachedCarPark); err == nil {
+			cachedResp := map[string]interface{}{
+				"EV":      []map[string]interface{}{},
+				"CarPark": cachedCarPark,
+			}
+
+			processedEVLots, err := processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation, apiData)
+			if err != nil {
+				log.Println("Error processing EV lots:", err)
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": "Error processing EV lots",
+				})
+			}
+
+			cachedResp["EV"] = processedEVLots
+			return c.JSON(cachedResp)
+		} else {
+			log.Println("Error unmarshalling cached CarParks JSON:", err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error processing cached CarParks",
+			})
+		}
+	} else if err != redis.Nil {
+		log.Println("Error getting CarParks from Redis:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error getting CarParks from Redis",
+		})
+	}
+
+	// If couldnt find in cache, process the data
+	// Cache the processed data for future requests
 	// Create channels for results and errors
 	processedEVLotsChan := make(chan []map[string]interface{}, 1)
 	processedCarParkChan := make(chan []map[string]interface{}, 1)
@@ -236,6 +287,26 @@ func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 	response := map[string]interface{}{
 		"EV":      processedEVLots,
 		"CarPark": processedCarPark,
+	}
+
+	// Caching the carpark data
+	carParkJSON, err := json.Marshal(processedCarPark)
+	if err != nil {
+		log.Println("Error marshalling CarParks to JSON:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error marshalling CarParks for caching",
+		})
+	} else {
+		log.Println("Caching CarParks in Redis")
+		if err := redisClient.Set(redisCtx, carParkCacheKey, carParkJSON, cacheExpirationTime).Err(); err != nil {
+			log.Println("Error caching CarParks:", err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Error caching CarParks",
+			})
+		} else {
+			log.Println("Cached CarParks in Redis")
+			log.Println("CarParks data key: ", carParkCacheKey)
+		}
 	}
 
 	log.Println("Returning response to client")

@@ -11,11 +11,12 @@ import (
 )
 
 func URA_Init(token *string) {
+	envConfig := utils.GetEnvConfig()
 	log.Println("Getting URA Token")
-	acessKey := utils.GetURA_AccessKey()
+	acessKey := envConfig.URA_ACCESS_KEY
 
 	client := &http.Client{}
-	
+
 	req, err := http.NewRequest("GET", "https://eservice.ura.gov.sg/uraDataService/insertNewToken/v1", nil)
 	if err != nil {
 		log.Fatal("Fail to create request:", err)
