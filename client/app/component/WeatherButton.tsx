@@ -292,10 +292,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top:
       Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.70
+        ? SCREEN_DIMENSIONS.height * 0.06
         : SCREEN_DIMENSIONS.height * 0.05, 
-    right: 15,
-    zIndex: 1000,
+        right: 15,
+        zIndex: 1000,
     width: 48,
     height: 48,
     justifyContent: "center",
