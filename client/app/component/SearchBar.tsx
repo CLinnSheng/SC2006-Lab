@@ -230,9 +230,9 @@ const styles = StyleSheet.create({
   },
   exitButton: {
     position: "absolute",
-    right: -25,
+    right: 20,
     top: 30,
-    zIndex: 3,
+    zIndex: 10,
   },
 });
 export default GoogleSearchBar;
