@@ -10,6 +10,7 @@ A mobile application for travelers to discover location-based recommendations by
 - [Environment Setup](#environment-setup)
 - [Usage](#usage)
 - [Test](#test)
+- [API Documentation](#api-documentation)
 - [Architecture](#architecture)
 - [Design Patterns](#design-patterns)
 - [Technologies Used](#technologies-used)
@@ -93,6 +94,87 @@ npm test
 cd server
 go test ./...
 ```
+
+## API Documentation
+
+### Base URL
+
+```
+http://localhost:8080/api
+```
+
+Replace `localhost:8080` with your server's domain when deployed.
+
+### Endpoints
+
+#### Car Park API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | `/carpark/nearby` | Get nearby car parks based on user location |
+
+##### GET /carpark/nearby
+
+Get a list of car parks near the specified location.
+
+**Request Body:**
+
+```json
+{
+  "EVLot": [],
+  "CurrentUserLocation": {
+    "latitude": 1.2966,
+    "longitude": 103.7764
+  },
+  "SearchLocation": {
+    "latitude": 1.2966,
+    "longitude": 103.7764
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "carparks": [
+    {
+      "id": "string",
+      "name": "string",
+      "address": "string",
+      "latitude": 0.0,
+      "longitude": 0.0,
+      "availableLots": 0,
+      "totalLots": 0,
+      "distance": 0.0,
+      "hasEVCharging": false,
+      "evChargingStations": []
+    }
+  ],
+  "status": "success"
+}
+```
+
+### Authentication
+
+Currently, the API does not require authentication.
+
+### Rate Limiting
+
+The API is rate-limited to 100 requests per 30 seconds.
+
+### Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 400 | Bad Request - Invalid input parameters |
+| 404 | Not Found - Resource not found |
+| 429 | Too Many Requests - Rate limit exceeded |
+| 500 | Internal Server Error |
+
+### Data Formats
+
+All API requests and responses use JSON format.
 
 ## Architecture
 
