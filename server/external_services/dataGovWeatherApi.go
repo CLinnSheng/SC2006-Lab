@@ -51,14 +51,6 @@ func InitWeatherInformation(areaData map[string]*model.WeatherAreaInfo) {
 	}
 	log.Println("Processed Weather Information")
 
-	// for name, info := range areaData {
-	// 	fmt.Printf("Area: %s\n", name)
-	// 	fmt.Printf("  Latitude: %f\n", info.Latitude)
-	// 	fmt.Printf("  Longitude: %f\n", info.Longitude)
-	// 	fmt.Printf("  Weather: %s\n\n", info.Weather)
-	// }
-	// log.Println("Weather Information Printed")
-
 	defer func() {
 		log.Println("Closing response body for Weather Information")
 		resp.Body.Close()

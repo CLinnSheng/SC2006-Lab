@@ -46,7 +46,6 @@ func (svy *SVY21) init() {
 	svy.A6 = (35 * svy.e6) / 3072
 }
 
-
 // Helper methods
 func (svy *SVY21) calcRho(sin2Lat float64) float64 {
 	num := svy.a * (1 - svy.e2)

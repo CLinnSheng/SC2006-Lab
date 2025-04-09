@@ -1,11 +1,16 @@
 package main
 
 import (
-	_"log"
+	"log"
+	_ "log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/SC2006-Lab/MobileAppProject/api"
 	"github.com/SC2006-Lab/MobileAppProject/data"
 	"github.com/SC2006-Lab/MobileAppProject/middleware"
+	"github.com/SC2006-Lab/MobileAppProject/database"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,19 +18,24 @@ func main() {
 
 	apiData := data.NewApiData()
 	apiData.Init()
-
+	database.InitRedis()
 	server := middleware.NewServer()
-	go func() {
-		server.Init()
-	}()
 
 	api.SetupRoutes(server.App, apiData)
 	server.App.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("TESTING")
 	})
 
-	// external_services.GetDataGovDataWeather()
-	// external_services.InitCarParkInformation()
+	go func() { server.Init() }()
 
-	select{}
+	defer func(){
+		database.CloseRedis()
+		log.Println("Server closed.")
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down server...")
+
 }

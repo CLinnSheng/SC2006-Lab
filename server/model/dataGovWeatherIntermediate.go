@@ -1,7 +1,5 @@
 package model
 
-// For the purpose of help with unmarshalling the json response
-
 type DataGov_Api_Weather_Resp struct {
 	Code int `json:"code"`
 	Data struct {

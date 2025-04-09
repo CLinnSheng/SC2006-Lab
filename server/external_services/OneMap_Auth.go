@@ -14,7 +14,7 @@ import (
 func OneMapInit(token *string) {
 	log.Println("Getting OneMap Token")
 	reqPayload := map[string]string{
-		"email": utils.GetOneMap_Email(),
+		"email":    utils.GetOneMap_Email(),
 		"password": utils.GetOneMap_Password(),
 	}
 

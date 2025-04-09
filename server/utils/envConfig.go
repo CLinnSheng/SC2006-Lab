@@ -9,16 +9,10 @@ import (
 )
 
 type EnvConfig struct {
-	PORT string `env:"PORT,required"`
-	// DBHost     string `env:"DB_HOST,required"`
-	// DBName     string `env:"DB_NAME,required"`
-	// DBUser     string `env:"DB_USER,required"`
-	// DBPassword string `env:"DB_PASSWORD,required"`
-	// DBSSLMode  string `env:"DB_SSL_MODE,required"`
+	PORT            string `env:"PORT,required"`
 	LTA_ACCOUNT_KEY string `env:"LTA_ACCOUNT_KEY,required"`
-	// GOOGLE_API_KEY string `env:"GOOGLE_API_KEY,required"`
-	URA_ACCESS_KEY string `env:"URA_ACCESS_KEY,required"`
-	ONEMAP_EMAIL string `env:"ONEMAP_EMAIL,required"`
+	URA_ACCESS_KEY  string `env:"URA_ACCESS_KEY,required"`
+	ONEMAP_EMAIL    string `env:"ONEMAP_EMAIL,required"`
 	ONEMAP_PASSWORD string `env:"ONEMAP_PASSWORD,required"`
 }
 
@@ -53,11 +47,6 @@ func GetLTA_AccountKey() string {
 	cfg := GetEnvConfig()
 	return cfg.LTA_ACCOUNT_KEY
 }
-
-// func GetGoogle_ApiKey() string {
-// 	cfg := GetEnvConfig()
-// 	return cfg.GOOGLE_API_KEY
-// }
 
 func GetURA_AccessKey() string {
 	cfg := GetEnvConfig()
