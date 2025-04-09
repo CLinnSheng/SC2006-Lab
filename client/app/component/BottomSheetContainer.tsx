@@ -253,7 +253,7 @@ const BottomSheetContainer = ({
 const styles = StyleSheet.create({
   searchBarContainer: {
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 0,
   },
   spacer: {
     height: 30,
