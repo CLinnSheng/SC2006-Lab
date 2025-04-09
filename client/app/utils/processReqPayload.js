@@ -1,4 +1,3 @@
-// const processNearbyReqPayload = (googleaNearbyAPIResponse, userLocation) => {
 const processNearbyReqPayload = (
   googleaNearbyAPIResponse,
   searchLocation,

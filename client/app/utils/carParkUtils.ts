@@ -1,25 +1,3 @@
-const getCarParkIcon = (
-  type:
-    | "MULTI-STOREY CAR PARK"
-    | "SURFACE CAR PARK"
-    | "BASEMENT CAR PARK"
-    | "SURFACE/MULTI-STOREY CAR PARK"
-    | string
-) => {
-  switch (type) {
-    case "MULTI-STOREY CAR PARK":
-      return "business-outline"; // Sheltered, so use a building icon
-    case "SURFACE CAR PARK":
-      return "car-outline"; // Unsheltered, so use a car icon
-    case "BASEMENT CAR PARK":
-      return "download-outline"; // Basement, so use a downward arrow
-    case "SURFACE/MULTI-STOREY CAR PARK":
-      return "business-outline";
-    default:
-      return "help-circle-outline"; // Default for unknown types
-  }
-};
-
 const getCarParkTypeLabel = (
   type:
     | "MULTI-STOREY CAR PARK"
@@ -34,13 +12,11 @@ const getCarParkTypeLabel = (
       return "Unsheltered";
     case "BASEMENT CAR PARK":
       return "Basement";
-      case "SURFACE/MULTI-STOREY CAR PARK":
+    case "SURFACE/MULTI-STOREY CAR PARK":
       return "Sheltered";
-    
   }
 };
 
 export default {
-  getCarParkIcon,
   getCarParkTypeLabel,
 };

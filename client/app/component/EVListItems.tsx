@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     marginRight: 8,
-    // flexShrink: 1,
   },
   secondaryInfoText: {
     fontSize: 12,
@@ -123,7 +122,6 @@ const styles = StyleSheet.create({
   availabilityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // marginTop: 5,
   },
   lotInfo: {
     flexDirection: "row",
@@ -132,17 +130,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
-    // right: 3,
   },
   availabilityCount: {
     fontSize: 14,
     fontWeight: "bold",
   },
-  // totalChargersText: {
-  //   fontSize: 10,
-  //   color: "#777",
-  //   marginTop: 2,
-  // },
 });
 
 export default EVListItem;

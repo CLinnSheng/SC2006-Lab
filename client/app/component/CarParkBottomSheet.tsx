@@ -145,7 +145,11 @@ const CarParkBottomSheet = ({
                   {selectedCarPark.lotDetails.C.availableLots}
                 </Text>
                 <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
-                  / {selectedCarPark.lotDetails.C.totalLots}
+                  /{" "}
+                  {selectedCarPark.lotDetails.C.totalLots !== undefined &&
+                  selectedCarPark.lotDetails.C.totalLots !== ""
+                    ? selectedCarPark.lotDetails.C.totalLots
+                    : "N/A"}
                 </Text>
               </View>
             )}
@@ -172,7 +176,11 @@ const CarParkBottomSheet = ({
                   {selectedCarPark.lotDetails.Y.availableLots}
                 </Text>
                 <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
-                  / {selectedCarPark.lotDetails.Y.totalLots}
+                  /{" "}
+                  {selectedCarPark.lotDetails.Y.totalLots !== undefined &&
+                  selectedCarPark.lotDetails.Y.totalLots !== ""
+                    ? selectedCarPark.lotDetails.Y.totalLots
+                    : "N/A"}
                 </Text>
               </View>
             )}
@@ -183,7 +191,7 @@ const CarParkBottomSheet = ({
                   name="truck"
                   size={16}
                   color="#777"
-                  style={styles.icon}
+                  style={styles.heavyVechicleIcon}
                 />
                 <Text
                   style={[
@@ -199,7 +207,11 @@ const CarParkBottomSheet = ({
                   {selectedCarPark.lotDetails.H.availableLots}
                 </Text>
                 <Text style={{ marginLeft: 5, color: "#777", fontSize: 16 }}>
-                  / {selectedCarPark.lotDetails.H.totalLots}
+                  /{" "}
+                  {selectedCarPark.lotDetails.H.totalLots !== undefined &&
+                  selectedCarPark.lotDetails.H.totalLots !== ""
+                    ? selectedCarPark.lotDetails.H.totalLots
+                    : "N/A"}
                 </Text>
               </View>
             )}
@@ -367,17 +379,17 @@ const styles = StyleSheet.create({
     fontFamily: "ArialRoundedBold",
     color: "#777",
     marginLeft: 10,
-    // marginTop: 5,
   },
   evAvailabilityContainer: {
     marginTop: 20,
     marginLeft: 20,
     marginBottom: 1,
+    gap: 3,
   },
   evAvailabilityTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   evChargerInfo: {
     flexDirection: "row",
@@ -419,16 +431,12 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     top: Platform.OS === "ios" ? 10 : 8,
-    // bottom:
-    //   Platform.OS === "ios"
-    //     ? SCREEN_DIMENSIONS.height * 0.389
-    //     : SCREEN_DIMENSIONS.height * 0.35,
     right: SCREEN_DIMENSIONS.width * 0.05,
     zIndex: 10,
   },
   availabilityContainer: {
     flexDirection: "column", // Changed to column for row by row
-    gap: 8, // Adds spacing between each row
+    gap: 10, // Adds spacing between each row
     marginTop: 20,
     marginLeft: 20,
     marginBottom: 1,
@@ -439,6 +447,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
+  },
+  heavyVechicleIcon: {
+    marginRight: 24,
   },
   availabilityCount: {
     fontSize: 16,

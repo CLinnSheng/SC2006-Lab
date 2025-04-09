@@ -34,7 +34,7 @@ const GoogleMapView: React.FC = () => {
     handleCarParkSelection,
     handleSearchedLocationFromBar,
     handleRecenterMap,
-  } = useMapNavigation(mapRef, userLocation);
+  } = useMapNavigation(mapRef, userLocation, maxBottomSheetHeight);
 
   // Animate the recenter map button to stay above the BottomSheet
   const animatedButtonStyle = useAnimatedStyle(() => {

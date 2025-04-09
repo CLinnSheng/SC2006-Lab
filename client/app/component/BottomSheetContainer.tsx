@@ -76,7 +76,6 @@ const BottomSheetContainer = ({
   const handleSelectCarPark = (carPark: any) => {
     setSelectedCarPark(carPark);
     setShowSelectedCarParkSheet(true);
-    // console.log(decode(carPark.routeInfo.polyline));
     onSelectCarPark(carPark);
   };
 
@@ -215,6 +214,7 @@ const BottomSheetContainer = ({
               selectedFilter={selectedFilter}
               selectedSort={selectedSort}
               bottomSheetPosition={bottomSheetPosition}
+              expandBottomSheet={expandBottomSheet}
             />
           )}
 

@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
   availabilityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // marginTop: 5, // Add a little space from the secondary info
   },
   lotInfo: {
     flexDirection: "row",
@@ -145,4 +144,3 @@ const styles = StyleSheet.create({
 });
 
 export default CarParkListItem;
-// ⋅

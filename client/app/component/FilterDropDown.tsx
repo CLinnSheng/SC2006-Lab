@@ -13,6 +13,7 @@ interface FilterDropdownProps {
   onFilterChange: (filter: string) => void;
   onSortChange: (sort: string) => void;
   bottomSheetPosition: Animated.SharedValue<number>;
+  expandBottomSheet: () => void;
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -21,6 +22,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   onFilterChange,
   onSortChange,
   bottomSheetPosition,
+  expandBottomSheet,
 }) => {
   const [showOptions, setShowOptions] = useState(false);
 
@@ -39,7 +41,10 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       {/* Combined Filter/Sort Button */}
       <TouchableOpacity
         style={styles.filterButton}
-        onPress={() => setShowOptions(!showOptions)}
+        onPress={() => {
+          setShowOptions(!showOptions);
+          expandBottomSheet();
+        }}
       >
         <View style={styles.filterButtonContent}>
           <Text style={styles.filterButtonText}>Filter</Text>
@@ -134,8 +139,6 @@ const styles = StyleSheet.create({
   filterContainer: {
     position: "relative",
     top: 3,
-    // marginRight: -2,
-    // width: "30%",
     alignSelf: "flex-end",
     right: 5,
     zIndex: 100,
