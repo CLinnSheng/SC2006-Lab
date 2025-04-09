@@ -11,8 +11,9 @@ import (
 )
 
 func URA_Init(token *string) {
+	envConfig := utils.GetEnvConfig()
 	log.Println("Getting URA Token")
-	acessKey := utils.GetURA_AccessKey()
+	acessKey := envConfig.URA_ACCESS_KEY
 
 	client := &http.Client{}
 

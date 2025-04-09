@@ -2,8 +2,10 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/SC2006-Lab/MobileAppProject/utils"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -11,10 +13,11 @@ var RedisClient *redis.Client
 var RedisCtx = context.Background() // Empty Context
 
 func InitRedis() {
+	envConfig := utils.GetEnvConfig()
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", // Redis server address
-		Password: "",               // No password set
-		DB:       0,                // Use default DB
+		Addr:     fmt.Sprintf("%s:%s", envConfig.REDIS_ADDRESS, envConfig.REDIS_PORT), // Redis server address
+		Password: envConfig.REDIS_PASSWORD,               // No password set
+		DB:       envConfig.REDIS_DB,                // Use default DB
 	})
 
 	pong, err := RedisClient.Ping(RedisCtx).Result()
