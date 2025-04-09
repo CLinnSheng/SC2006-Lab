@@ -27,7 +27,6 @@ import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
 import { decode } from "@googlemaps/polyline-codec";
 import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
-import carParkUtils from "../utils/carParkUtils";
 import WeatherButton from "./WeatherButton"; // Import the InfoButton component
 import getStreetViewUrl from "./hooks/getStreetViewImage";
 

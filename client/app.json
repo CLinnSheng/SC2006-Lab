@@ -18,22 +18,28 @@
         "googleMapsApiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
       },
       "infoPlist": {
-    "NSAppTransportSecurity": {
-      "NSAllowsArbitraryLoads": true
-    }
-  }
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      },
+      "bundleIdentifier": "com.linnsheng.client"
     },
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+          "apiKey": "AIzaSyAPaP034QSvRzHAZyoA51wHvCLzvpD6MNs"
         }
       },
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "usesCleartextTraffic": true
+      "usesCleartextTraffic": true,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.linnsheng.client"
     },
     "web": {
       "bundler": "metro",
@@ -51,12 +57,24 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/ArialRoundedBold.ttf", "./assets/fonts/DejaVuSansMono-BoldOblique.ttf"]
+          "fonts": [
+            "./assets/fonts/ArialRoundedBold.ttf",
+            "./assets/fonts/DejaVuSansMono-BoldOblique.ttf"
+          ]
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "485e4936-b86f-4c0c-a42e-9cddddb6f392"
+      }
+    },
+    "owner": "linnsheng"
   }
 }
