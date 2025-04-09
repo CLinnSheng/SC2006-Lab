@@ -30,6 +30,8 @@ import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
 import carParkUtils from "../utils/carParkUtils";
 import WeatherButton from "./WeatherButton"; // Import the InfoButton component
 import getStreetViewUrl from "./hooks/getStreetViewImage";
+import { BlurView } from "expo-blur";
+
 
 const GoogleMapView: React.FC = () => {
   const { carParks, combinedListCarPark } = useCarParkData(() => {});
@@ -229,10 +231,22 @@ const GoogleMapView: React.FC = () => {
         <WeatherButton bottomSheetPosition={bottomSheetPosition} />
 
         <Animated.View style={[animatedButtonStyle, styles.myLocationButton]}>
-          <TouchableOpacity onPress={handleRecenterMap}>
-            <Ionicons name="locate" size={24} color="#007AFF" />
-          </TouchableOpacity>
-        </Animated.View>
+  {Platform.OS === 'ios' ? (
+    <View style={styles.buttonContainer}>
+      <BlurView intensity={40} tint='light' style={styles.blurView}>
+        <TouchableOpacity onPress={handleRecenterMap} style={styles.buttonContent}>
+          <Ionicons name="locate" size={24} color="rgba(19, 4, 157, 0.75)" />
+        </TouchableOpacity>
+      </BlurView>
+    </View>
+  ) : (
+    <View style={[styles.buttonContainer, styles.androidButtonContainer]}>
+      <TouchableOpacity onPress={handleRecenterMap} style={styles.buttonContent}>
+        <Ionicons name="locate" size={24} color="#007AFF" />
+      </TouchableOpacity>
+    </View>
+  )}
+</Animated.View>
         <BottomSheetContainer
           bottomSheetPosition={bottomSheetPosition}
           searchedLocation={handleSearchedLocationFromBar}
@@ -255,22 +269,49 @@ const styles = StyleSheet.create({
   },
   myLocationButton: {
     position: "absolute",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FF",
     borderRadius: 30,
     width: 48,
     height: 48,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.7,
+    shadowRadius: 20,
+    elevation: 5,
+    right: 15,
+    
+    bottom:
+      Platform.OS === "ios"
+        ? SCREEN_DIMENSIONS.height * 0.462
+        : SCREEN_DIMENSIONS.height * 0.445,
+  },
+  buttonContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    right: 15,
-    bottom:
-      Platform.OS === "ios"
-        ? SCREEN_DIMENSIONS.height * 0.462
-        : SCREEN_DIMENSIONS.height * 0.445,
+    
+  },
+  blurView: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 24,
+  },
+  buttonContent: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  androidButtonContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.25)', // Much more transparent
   },
 });
 

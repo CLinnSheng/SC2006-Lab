@@ -42,12 +42,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         onPress={() => setShowOptions(!showOptions)}
       >
         <Text style={styles.filterButtonText}>
-          {selectedFilter} · Sort: {selectedSort}
+          Filter
         </Text>
         <MaterialIcons
           name={showOptions ? "arrow-drop-up" : "arrow-drop-down"}
           size={24}
-          color="#555"
+          color="black"
         />
       </TouchableOpacity>
 
@@ -133,17 +133,18 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 const styles = StyleSheet.create({
   filterContainer: {
     position: "relative",
-    top: 30,
-    width: "45%",
+    top: 3,
+    marginRight:-3,
+    width: "30%",
     alignSelf: "flex-end",
     right: 5,
     zIndex: 100,
   },
   filterButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    backgroundColor: "rgba(187, 184, 184, 0.75)",
+    paddingVertical: 5,
+    paddingHorizontal:40,
+    borderRadius: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -151,15 +152,15 @@ const styles = StyleSheet.create({
   filterButtonText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "white",
+    color: "black",
   },
   optionsContainer: {
     position: "absolute",
     top: 45,
-    right: 1,
+    right: 30,
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 10,
+    padding: 8,
     borderWidth: 1,
     borderColor: "#e0e0e0",
     elevation: 5,
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     zIndex: 100,
-    width: "100%",
+    width: "200%",
   },
   optionSectionHeader: {
     fontSize: 12,

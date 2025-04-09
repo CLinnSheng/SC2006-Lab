@@ -34,8 +34,9 @@ const getCarParkTypeLabel = (
       return "Unsheltered";
     case "BASEMENT CAR PARK":
       return "Basement";
-    default:
-      return "N/A";
+      case "SURFACE/MULTI-STOREY CAR PARK":
+      return "Sheltered";
+    
   }
 };
 
