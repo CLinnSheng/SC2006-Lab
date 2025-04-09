@@ -6,6 +6,7 @@ import {
   Image,
   Platform,
   View,
+  Linking,
 } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import {
@@ -46,6 +47,32 @@ const CarParkBottomSheet = ({
   const handleSheetChanges = useCallback((index: number) => {
     // Handle any sheet change logic
   }, []);
+
+  const openGoogleMaps = useCallback(() => {
+    let latitude;
+    let longitude;
+
+    if (selectedCarPark?.type === "CarPark") {
+      latitude = selectedCarPark.latitude;
+      longitude = selectedCarPark.longitude;
+    } else if (selectedCarPark?.type === "EV") {
+      latitude = selectedCarPark.location?.latitude;
+      longitude = selectedCarPark.location?.longitude;
+    }
+
+    if (latitude && longitude) {
+      const googleMapsUrl = Platform.select({
+        ios: `maps://app?daddr=${latitude},${longitude}&dirflg=d`, // 'd' for driving directions
+        android: `google.navigation:q=${latitude},${longitude}`,
+      });
+
+      Linking.openURL(googleMapsUrl ?? "").catch((err) =>
+        console.error("An error occurred while opening Google Maps:", err)
+      );
+    } else {
+      console.warn("Latitude and longitude are not available.");
+    }
+  }, [selectedCarPark]);
 
   const renderCarParkDetails = () => {
     if (selectedCarPark.type === "CarPark") {
@@ -291,7 +318,10 @@ const CarParkBottomSheet = ({
 
         <TouchableOpacity
           style={styles.navigateButton}
-          onPress={() => console.log("Navigate pressed")}
+          onPress={() => {
+            console.log("Navigate pressed");
+            openGoogleMaps();
+          }}
         >
           <Text style={styles.navigateButtonText}>NAVIGATE</Text>
           <Ionicons
