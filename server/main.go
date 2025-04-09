@@ -13,9 +13,6 @@ func main() {
 
 	apiData := data.NewApiData()
 	apiData.Init()
-	// go func() {
-	// middleware.ServerInit()
-	// }()
 
 	server := middleware.NewServer()
 	go func() {

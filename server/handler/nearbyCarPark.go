@@ -16,8 +16,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// First Method that just keep spawning goroutines/thread to handle each carpark
+// Spawning gorountines/threads is good idea but the performance will be bad when the number of gorountines is huge
 // func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
-
 // 	var reqPayload struct {
 // 		EVLots              []*model.EVLot `json:"EVLot"`
 // 		CurrentUserLocation struct {
@@ -29,67 +30,53 @@ import (
 // 			Longitude float64 `json:"longitude"`
 // 		} `json:"SearchLocation"`
 // 	}
-
 // 	if err := c.BodyParser(&reqPayload); err != nil {
 // 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 // 			"error": "Cannot parse JSON",
 // 		})
 // 	}
-
 // 	// Do the process of evlots and carpark concurrently
 // 	var wg sync.WaitGroup
 // 	wg.Add(2)
-
 // 	var ProcessedEVLots []map[string]interface{}
 // 	var ProcessedCarPark []map[string]interface{}
 // 	var evLotsErr, carParkErr error
-
 // 	// 2 go routine to process the evlots and carpark concurrently
 // 	go func() {
 // 		defer wg.Done()
 // 		ProcessedEVLots, evLotsErr = processEVLots(reqPayload.EVLots, reqPayload.CurrentUserLocation, apiData)
 // 	}()
-
 // 	go func() {
 // 		defer wg.Done()
 // 		ProcessedCarPark, carParkErr = processCarParks(apiData.CarPark, reqPayload.CurrentUserLocation, reqPayload.SearchedLocation, apiData)
 // 	}()
-
 // 	// the main thread will wait for the 2 go routine to finish
 // 	wg.Wait()
-
 // 	if evLotsErr != nil || carParkErr != nil {
 // 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 // 			"error": "Error processing data",
 // 		})
 // 	}
-
 // 	response := map[string]interface{}{
 // 		"EV":      ProcessedEVLots,
 // 		"CarPark": ProcessedCarPark,
 // 	}
-
 // 	log.Println("Returning response to client")
 // 	return c.JSON(response)
 // }
-
 // func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 // 	Latitude  float64 `json:"latitude"`
 // 	Longitude float64 `json:"longitude"`
 // }, apiData *data.ApiData) ([]map[string]interface{}, error) {
 // 	var wg sync.WaitGroup
 // 	var mut sync.Mutex // Prevent data race when updating the slice
-
 // 	processedEVLots := []map[string]interface{}{}
-
 // 	for _, EVLot := range evLots {
 // 		wg.Add(1)
 // 		// fmt.Print(EVLot)
 // 		go func(evLot *model.EVLot) {
 // 			defer wg.Done()
-
 // 			chargers := []map[string]string{}
-
 // 			for _, connector := range evLot.EVChargerOptions.ConnectorAggregation {
 // 				var availableCnt string
 // 				if connector.AvailableCount != nil {
@@ -97,7 +84,6 @@ import (
 // 				} else {
 // 					availableCnt = "N/A"
 // 				}
-
 // 				chargers = append(chargers, map[string]string{
 // 					"type":            connector.Type,
 // 					"maxChargeRateKW": strconv.FormatFloat(connector.MaxChargeRateKW, 'f', 1, 64),
@@ -105,9 +91,7 @@ import (
 // 					"availableCount":  availableCnt,
 // 				})
 // 			}
-
 // 			routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, evLot.Location.Latitude, evLot.Location.Longitude, *apiData.OneMapToken)
-
 // 			processedEVLot := map[string]interface{}{
 // 				"formattedAddress": evLot.FormattedAddress,
 // 				"location": map[string]float64{
@@ -124,15 +108,12 @@ import (
 // 					"polyline": routeInfo.Polyline,
 // 				},
 // 			}
-
 // 			// Prevent data race
 // 			mut.Lock()
 // 			processedEVLots = append(processedEVLots, processedEVLot)
 // 			mut.Unlock()
-
 // 		}(EVLot)
 // 	}
-
 // 	wg.Wait()
 // 	return processedEVLots, nil
 // }
@@ -142,16 +123,12 @@ import (
 // 	Longitude float64 `json:"longitude"`
 // }, apiData *data.ApiData) ([]map[string]interface{}, error) {
 // 	processedCarParks := []map[string]interface{}{}
-
 // 	var wg sync.WaitGroup
 // 	var mut sync.Mutex
-
 // 	for _, carPark := range carParks {
 // 		wg.Add(1)
-
 // 		go func(carPark *model.CarPark) {
 // 			defer wg.Done()
-
 // 			if a := utils.CalculateDistance(searchedLocation.Latitude, searchedLocation.Longitude, carPark.Latitude, carPark.Longitude); a <= 2 {
 // 				processedCarPark := map[string]interface{}{
 // 					"carParkID":   carPark.CarParkID,
@@ -161,34 +138,33 @@ import (
 // 					"longitude":   carPark.Longitude,
 // 					"lotDetails":  make(map[string]interface{}),
 // 				}
-
 // 				for lotType, lot := range carPark.LotDetails {
 // 					processedCarPark["lotDetails"].(map[string]interface{})[lotType] = map[string]string{
 // 						"totalLots":     lot.TotalLots,
 // 						"availableLots": lot.AvailableLots,
 // 					}
 // 				}
-
 // 				routeInfo, _ := external_services.ComputeRoute(currentUserLocation.Latitude, currentUserLocation.Longitude, carPark.Latitude, carPark.Longitude, *apiData.OneMapToken)
-
 // 				processedCarPark["routeInfo"] = map[string]string{
 // 					"distance": strconv.FormatFloat(utils.ConvertMeterToKm(routeInfo.Distance), 'f', 1, 64),
 // 					"duration": strconv.FormatFloat(utils.ConvertSecondsToMinutes(routeInfo.Duration), 'f', 0, 64),
 // 					"polyline": routeInfo.Polyline,
 // 				}
-
 // 				mut.Lock()
 // 				processedCarParks = append(processedCarParks, processedCarPark)
 // 				mut.Unlock()
 // 			}
-
 // 		}(carPark)
 // 	}
-
 // 	wg.Wait()
 // 	return processedCarParks, nil
 // }
 
+// Alternative method is actually limiting the number of goroutines/threads to a reasonable number
+// and using a worker pool to process the data concurrently
+// This method is more efficient and scalable
+// The worker pool will limit the number of goroutines/threads to a reasonable number
+// and use a channel to distribute the work among the workers
 func GetNearbyCarParks(c *fiber.Ctx, apiData *data.ApiData) error {
 	var reqPayload struct {
 		EVLots              []*model.EVLot `json:"EVLot"`
@@ -302,7 +278,6 @@ func processEVLots(evLots []*model.EVLot, currentUserLocation struct {
 	// Launch workers
 	for i := 0; i < workerLimit; i++ {
 		go func() {
-			// Create an HTTP client that can be reused across multiple requests
 			client := &http.Client{
 				Transport: &http.Transport{
 					MaxIdleConnsPerHost: 10,
