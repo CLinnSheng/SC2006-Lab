@@ -2,6 +2,20 @@
 
 A mobile application for travelers to discover location-based recommendations by integrating interactive map functionality with personalized sorting options. Built with React Native (Expo) frontend and a Go backend server, this app enables users to explore points of interest, create trip itineraries, and find attractions based on customizable filtering criteria.
 
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Install](#install)
+- [Environment Setup](#environment-setup)
+- [Usage](#usage)
+- [Test](#test)
+- [Architecture](#architecture)
+- [Design Patterns](#design-patterns)
+- [Technologies Used](#technologies-used)
+- [Contributors](#contributors)
+- [License](#license)
+
 ## Project Structure
 
 - `client/`: React Native (Expo) mobile application
@@ -79,6 +93,60 @@ npm test
 cd server
 go test ./...
 ```
+
+## Architecture
+
+### Client Folder Architecture
+```
+client/
+├── assets/              # Images, fonts, and static resources
+├── components/          # Reusable UI components
+│   ├── common/          # Shared components (buttons, inputs, etc.)
+│   ├── map/             # Map-related components
+│   └── screens/         # Screen-specific components
+├── navigation/          # Navigation configuration
+├── screens/             # Application screens
+├── services/            # API services and external integrations
+├── store/               # State management
+│   ├── actions/         # Redux actions
+│   ├── reducers/        # Redux reducers
+│   └── hooks/           # Custom React hooks
+├── types/               # TypeScript type definitions
+└── utils/               # Helper functions and utilities
+```
+
+### Server Folder Architecture
+```
+server/
+├── api/                 # API routes and handlers
+│   ├── controllers/     # Request handlers
+│   ├── middleware/      # Custom middleware
+│   └── routes/          # Route definitions
+├── config/              # Configuration files
+├── models/              # Data models and types
+├── services/            # Business logic and external API integrations
+├── utils/               # Helper functions and utilities
+└── database/            # Database connection and queries
+```
+
+## Design Patterns
+
+### Frontend Design Patterns
+- **Container/Presentational Pattern**: Separating logic from UI components
+- **Provider Pattern**: Using React Context for state management across components
+- **Custom Hooks**: Encapsulating and reusing stateful logic across components
+- **Render Props**: Sharing code between components using props whose value is a function
+
+### Backend Design Patterns
+- **Middleware Pattern**: Processing requests through a chain of handlers
+- **Repository Pattern**: Abstracting data access logic
+- **Dependency Injection**: Providing dependencies to components instead of hardcoding them
+- **Service Layer**: Separating business logic from API controllers
+
+### Architecture Patterns
+- **MVC (Model-View-Controller)**: Organizing backend code by responsibility
+- **Microservices**: Independent services communicating through APIs
+- **REST API**: Standard HTTP methods for CRUD operations
 
 ## Technologies Used
 
