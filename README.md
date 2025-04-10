@@ -186,9 +186,114 @@ Once the Expo server is up:
 
 ### 🌐 Base URL
 
-http://localhost:<PORT>/api
+http://localhost:<PORT>
 
 > The `<PORT>` is defined in your `.env` file under the `server` directory. By default, it is usually set to `8080`.
 
 **Example:**
-http://localhost:8080/api
+http://localhost:8080
+
+### API Endpoint
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | `/api/carpark/nearby/` | Get nearby car parks based on user location |
+
+POST /api/carpark/nearby
+Suppose to be get method but the request payload is too large
+**Request Body:**
+
+```json
+{
+  "CurrentUserLocation": {
+    "latitude": 1.3521,
+    "longitude": 103.8198
+  },
+  "SearchLocation": {
+    "latitude": 1.3521,
+    "longitude": 103.8198
+  },
+  "EVLot": [
+    {
+      "formattedAddress": "38 Cleantech Loop, Singapore 636741",
+      "location": {
+        "latitude": 1.3530720999999999,
+        "longitude": 103.6914374
+      },
+      "displayName": {
+        "text": "SP Mobility Charging Station",
+        "languageCode": "en"
+      },
+      "shortFormattedAddress": "38 Cleantech Loop, Singapore",
+      "evChargeOptions": {
+        "connectorCount": 7,
+        "connectorAggregation": [
+          {
+            "type": "EV_CONNECTOR_TYPE_CCS_COMBO_2",
+            "maxChargeRateKw": 100,
+            "count": 2
+          },
+          {
+            "type": "EV_CONNECTOR_TYPE_TYPE_2",
+            "maxChargeRateKw": 7.400000095367432,
+            "count": 5
+          }
+        ]
+      }
+    },
+    //.. (rest of EVLot)
+  ]
+}
+```
+
+**Response Body**
+```json
+{
+  "CarPark": [
+    {
+      "address": "BLK 401-408 SIN MING AVENUE",
+      "carParkID": "BE3",
+      "carParkType": "",
+      "latitude": 1.3623638203409012,
+      "longitude": 103.83440656538859,
+      "lotDetails": {
+        "C": {
+          "availableLots": "186",
+          "totalLots": "319"
+        }
+      },
+      "routeInfo": {
+        "distance": "1.7",
+        "duration": "5",
+        "polyline": "a{gGa~txRSIcC_Hc@oAu@yBQ}@cAmFSaAO{@i@uCeBMqAMq@AM]?_@@a@?[FoFB_C?sAAWISUUWIy@Ey@E{@?{A@eB@aAIk@G_@ECeBi@wHNc@"
+      }
+    },
+    //.. (rest of return carPark)
+  ],
+  "EV": [
+    {
+      "chargers": [
+        {
+          "availableCount": "N/A",
+          "count": "4",
+          "maxChargeRateKW": "11.0",
+          "type": "EV_CONNECTOR_TYPE_TYPE_2"
+        }
+      ],
+      "displayName": "",
+      "formattedAddress": "903 Jurong West Street 91, Singapore 640903",
+      "location": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "routeInfo": {
+        "distance": "0.0",
+        "duration": "0",
+        "polyline": ""
+      },
+      "shortFormattedAddress": "903 Jurong West Street 91, Singapore",
+      "totalChargers": 4
+    },
+    //.. (rest of return EV lots)
+  ]
+}
+```
