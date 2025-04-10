@@ -11,7 +11,9 @@
 
 ---
 ## Demo
-▶️ [Demo](assets/demo.gif)
+![demo](./assets/demo.gif)
+
+--- 
 ## 📌 Table of Contents
 
 - [ Directory Structure](#-directory-structure)
