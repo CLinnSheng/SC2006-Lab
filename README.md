@@ -19,7 +19,11 @@
   - [Accessing the App](#-accessing-the-app)
 - [ API Documentation](#-api-documentation)
   - [ Base URL](#-base-url)
-
+  - [ API Endpoint](#api-endpoint)
+- [Design Patterns](#design-patterns)
+  - [Frontend Design Patterns](#frontend-design-patterns)
+  - [Backend Design Patterns](#backend-design-patterns)
+  - [Architecture Patterns](#architecture-patterns) 
 ---
 
 <!--
@@ -297,3 +301,30 @@ Suppose to be get method but the request payload is too large
   ]
 }
 ```
+
+## Design Patterns
+
+### Frontend Design Patterns
+- **Container/Presentational Pattern**: Separated concerns between components. Container components handled data fetching and logic, while Presentational components focused solely on rendering UI based on props. This improved component reusability and testability.
+- **Provider Pattern**: Utilized React Context (via Expo's Context API) to manage application-wide state, such as user authentication and location data, avoiding prop drilling and simplifying state access across deeply nested components.
+- **Custom Hooks**: Encapsulated reusable stateful logic, like fetching data from APIs or handling user input, making our components cleaner and the logic easier to reuse across different views. For example, we created a `useLocation` hook to manage current location updates.
+- **Render Props**: Employed render props in specific scenarios, such as within our map component, to allow parent components to customize the rendering of markers or overlays based on dynamic data.
+
+### Backend Design Patterns
+- **Middleware Pattern**: Leveraged Fiber's middleware capabilities to handle cross-cutting concerns like request logging, authentication, and data validation in a modular and organized way, ensuring consistent processing for all API endpoints.
+- **Repository Pattern**: Abstracted data access logic for interacting with the Singapore government APIs. This allowed us to easily switch or mock data sources if needed and kept our business logic decoupled from the specifics of API calls.
+- **Dependency Injection**: While Go doesn't have built-in DI, we employed manual dependency injection (passing dependencies as function arguments or struct fields) to improve testability and reduce coupling between components, particularly in our service layer.
+- **Service Layer**: Implemented a service layer to contain the core business logic of our application, such as fetching and processing data from multiple APIs and calculating routes. This kept our API controllers lean and focused on request/response handling.
+
+### Architecture Patterns
+- **MVC (Model-View-Controller)**: Organized our backend Go code using the MVC pattern. Models represented data structures, Controllers handled API requests and responses, and (though not strictly "Views" in a traditional web sense) our response serializers acted as a form of view logic for presenting data.
+- **Microservices (Conceptual):** While this project might be a monolith, we designed our modules and services with a potential future transition to microservices in mind, ensuring clear boundaries and independent functionality.
+- **REST API**: Designed our backend API following RESTful principles, using standard HTTP methods (GET, POST, etc.) for CRUD operations on resources like car parks and EV charging stations, ensuring interoperability and ease of use for frontend developers.
+
+## Contributors
+
+| Contributor         | Contributions                                  |
+| ------------------- | ---------------------------------------------- |
+| @CLinnSheng | Fullstack Development, Documentation       |
+| [@github-username-2] | API integration, testing                     |
+| ...                 | ...                                          |
