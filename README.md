@@ -6,7 +6,7 @@
 
 ## 📌 Table of Contentse of Contents
 
-- [ Directory Structure]()
+- [ Directory Structure](#-directory-structure)
 - [ Features](#-features)
 - [ Tech Stack](#-tech-stack)
 - [ Prerequisites](#️-prerequisites)
@@ -14,8 +14,8 @@
 - [ Getting Started](#-getting-started)
 - [ Environment Setup](#️-environment-setup)
 - [ Run Application](#-run-application)
-  - [Local](#local)
-  - [ Container](#-container)
+  - [Local Development](#local-development)
+  - [ Container Containerized Deployment](#container-containerized-deployment)
   - [Accessing the App](#-accessing-the-app)
 - [ API Documentation](#-api-documentation)
   - [ Base URL](#-base-url)
@@ -54,7 +54,9 @@
   - [Contributors](#contributors)
   - [License](#license) -->
 
-## Directory Structure
+## 📂 Directory Structure
+TESTING
+
 ## ✨ Features
 
 - 🗺️  **Interactive Map Interface** - Visually explore carparks with Google Maps integration
