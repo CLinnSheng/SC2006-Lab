@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import MapView from "react-native-maps";
 import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import BottomSheetContainer from "./BottomSheetContainer";
@@ -11,12 +11,12 @@ import {
 import { UserLocationContext } from "../context/userLocation";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import DEFAULT_LOCATION from "../constants/defaultLocation";
-import useCarParkData from "./hooks/useCarParkData"; // Import the custom hook
+import useCarParkData from "../hooks/useCarParkData"; // Import the custom hook
 import WeatherButton from "./WeatherButton"; // Import the InfoButton component
 import RecenterButton from "./RecenterButton";
 import RouteDisplay from "./RouteDisplay";
 import MapMarkers from "./MapMarkers";
-import useMapNavigation from "./hooks/useMapNavigation";
+import useMapNavigation from "../hooks/useMapNavigation";
 const GoogleMapView: React.FC = () => {
   const { carParks, combinedListCarPark } = useCarParkData(() => {});
   const mapRef = useRef<MapView | null>(null);

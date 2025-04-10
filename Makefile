@@ -26,7 +26,7 @@ start-client:
 	@echo "Starting client..."
 	cd $(CLIENT_DIR) && npx expo start -c
 
-r# Run the container
+# Run the container
 run-container: build-client run-container-parallel
 
 # Run the container in parallel

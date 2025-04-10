@@ -20,8 +20,8 @@ import Animated, {
 } from "react-native-reanimated";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
 import { UserLocationContext } from "../context/userLocation";
-import getWeatherIcon from "./hooks/getWeatherData";
-import getWeatherForecast from "./hooks/get3HourWeather";
+import getWeatherIcon from "../hooks/getWeatherData";
+import getWeatherForecast from "../hooks/get3HourWeather";
 
 interface InfoButtonProps {
   bottomSheetPosition: Animated.SharedValue<number>;

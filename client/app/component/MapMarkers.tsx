@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { Marker, Callout } from "react-native-maps";
-import getStreetViewUrl from "./hooks/getStreetViewImage";
+import getStreetViewUrl from "../hooks/getStreetViewImage";
 
 interface MapMarkersProps {
   carParks: any[];

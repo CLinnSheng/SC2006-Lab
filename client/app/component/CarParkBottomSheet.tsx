@@ -16,7 +16,7 @@ import {
 } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SCREEN_DIMENSIONS from "../constants/screenDimension";
-import getStreetViewUrl from "./hooks/getStreetViewImage";
+import getStreetViewUrl from "../hooks/getStreetViewImage";
 import formatAddressToTitleCase from "../utils/convertCase";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import getAvailabilityColor from "../utils/getAvailabilityColor";

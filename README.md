@@ -10,34 +10,41 @@
 </p>
 
 ---
+
 ## Demo
+
 ![demo](./assets/demo.gif)
 
---- 
+---
+
 ## 📌 Table of Contents
 
-- [ Directory Structure](#-directory-structure)
-- [ Features](#-features)
-- [ Tech Stack](#-tech-stack)
-- [ Prerequisites](#️-prerequisites)
-- [ API Keys](#-api-keys)
-- [ Getting Started](#-getting-started)
-- [ Environment Setup](#️-environment-setup)
-- [ Run Application](#-run-application)
-  - [Local Development](#local-development)
-  - [Containerized Deployment](#-containerized-deployment)
-  - [Accessing the App](#-accessing-the-app)
-- [ API Documentation](#-api-documentation)
-  - [ Base URL](#-base-url)
-  - [ API Endpoint](#api-endpoint)
+- [Demo](#demo)
+- [📌 Table of Contents](#-table-of-contents)
+- [📂 Directory Structure](#-directory-structure)
+- [✨ Features](#-features)
+- [🧰 Tech Stack](#-tech-stack)
+- [⚙️ Prerequisites](#️-prerequisites)
+- [🔑 API Keys](#-api-keys)
+- [🚀 Getting Started](#-getting-started)
+- [🛠️ Environment Setup](#️-environment-setup)
+- [💻 Run Application](#-run-application)
+  - [📍Local Development](#local-development)
+  - [🐳 Containerized Deployment](#-containerized-deployment)
+  - [📱 Accessing the App](#-accessing-the-app)
+- [📡 API Documentation](#-api-documentation)
+  - [🌐 Base URL](#-base-url)
+  - [API Endpoint](#api-endpoint)
 - [Design Patterns](#design-patterns)
   - [Frontend Design Patterns](#frontend-design-patterns)
   - [Backend Design Patterns](#backend-design-patterns)
   - [Architecture Patterns](#architecture-patterns)
-- [Contributors](#contributors)
+- [👥 Contributors](#-contributors)
+
 ---
 
 ## 📂 Directory Structure
+
 ```
 project-root/
 ├── client/                     # Frontend application (React Native/Expo)
@@ -84,30 +91,35 @@ project-root/
     ├── Makefile                # Build automation
     └── README.md               # Server documentation
 ```
+
 ---
+
 ## ✨ Features
 
-- 🗺️  **Interactive Map Interface** - Visually explore carparks with Google Maps integration
-- 🅿️  **Real-time Availability** - Get up-to-the-second data on open parking spaces
+- 🗺️ **Interactive Map Interface** - Visually explore carparks with Google Maps integration
+- 🅿️ **Real-time Availability** - Get up-to-the-second data on open parking spaces
 - 🚗 **Multi-vehicle Support** - Find parking for cars, EVs, motorcycles, and heavy vehicles
 - ⚡ **EV Charging Stations** - Locate carparks with electric vehicle charging capabilities
-- 🌦️  **Weather Integration** - Plan ahead with current conditions and 3-hour forecasts
+- 🌦️ **Weather Integration** - Plan ahead with current conditions and 3-hour forecasts
 - 🧭 **Smart Navigation** - View estimated travel distance and time to each carpark
 - 📊 **Sorting Options** - Organize carparks by availability, distance, or price
 - 📱 **Cross-platform** - Works seamlessly on both iOS and Android devices
 
-
 ---
 
 ## 🧰 Tech Stack
+
 **Frontend:**
+
 - React Native with Expo
 
 **Backend:**
+
 - Go (Golang) 1.23.6+
 - RESTful API architecture
 - Docker containerization
 - Redis (Caching and optimize API endpoint)
+
 ---
 
 ## ⚙️ Prerequisites
@@ -122,6 +134,7 @@ Ensure you have the following installed on your system:
 - [Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/) (caching to optimize Api endpoint)
 
 **Quick Install Commands:**
+
 ```bash
 # Linux
 sudo apt-get update
@@ -141,13 +154,16 @@ npm install -g expo-cli
 You'll need to obtain API keys from the following services:
 
 - **[Google Cloud Platform](https://console.cloud.google.com/apis/)**
+
   - Enable: Maps SDK (Android & iOS), Places API, Weather API, Street View Static API
   - Used for: map rendering, location search, weather data, street view images, getting EV lots
 
 - **[URA](https://eservice.ura.gov.sg/maps/api/reg.html)**
+
   - Used for: real-time carpark availability data
 
 - **[OneMap](https://www.onemap.gov.sg/apidocs/)**
+
   - Used for: routing and navigation services
 
 - **[LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html)**
@@ -199,7 +215,11 @@ make run-container
 
 # Build Docker images only
 make build-container
+
+# View the logging of the server running on the container
+docker log SweetSpot --follow
 ```
+
 ### 📱 Accessing the App
 
 Once the Expo server is up:
@@ -222,8 +242,9 @@ http://localhost:<PORT>
 http://localhost:8080
 
 ### API Endpoint
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+
+| Method | Endpoint               | Description                                 |
+| ------ | ---------------------- | ------------------------------------------- |
 | POST   | `/api/carpark/nearby/` | Get nearby car parks based on user location |
 
 POST /api/carpark/nearby
@@ -267,13 +288,14 @@ Originally intended as a GET method, but used POST due to large payload.
           }
         ]
       }
-    },
+    }
     //.. remaining EV lots
   ]
 }
 ```
 
 **Response Body**
+
 ```json
 {
   "CarPark": [
@@ -294,7 +316,7 @@ Originally intended as a GET method, but used POST due to large payload.
         "duration": "5",
         "polyline": "a{gGa~txRSIcC_Hc@oAu@yBQ}@cAmFSaAO{@i@uCeBMqAMq@AM]?_@@a@?[FoFB_C?sAAWISUUWIy@Ey@E{@?{A@eB@aAIk@G_@ECeBi@wHNc@"
       }
-    },
+    }
     //.. remaining return CarPark
   ],
   "EV": [
@@ -320,30 +342,36 @@ Originally intended as a GET method, but used POST due to large payload.
       },
       "shortFormattedAddress": "903 Jurong West Street 91, Singapore",
       "totalChargers": 4
-    },
+    }
     //.. remaining return EV lots
   ]
 }
 ```
+
 ---
+
 ## Design Patterns
 
 ### Frontend Design Patterns
+
 - **Container/Presentational Pattern**: Separated concerns between components. Container components handled data fetching and logic, while Presentational components focused solely on rendering UI based on props. This improved component reusability and testability.
 - **Provider Pattern**: Utilized React Context (via Expo's Context API) to manage application-wide state, such as user authentication and location data, avoiding prop drilling and simplifying state access across deeply nested components.
 - **Custom Hooks**: Encapsulated reusable stateful logic, like fetching data from APIs or handling user input, making our components cleaner and the logic easier to reuse across different views. For example, we created a `useLocation` hook to manage current location updates.
 - **Render Props**: Employed render props in specific scenarios, such as within our map component, to allow parent components to customize the rendering of markers or overlays based on dynamic data.
 
 ### Backend Design Patterns
+
 - **Middleware Pattern**: Leveraged Fiber's middleware capabilities to handle cross-cutting concerns like request logging, authentication, and data validation in a modular and organized way, ensuring consistent processing for all API endpoints.
 - **Repository Pattern**: Abstracted data access logic for interacting with the Singapore government APIs. This allowed us to easily switch or mock data sources if needed and kept our business logic decoupled from the specifics of API calls.
 - **Dependency Injection**: While Go doesn't have built-in DI, we employed manual dependency injection (passing dependencies as function arguments or struct fields) to improve testability and reduce coupling between components, particularly in our service layer.
 - **Service Layer**: Implemented a service layer to contain the core business logic of our application, such as fetching and processing data from multiple APIs and calculating routes. This kept our API controllers lean and focused on request/response handling.
 
 ### Architecture Patterns
+
 - **MVC (Model-View-Controller)**: Organized our backend Go code using the MVC pattern. Models represented data structures, Controllers handled API requests and responses, and (though not strictly "Views" in a traditional web sense) our response serializers acted as a form of view logic for presenting data.
 - **Microservices (Conceptual):** While this project might be a monolith, we designed our modules and services with a potential future transition to microservices in mind, ensuring clear boundaries and independent functionality.
 - **REST API**: Designed our backend API following RESTful principles, using standard HTTP methods (GET, POST, etc.) for CRUD operations on resources like car parks and EV charging stations, ensuring interoperability and ease of use for frontend developers.
+
 ---
 
 ## 👥 Contributors
