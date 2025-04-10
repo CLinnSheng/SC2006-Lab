@@ -11,7 +11,7 @@
 
 ---
 ## Demo
-▶️ [Click to watch demo](https://github.com/username/repo-name/blob/main/assets/demo.mp4)
+▶️ [Demo](assets/demo.gif)
 ## 📌 Table of Contents
 
 - [ Directory Structure](#-directory-structure)
