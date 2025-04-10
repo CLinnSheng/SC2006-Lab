@@ -16,7 +16,7 @@ start-client:
 	@echo "Starting client..."
 	cd client && npx expo start -c
 
-run-docker: build-client run-container-parallel
+run-container: build-client run-container-parallel
 
 run-container-parallel:
 	@echo "Running Docker Compose and Expo Client"

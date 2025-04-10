@@ -1,255 +1,162 @@
-# SC2006-Lab Project
+# 🚗 SC2006-Lab Project: SweetSpot - Your Smart Carpark & Weather Companion ☀️
 
-A mobile application for travelers to discover location-based recommendations by integrating interactive map functionality with personalized sorting options. Built with React Native (Expo) frontend and a Go backend server, this app enables users to explore points of interest, create trip itineraries, and find attractions based on customizable filtering criteria.
+> Discover available carparks effortlessly within a 2km radius of your searched or current location. Built with a sleek React Native (Expo) frontend and a robust Go backend server, this application provides real-time carpark information for all vehicle types: cars (including EVs), motorcycles, and heavy vehicles. Not only can you view the number of available lots and sort by availability and distance, but you'll also get estimated travel distance and time, plus up-to-the-minute weather conditions and a 3-hour forecast.
 
-## Table of Contents
-- [Project Structure](#project-structure)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Install](#install)
-- [Environment Setup](#environment-setup)
-- [Usage](#usage)
-- [Test](#test)
-- [API Documentation](#api-documentation)
-- [Architecture](#architecture)
-- [Design Patterns](#design-patterns)
-- [Technologies Used](#technologies-used)
-- [Contributors](#contributors)
-- [License](#license)
+---
 
-## Project Structure
+## 📌 Table of Contentse of Contents
 
-- `client/`: React Native (Expo) mobile application
-- `server/`: Go backend server with Fiber framework
+- [🚗 SC2006-Lab Project: SweetSpot - Your Smart Carpark \& Weather Companion ☀️](#-sc2006-lab-project-sweetspot---your-smart-carpark--weather-companion-️)
+  - [📌 Table of Contentse of Contents](#-table-of-contentse-of-contents)
+  - [✨ Features](#-features)
+  - [⚙️ Prerequisites](#️-prerequisites)
+  - [🔑 API Keys](#-api-keys)
+  - [🚀 Getting Started](#-getting-started)
+  - [🛠️ Environment Setup](#️-environment-setup)
+  - [💻 Run Application](#-run-application)
+    - [📍Local](#local)
+    - [🐳 Container](#-container)
+  - [📡 API Documentation](#-api-documentation)
+    - [🌐 Base URL](#-base-url)
 
-## Features
+---
 
-- Interactive map interface with Google Maps integration
-- Carpark availability information and filtering
-- EV charging station locator
-- Weather information integration
-- Route computation and display
-- Favorites management system
+<!--
+- [SC2006-Lab Project](#sc2006-lab-project)
+  - [Table of Contents](#table-of-contents)
+  - [Project Structure](#project-structure)
+  - [Features](#features)
+  - [Prerequisites](#prerequisites)
+  - [Install](#install)
+  - [Environment Setup](#environment-setup)
+  - [Usage](#usage)
+  - [Test](#test)
+  - [API Documentation](#api-documentation)
+    - [Base URL](#base-url)
+    - [Endpoints](#endpoints)
+      - [Car Park API](#car-park-api)
+        - [GET /carpark/nearby](#get-carparknearby)
+    - [Authentication](#authentication)
+    - [Rate Limiting](#rate-limiting)
+    - [Error Responses](#error-responses)
+    - [Data Formats](#data-formats)
+  - [Architecture](#architecture)
+    - [Client Folder Architecture](#client-folder-architecture)
+    - [Server Folder Architecture](#server-folder-architecture)
+  - [Design Patterns](#design-patterns)
+    - [Frontend Design Patterns](#frontend-design-patterns)
+    - [Backend Design Patterns](#backend-design-patterns)
+    - [Architecture Patterns](#architecture-patterns)
+  - [Technologies Used](#technologies-used)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+  - [Contributors](#contributors)
+  - [License](#license) -->
 
-## Prerequisites
+## ✨ Features
 
-- Node.js and npm
-- Go 1.15+
-- Expo CLI
-- Google Maps API key
+- 🗺️ **Interactive Map:** Seamless integration with Google Maps allows users to visually explore nearby carparks and their locations.
+- 🅿️ **Carpark Availability:** Real-time information on the number of available lots, with filtering options based on vehicle type (car, EV, motorcycle, heavy vehicle).
+- ⚡ **EV Charging:** Easily locate carparks equipped with Electric Vehicle charging stations, making it convenient for EV owners.
+- ☀️ **Weather Integration:** Displays current weather conditions and a detailed 3-hour forecast for the selected location, helping users plan their trips.
+- 🧭 **Intelligent Navigation:** Calculates and displays the estimated travel distance and time to each carpark, aiding in decision-making.
 
-## Install
+---
 
-```sh
-# Clone the repository
-git clone [your-repository-url]
-cd SC2006-Lab
+## ⚙️ Prerequisites
 
-# Install frontend dependencies
-cd client
-npm install
+Ensure you have the following installed on your system:
 
-# Install backend dependencies
-cd ../server
-go mod download
+- [Node.js](https://nodejs.org/)
+- npm (Node Package Manager)
+- [Go 1.23.6+](https://go.dev/dl/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Docker](https://docs.docker.com/engine/install/) (for containerized deployment)
+
+```bash
+# Linux
+sudo apt-get update
+sudo apt-get install nodejs npm
+npm install -g expo-cli
+
+# macOS (using Homebrew)
+brew update
+brew install node
+npm install -g expo-cli
 ```
 
-## Environment Setup
+---
 
-Set up environment variables as needed:
+## 🔑 API Keys
+
+- [Google Api](https://console.cloud.google.com/apis/): Used for map rendering, place searching, weather information, static street view images and finding nearby EV.
+  - Maps SDK for Android & iOS
+  - Places API (New)
+  - Weather API
+  - Street View Static API
+- [URA](https://eservice.ura.gov.sg/maps/api/reg.html): Provide access to real-time carpark availability and carpark information
+- [OneMap](https://www.onemap.gov.sg/apidocs/): For routing
+- [LTA](https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html): Another source for carpark information which includes carpark from shopping malls and streets.
+
+---
+
+## 🚀 Getting Started
+
+```Bash
+# Clone the repository
+git clone git@github.com:CLinnSheng/SC2006-Lab.git
+cd SC2006-Lab
+```
+
+## 🛠️ Environment Setup
+
+Configure your environment variables before running the application. Create .env files in both the client and server directories based on the .env.example files provided and replace the placeholder values with your actual API keys.
 
 ```sh
 # For the client
-cp client/.env.example client/.env  # Then edit with your API keys
+cp client/.env.example client/.env  # Edit with your API keys
 
 # For the server
-cp server/.env.example server/.env  # Then edit with your API keys
+cp server/.env.example server/.env  # Edit with your API keys
 ```
 
-## Usage
+## 💻 Run Application
 
-```sh
-# Start the backend server
-cd server
-go run main.go
+Make sure you are in the root directory of the project (/SC2006-Lab)
 
-# In a separate terminal, start the frontend
-cd client
-npx expo start
+### 📍Local
+
+```Bash
+# Run both server and client locally
+make run-local
+
+# Clean build binaries
+make clean
 ```
 
-After starting the Expo server:
+### 🐳 Container
+
+Ensure Docker is installed and running:
+
+```Bash
+make run-container
+```
+
+Once the Expo server is up:
+
 - Press `a` to open on Android emulator/device
 - Press `i` to open on iOS simulator/device
 - Scan the QR code with Expo Go app on your physical device
 
-## Test
+---
 
-```sh
-# Run frontend tests
-cd client
-npm test
+## 📡 API Documentation
 
-# Run backend tests
-cd server
-go test ./...
-```
+### 🌐 Base URL
 
-## API Documentation
+http://localhost:<PORT>/api
 
-### Base URL
+> The `<PORT>` is defined in your `.env` file under the `server` directory. By default, it is usually set to `8080`.
 
-```
+**Example:**
 http://localhost:8080/api
-```
-
-Replace `localhost:8080` with your server's domain when deployed.
-
-### Endpoints
-
-#### Car Park API
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST   | `/carpark/nearby` | Get nearby car parks based on user location |
-
-##### GET /carpark/nearby
-
-Get a list of car parks near the specified location.
-
-**Request Body:**
-
-```json
-{
-  "EVLot": [],
-  "CurrentUserLocation": {
-    "latitude": 1.2966,
-    "longitude": 103.7764
-  },
-  "SearchLocation": {
-    "latitude": 1.2966,
-    "longitude": 103.7764
-  }
-}
-```
-
-**Response:**
-
-```json
-{
-  "carparks": [
-    {
-      "id": "string",
-      "name": "string",
-      "address": "string",
-      "latitude": 0.0,
-      "longitude": 0.0,
-      "availableLots": 0,
-      "totalLots": 0,
-      "distance": 0.0,
-      "hasEVCharging": false,
-      "evChargingStations": []
-    }
-  ],
-  "status": "success"
-}
-```
-
-### Authentication
-
-Currently, the API does not require authentication.
-
-### Rate Limiting
-
-The API is rate-limited to 100 requests per 30 seconds.
-
-### Error Responses
-
-| Status Code | Description |
-|-------------|-------------|
-| 400 | Bad Request - Invalid input parameters |
-| 404 | Not Found - Resource not found |
-| 429 | Too Many Requests - Rate limit exceeded |
-| 500 | Internal Server Error |
-
-### Data Formats
-
-All API requests and responses use JSON format.
-
-## Architecture
-
-### Client Folder Architecture
-```
-client/
-├── assets/              # Images, fonts, and static resources
-├── components/          # Reusable UI components
-│   ├── common/          # Shared components (buttons, inputs, etc.)
-│   ├── map/             # Map-related components
-│   └── screens/         # Screen-specific components
-├── navigation/          # Navigation configuration
-├── screens/             # Application screens
-├── services/            # API services and external integrations
-├── store/               # State management
-│   ├── actions/         # Redux actions
-│   ├── reducers/        # Redux reducers
-│   └── hooks/           # Custom React hooks
-├── types/               # TypeScript type definitions
-└── utils/               # Helper functions and utilities
-```
-
-### Server Folder Architecture
-```
-server/
-├── api/                 # API routes and handlers
-│   ├── controllers/     # Request handlers
-│   ├── middleware/      # Custom middleware
-│   └── routes/          # Route definitions
-├── config/              # Configuration files
-├── models/              # Data models and types
-├── services/            # Business logic and external API integrations
-├── utils/               # Helper functions and utilities
-└── database/            # Database connection and queries
-```
-
-## Design Patterns
-
-### Frontend Design Patterns
-- **Container/Presentational Pattern**: Separating logic from UI components
-- **Provider Pattern**: Using React Context for state management across components
-- **Custom Hooks**: Encapsulating and reusing stateful logic across components
-- **Render Props**: Sharing code between components using props whose value is a function
-
-### Backend Design Patterns
-- **Middleware Pattern**: Processing requests through a chain of handlers
-- **Repository Pattern**: Abstracting data access logic
-- **Dependency Injection**: Providing dependencies to components instead of hardcoding them
-- **Service Layer**: Separating business logic from API controllers
-
-### Architecture Patterns
-- **MVC (Model-View-Controller)**: Organizing backend code by responsibility
-- **Microservices**: Independent services communicating through APIs
-- **REST API**: Standard HTTP methods for CRUD operations
-
-## Technologies Used
-
-### Frontend
-- React Native with Expo
-- TypeScript
-- NativeWind (TailwindCSS for React Native)
-- React Navigation
-- Google Maps API
-
-### Backend
-- Go
-- Fiber framework
-- Various Singapore government APIs (LTA, URA, etc.)
-- OneMap API
-- Google Routes API
-
-## Contributors
-
-SC2006 SCMB Group 3
-
-## License
-
-[Include your license information here]
