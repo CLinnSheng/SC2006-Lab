@@ -1,6 +1,13 @@
-#  SC2006-Lab Project: SweetSpot - Your Smart Carpark & Weather Companion 
+<h1 align="center">SweetSpot - Your Smart Carpark & Weather Companion</h1>
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version 1.0.0"/>
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License MIT"/>
+  <img src="https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey" alt="Platform iOS | Android"/>
+</p>
 
-> **Find the perfect parking spot in seconds!** SweetSpot helps you discover available carparks within a 2km radius of any location. Built with React Native (Expo) and Go, this app provides real-time information for all vehicle types including EVs, with weather forecasts and navigation assistance.
+<p align="center">
+  <b>Find the perfect parking spot in seconds!</b> SweetSpot helps you discover available carparks within a 2km radius of any location. Built with React Native (Expo) and Go, this app provides real-time information for all vehicle types including EVs, with weather forecasts and navigation assistance.
+</p>
 
 ---
 
@@ -335,12 +342,53 @@ Originally intended as a GET method, but used POST due to large payload.
 - **Microservices (Conceptual):** While this project might be a monolith, we designed our modules and services with a potential future transition to microservices in mind, ensuring clear boundaries and independent functionality.
 - **REST API**: Designed our backend API following RESTful principles, using standard HTTP methods (GET, POST, etc.) for CRUD operations on resources like car parks and EV charging stations, ensuring interoperability and ease of use for frontend developers.
 ---
-## Contributors
 
-| Contributor         | Contributions                                  |
-| ------------------- | ---------------------------------------------- |
-| [@CLinnSheng](https://github.com/CLinnSheng) | Fullstack Development, Documentation       |
-| [@shamz-10](https://github.com/shamz-10) | Frontend UI/UX, Documentation                   |
-| [@piperatthegateofdawn](https://github.com/piperatthegateofdawn)                 | Documentation                                         |
-| [@X-Jiarui](https://github.com/X-Jiarui)                   | Documentation                                        |
-| [@Yeet94](https://github.com/Yeet94)                 | Documentation                                          |
+## 👥 Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/CLinnSheng">
+        <img src="https://github.com/CLinnSheng.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>@CLinnSheng</b></sub>
+      </a>
+      <br />
+      <sub>Fullstack Development, Documentation</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/shamz-10">
+        <img src="https://github.com/shamz-10.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>@shamz-10</b></sub>
+      </a>
+      <br />
+      <sub>Frontend UI/UX, Documentation</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/piperatthegateofdawn">
+        <img src="https://github.com/piperatthegateofdawn.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>@piperatthegateofdawn0</b></sub>
+      </a>
+      <br />
+      <sub>Frontend UI/UX, Documentation</sub>
+    </td><td align="center">
+      <a href="https://github.com/X-Jiarui">
+        <img src="https://github.com/X-Jiarui.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>@X-Jiarui0</b></sub>
+      </a>
+      <br />
+      <sub>Frontend UI/UX, Documentation</sub>
+    </td><td align="center">
+      <a href="https://github.com/Yeet94">
+        <img src="https://github.com/Yeet94.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>@Yeet94</b></sub>
+      </a>
+      <br />
+      <sub>Frontend UI/UX, Documentation</sub>
+    </td>
+  </tr>
+</table>
