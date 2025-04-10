@@ -6,6 +6,7 @@
 
 ## 📌 Table of Contentse of Contents
 
+- [ Directory Structure]()
 - [ Features](#-features)
 - [ Tech Stack](#-tech-stack)
 - [ Prerequisites](#️-prerequisites)
@@ -53,6 +54,7 @@
   - [Contributors](#contributors)
   - [License](#license) -->
 
+## Directory Structure
 ## ✨ Features
 
 - 🗺️  **Interactive Map Interface** - Visually explore carparks with Google Maps integration
@@ -87,6 +89,7 @@ Ensure you have the following installed on your system:
 - [Go 1.23.6+](https://go.dev/dl/)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - [Docker](https://docs.docker.com/engine/install/) (for containerized deployment)
+- [Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/) (caching to optimize Api endpoint)
 
 **Quick Install Commands:**
 ```bash
