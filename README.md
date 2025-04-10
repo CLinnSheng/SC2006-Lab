@@ -1,23 +1,23 @@
 # 🚗 SC2006-Lab Project: SweetSpot - Your Smart Carpark & Weather Companion ☀️
 
-> Discover available carparks effortlessly within a 2km radius of your searched or current location. Built with a sleek React Native (Expo) frontend and a robust Go backend server, this application provides real-time carpark information for all vehicle types: cars (including EVs), motorcycles, and heavy vehicles. Not only can you view the number of available lots and sort by availability and distance, but you'll also get estimated travel distance and time, plus up-to-the-minute weather conditions and a 3-hour forecast.
+> **Find the perfect parking spot in seconds!** SweetSpot helps you discover available carparks within a 2km radius of any location. Built with React Native (Expo) and Go, this app provides real-time information for all vehicle types including EVs, with weather forecasts and navigation assistance.
 
 ---
 
 ## 📌 Table of Contentse of Contents
 
-- [🚗 SC2006-Lab Project: SweetSpot - Your Smart Carpark \& Weather Companion ☀️](#-sc2006-lab-project-sweetspot---your-smart-carpark--weather-companion-️)
-  - [📌 Table of Contentse of Contents](#-table-of-contentse-of-contents)
-  - [✨ Features](#-features)
-  - [⚙️ Prerequisites](#️-prerequisites)
-  - [🔑 API Keys](#-api-keys)
-  - [🚀 Getting Started](#-getting-started)
-  - [🛠️ Environment Setup](#️-environment-setup)
-  - [💻 Run Application](#-run-application)
-    - [📍Local](#local)
-    - [🐳 Container](#-container)
-  - [📡 API Documentation](#-api-documentation)
-    - [🌐 Base URL](#-base-url)
+- [ Features](#-features)
+- [ Tech Stack](#-tech-stack)
+- [ Prerequisites](#️-prerequisites)
+- [ API Keys](#-api-keys)
+- [ Getting Started](#-getting-started)
+- [ Environment Setup](#️-environment-setup)
+- [ Run Application](#-run-application)
+  - [Local](#local)
+  - [ Container](#-container)
+  - [Accessing the App](#-accessing-the-app)
+- [ API Documentation](#-api-documentation)
+  - [ Base URL](#-base-url)
 
 ---
 
@@ -55,12 +55,27 @@
 
 ## ✨ Features
 
-- 🗺️ **Interactive Map:** Seamless integration with Google Maps allows users to visually explore nearby carparks and their locations.
-- 🅿️ **Carpark Availability:** Real-time information on the number of available lots, with filtering options based on vehicle type (car, EV, motorcycle, heavy vehicle).
-- ⚡ **EV Charging:** Easily locate carparks equipped with Electric Vehicle charging stations, making it convenient for EV owners.
-- ☀️ **Weather Integration:** Displays current weather conditions and a detailed 3-hour forecast for the selected location, helping users plan their trips.
-- 🧭 **Intelligent Navigation:** Calculates and displays the estimated travel distance and time to each carpark, aiding in decision-making.
+- 🗺️  **Interactive Map Interface** - Visually explore carparks with Google Maps integration
+- 🅿️  **Real-time Availability** - Get up-to-the-second data on open parking spaces
+- 🚗 **Multi-vehicle Support** - Find parking for cars, EVs, motorcycles, and heavy vehicles
+- ⚡ **EV Charging Stations** - Locate carparks with electric vehicle charging capabilities
+- 🌦️  **Weather Integration** - Plan ahead with current conditions and 3-hour forecasts
+- 🧭 **Smart Navigation** - View estimated travel distance and time to each carpark
+- 📊 **Sorting Options** - Organize carparks by availability, distance, or price
+- 📱 **Cross-platform** - Works seamlessly on both iOS and Android devices
 
+
+---
+
+## 🧰 Tech Stack
+**Frontend:**
+- React Native with Expo
+
+**Backend:**
+- Go (Golang) 1.23.6+
+- RESTful API architecture
+- Docker containerization
+- Redis (Caching and optimize api endpoint)
 ---
 
 ## ⚙️ Prerequisites
@@ -73,6 +88,7 @@ Ensure you have the following installed on your system:
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - [Docker](https://docs.docker.com/engine/install/) (for containerized deployment)
 
+**Quick Install Commands:**
 ```bash
 # Linux
 sudo apt-get update
@@ -89,14 +105,20 @@ npm install -g expo-cli
 
 ## 🔑 API Keys
 
-- [Google Api](https://console.cloud.google.com/apis/): Used for map rendering, place searching, weather information, static street view images and finding nearby EV.
-  - Maps SDK for Android & iOS
-  - Places API (New)
-  - Weather API
-  - Street View Static API
-- [URA](https://eservice.ura.gov.sg/maps/api/reg.html): Provide access to real-time carpark availability and carpark information
-- [OneMap](https://www.onemap.gov.sg/apidocs/): For routing
-- [LTA](https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html): Another source for carpark information which includes carpark from shopping malls and streets.
+You'll need to obtain API keys from the following services:
+
+- **[Google Cloud Platform](https://console.cloud.google.com/apis/)**
+  - Enable: Maps SDK (Android & iOS), Places API, Weather API, Street View Static API
+  - Used for: map rendering, location search, weather data, street view images, getting EV lots
+
+- **[URA](https://eservice.ura.gov.sg/maps/api/reg.html)**
+  - Used for: real-time carpark availability data
+
+- **[OneMap](https://www.onemap.gov.sg/apidocs/)**
+  - Used for: routing and navigation services
+
+- **[LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html)**
+  - Used for: additional carpark information (shopping malls, streets)
 
 ---
 
@@ -124,7 +146,7 @@ cp server/.env.example server/.env  # Edit with your API keys
 
 Make sure you are in the root directory of the project (/SC2006-Lab)
 
-### 📍Local
+### 📍Local Development
 
 ```Bash
 # Run both server and client locally
@@ -134,13 +156,18 @@ make run-local
 make clean
 ```
 
-### 🐳 Container
+### 🐳 Container Containerized Deployment
 
 Ensure Docker is installed and running:
 
 ```Bash
+# Build and run with Docker
 make run-container
+
+# Build Docker images only
+make build-container
 ```
+### 📱 Accessing the App
 
 Once the Expo server is up:
 
