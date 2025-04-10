@@ -1,10 +1,10 @@
-# 🚗 SC2006-Lab Project: SweetSpot - Your Smart Carpark & Weather Companion ☀️
+#  SC2006-Lab Project: SweetSpot - Your Smart Carpark & Weather Companion 
 
 > **Find the perfect parking spot in seconds!** SweetSpot helps you discover available carparks within a 2km radius of any location. Built with React Native (Expo) and Go, this app provides real-time information for all vehicle types including EVs, with weather forecasts and navigation assistance.
 
 ---
 
-## 📌 Table of Contentse of Contents
+## 📌 Table of Contents
 
 - [ Directory Structure](#-directory-structure)
 - [ Features](#-features)
@@ -15,7 +15,7 @@
 - [ Environment Setup](#️-environment-setup)
 - [ Run Application](#-run-application)
   - [Local Development](#local-development)
-  - [ Container Containerized Deployment](#container-containerized-deployment)
+  - [Containerized Deployment](#-containerized-deployment)
   - [Accessing the App](#-accessing-the-app)
 - [ API Documentation](#-api-documentation)
   - [ Base URL](#-base-url)
@@ -23,44 +23,58 @@
 - [Design Patterns](#design-patterns)
   - [Frontend Design Patterns](#frontend-design-patterns)
   - [Backend Design Patterns](#backend-design-patterns)
-  - [Architecture Patterns](#architecture-patterns) 
+  - [Architecture Patterns](#architecture-patterns)
+- [Contributors](#contributors)
 ---
 
-<!--
-- [SC2006-Lab Project](#sc2006-lab-project)
-  - [Table of Contents](#table-of-contents)
-  - [Project Structure](#project-structure)
-  - [Features](#features)
-  - [Prerequisites](#prerequisites)
-  - [Install](#install)
-  - [Environment Setup](#environment-setup)
-  - [Usage](#usage)
-  - [Test](#test)
-  - [API Documentation](#api-documentation)
-    - [Base URL](#base-url)
-    - [Endpoints](#endpoints)
-      - [Car Park API](#car-park-api)
-        - [GET /carpark/nearby](#get-carparknearby)
-    - [Authentication](#authentication)
-    - [Rate Limiting](#rate-limiting)
-    - [Error Responses](#error-responses)
-    - [Data Formats](#data-formats)
-  - [Architecture](#architecture)
-    - [Client Folder Architecture](#client-folder-architecture)
-    - [Server Folder Architecture](#server-folder-architecture)
-  - [Design Patterns](#design-patterns)
-    - [Frontend Design Patterns](#frontend-design-patterns)
-    - [Backend Design Patterns](#backend-design-patterns)
-    - [Architecture Patterns](#architecture-patterns)
-  - [Technologies Used](#technologies-used)
-    - [Frontend](#frontend)
-    - [Backend](#backend)
-  - [Contributors](#contributors)
-  - [License](#license) -->
-
 ## 📂 Directory Structure
-TESTING
-
+```
+project-root/
+├── client/                     # Frontend application (React Native/Expo)
+│   ├── app/                    # Main application code
+│   │   ├── component/          # Reusable UI components
+│   │   ├── constants/          # Application constants
+│   │   ├── context/            # React context providers
+│   │   ├── screen/             # Screen components
+│   │   └── utils/              # Utility functions
+│   │   └── hooks/              # Custom React Hooks
+│   ├── assets/                 # Static assets
+│   ├── .env.example            # Example environment file
+│   ├── .gitignore              # Git ignore file
+│   ├── app.json                # Expo app configuration
+│   ├── babel.config.js         # Babel configuration
+│   ├── expo-env.d.ts           # Expo environment type definitions
+│   ├── global.css              # Global CSS styles
+│   ├── metro.config.js         # Metro bundler configuration
+│   ├── nativewind-env.d.ts     # NativeWind type definitions
+│   ├── package-lock.json       # NPM lock file
+│   ├── package.json            # NPM package configuration
+│   ├── README.md               # Client documentation
+│   ├── tailwind.config.js      # Tailwind CSS configuration
+│   └── tsconfig.json           # TypeScript configuration
+│
+└── server/                     # Backend application (Go)
+    ├── api/                    # API routes and handlers
+    ├── data/                   # Data layer
+    ├── database/               # Database connections and models
+    ├── external_services/      # External API integrations
+    ├── handler/                # Request handlers
+    ├── middleware/             # Middleware functions
+    ├── model/                  # Data models
+    ├── utils/                  # Utility functions
+    ├── .env.example            # Example environment file
+    ├── .gitignore              # Git ignore file
+    ├── docker-compose.yaml     # Docker Compose configuration
+    ├── Dockerfile              # Docker configuration
+    ├── go.mod                  # Go module file
+    ├── go.sum                  # Go dependencies checksum
+    ├── main.go                 # Application entry point
+    ├── output.txt              # Output logs
+    ├── LICENSE                 # License information
+    ├── Makefile                # Build automation
+    └── README.md               # Server documentation
+```
+---
 ## ✨ Features
 
 - 🗺️  **Interactive Map Interface** - Visually explore carparks with Google Maps integration
@@ -83,7 +97,7 @@ TESTING
 - Go (Golang) 1.23.6+
 - RESTful API architecture
 - Docker containerization
-- Redis (Caching and optimize api endpoint)
+- Redis (Caching and optimize API endpoint)
 ---
 
 ## ⚙️ Prerequisites
@@ -165,7 +179,7 @@ make run-local
 make clean
 ```
 
-### 🐳 Container Containerized Deployment
+### 🐳 Containerized Deployment
 
 Ensure Docker is installed and running:
 
@@ -203,7 +217,7 @@ http://localhost:8080
 | POST   | `/api/carpark/nearby/` | Get nearby car parks based on user location |
 
 POST /api/carpark/nearby
-Suppose to be get method but the request payload is too large
+Originally intended as a GET method, but used POST due to large payload.
 **Request Body:**
 
 ```json
@@ -244,7 +258,7 @@ Suppose to be get method but the request payload is too large
         ]
       }
     },
-    //.. (rest of EVLot)
+    //.. remaining EV lots
   ]
 }
 ```
@@ -271,7 +285,7 @@ Suppose to be get method but the request payload is too large
         "polyline": "a{gGa~txRSIcC_Hc@oAu@yBQ}@cAmFSaAO{@i@uCeBMqAMq@AM]?_@@a@?[FoFB_C?sAAWISUUWIy@Ey@E{@?{A@eB@aAIk@G_@ECeBi@wHNc@"
       }
     },
-    //.. (rest of return carPark)
+    //.. remaining return CarPark
   ],
   "EV": [
     {
@@ -297,11 +311,11 @@ Suppose to be get method but the request payload is too large
       "shortFormattedAddress": "903 Jurong West Street 91, Singapore",
       "totalChargers": 4
     },
-    //.. (rest of return EV lots)
+    //.. remaining return EV lots
   ]
 }
 ```
-
+---
 ## Design Patterns
 
 ### Frontend Design Patterns
@@ -320,11 +334,13 @@ Suppose to be get method but the request payload is too large
 - **MVC (Model-View-Controller)**: Organized our backend Go code using the MVC pattern. Models represented data structures, Controllers handled API requests and responses, and (though not strictly "Views" in a traditional web sense) our response serializers acted as a form of view logic for presenting data.
 - **Microservices (Conceptual):** While this project might be a monolith, we designed our modules and services with a potential future transition to microservices in mind, ensuring clear boundaries and independent functionality.
 - **REST API**: Designed our backend API following RESTful principles, using standard HTTP methods (GET, POST, etc.) for CRUD operations on resources like car parks and EV charging stations, ensuring interoperability and ease of use for frontend developers.
-
+---
 ## Contributors
 
 | Contributor         | Contributions                                  |
 | ------------------- | ---------------------------------------------- |
-| @CLinnSheng | Fullstack Development, Documentation       |
-| [@github-username-2] | API integration, testing                     |
-| ...                 | ...                                          |
+| [@CLinnSheng](https://github.com/CLinnSheng) | Fullstack Development, Documentation       |
+| [@shamz-10](https://github.com/shamz-10) | Frontend UI/UX, Documentation                   |
+| [@piperatthegateofdawn](https://github.com/piperatthegateofdawn)                 | Documentation                                         |
+| [@X-Jiarui](https://github.com/X-Jiarui)                   | Documentation                                        |
+| [@Yeet94](https://github.com/Yeet94)                 | Documentation                                          |
