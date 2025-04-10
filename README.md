@@ -403,7 +403,7 @@ Originally intended as a GET method, but used POST due to large payload.
         <sub><b>@piperatthegateofdawn0</b></sub>
       </a>
       <br />
-      <sub>Frontend UI/UX, Documentation</sub>
+      <sub>Documentation</sub>
     </td><td align="center">
       <a href="https://github.com/X-Jiarui">
         <img src="https://github.com/X-Jiarui.png" width="100px;" alt=""/>
@@ -411,7 +411,7 @@ Originally intended as a GET method, but used POST due to large payload.
         <sub><b>@X-Jiarui0</b></sub>
       </a>
       <br />
-      <sub>Frontend UI/UX, Documentation</sub>
+      <sub>Documentation</sub>
     </td><td align="center">
       <a href="https://github.com/Yeet94">
         <img src="https://github.com/Yeet94.png" width="100px;" alt=""/>
@@ -419,7 +419,7 @@ Originally intended as a GET method, but used POST due to large payload.
         <sub><b>@Yeet94</b></sub>
       </a>
       <br />
-      <sub>Frontend UI/UX, Documentation</sub>
+      <sub>Documentation</sub>
     </td>
   </tr>
 </table>
